@@ -3,211 +3,965 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RBC — Risk Bridge Capital</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<title>e agora?</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,sans-serif;background:#f5f5f3;min-height:100vh;color:#1a1a18}
-.header{background:#fff;border-bottom:1px solid #e5e5e0;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
-.logo{font-size:18px;font-weight:500;letter-spacing:-0.3px}
-.logo span{color:#3B6D11}
-.date{font-size:12px;color:#888;background:#f5f5f3;padding:4px 10px;border-radius:8px;border:1px solid #e5e5e0}
-.main{padding:1.5rem;max-width:860px;margin:0 auto}
-.tabs{display:flex;gap:4px;margin-bottom:1rem}
-.tab{font-size:13px;padding:6px 14px;border-radius:8px;border:1px solid #e5e5e0;cursor:pointer;color:#666;background:#fff}
-.tab.active{background:#f5f5f3;color:#1a1a18;font-weight:500}
-.panel{display:none}.panel.active{display:block}
-.card{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
-.card-title{font-size:12px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:1rem}
-textarea{width:100%;padding:8px;font-size:13px;font-family:monospace;min-height:80px;border-radius:8px;border:1px solid #e5e5e0;background:#f9f9f7;resize:vertical;margin-top:8px}
-.btn{width:100%;padding:10px;font-size:14px;font-weight:500;background:#fff;border:1px solid #ccc;border-radius:8px;cursor:pointer;margin-top:10px}
-.btn:hover{background:#f5f5f3}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1rem}
-.metric{background:#f5f5f3;border-radius:8px;padding:12px}
-.metric-label{font-size:11px;color:#888;margin-bottom:4px}
-.metric-value{font-size:20px;font-weight:500}
-.metric-value.green{color:#3B6D11}
-.metric-value.red{color:#A32D2D}
-.metric-value.amber{color:#854F0B}
-.input-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.input-label{font-size:13px;color:#666;min-width:160px}
-input[type=number]{flex:1;padding:6px 10px;font-size:14px;border:1px solid #e5e5e0;border-radius:8px;background:#fff}
-.signal-row{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid #f0f0ee}
-.signal-row:last-child{border-bottom:none}
-.signal-title{font-size:13px;font-weight:500}
-.signal-desc{font-size:12px;color:#888;margin-top:2px}
-.verdict{border-radius:8px;padding:1rem;margin-top:0.75rem}
-.verdict.operar{background:#EAF3DE;border:1px solid #3B6D11}
-.verdict.aguardar{background:#FAEEDA;border:1px solid #854F0B}
-.verdict.nao{background:#FCEBEB;border:1px solid #A32D2D}
-.verdict-title{font-size:15px;font-weight:500}
-.verdict.operar .verdict-title{color:#3B6D11}
-.verdict.aguardar .verdict-title{color:#854F0B}
-.verdict.nao .verdict-title{color:#A32D2D}
-.verdict-desc{font-size:13px;margin-top:4px;color:#555}
-.score-bar{display:flex;gap:3px;margin:0.75rem 0}
-.block{width:20px;height:8px;border-radius:2px}
-.block.on{background:#3B6D11}
-.block.off{background:#e5e5e0}
-.strike-card{border:2px solid #3B6D11;border-radius:10px;padding:1rem;margin-bottom:1rem}
-.strike-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.strike-name{font-size:17px;font-weight:500}
-.badge{font-size:11px;padding:3px 8px;border-radius:6px;background:#EAF3DE;color:#3B6D11}
-.greeks{display:flex;gap:16px;flex-wrap:wrap}
-.greek{text-align:center}
-.greek-val{font-size:14px;font-weight:500}
-.greek-label{font-size:11px;color:#888}
-.exit-box{background:#f5f5f3;border-radius:8px;padding:1rem;margin-top:0.75rem}
-.exit-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #eee}
-.exit-row:last-child{border-bottom:none}
-.exit-val{margin-left:auto;font-size:14px;font-weight:500}
-.exit-label{font-size:13px;color:#666}
-.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
-.disclaimer{font-size:11px;color:#aaa;text-align:center;margin-top:1rem}
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --ink: #0f0f0f;
+    --ink-2: #3d3d3d;
+    --ink-3: #787878;
+    --ink-4: #b0b0b0;
+    --paper: #fafaf8;
+    --paper-2: #f2f1ee;
+    --paper-3: #e8e7e3;
+    --accent: #1a56db;
+    --accent-bg: #eff4ff;
+    --accent-text: #1e429f;
+    --success: #057a55;
+    --border: rgba(0,0,0,0.08);
+    --border-md: rgba(0,0,0,0.14);
+    --r: 6px;
+    --r-lg: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Topbar ── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 56px;
+    border-bottom: 1px solid var(--border);
+    background: var(--paper);
+  }
+
+  .logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 18px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+
+  .logo em { font-style: italic; color: var(--ink-3); }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .nav a {
+    font-size: 13px;
+    color: var(--ink-3);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+
+  .nav a:hover { color: var(--ink); }
+
+  /* ── Telas ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── ENTRADA ── */
+  .entry-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: calc(100vh - 56px);
+  }
+
+  .entry-left {
+    padding: 80px 64px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .entry-right {
+    padding: 80px 64px;
+    background: var(--paper);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .entry-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 20px;
+  }
+
+  .entry-h {
+    font-family: 'Instrument Serif', serif;
+    font-size: 52px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 24px;
+  }
+
+  .entry-h em {
+    font-style: italic;
+    color: var(--ink-3);
+  }
+
+  .entry-body {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--ink-2);
+    max-width: 380px;
+    margin-bottom: 48px;
+  }
+
+  .entry-proof {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .proof-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .proof-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ink-4);
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+
+  .proof-item p {
+    font-size: 13.5px;
+    color: var(--ink-3);
+    line-height: 1.5;
+  }
+
+  .proof-item strong {
+    color: var(--ink-2);
+    font-weight: 500;
+  }
+
+  /* Form lado direito */
+  .form-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 10px;
+  }
+
+  .amount-field {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 32px;
+    border-bottom: 1.5px solid var(--ink-4);
+    padding-bottom: 10px;
+  }
+
+  .amount-field:focus-within {
+    border-bottom-color: var(--ink);
+  }
+
+  .amount-prefix {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+
+  .amount-input {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 32px;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    color: var(--ink);
+    width: 200px;
+    outline: none;
+    letter-spacing: -0.02em;
+  }
+
+  .amount-suffix {
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+
+  .options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid var(--border-md);
+    border-radius: var(--r);
+    cursor: pointer;
+    background: white;
+    transition: border-color 0.12s, background 0.12s;
+  }
+
+  .opt:hover { border-color: var(--ink-3); }
+
+  .opt.sel {
+    border-color: var(--ink);
+    background: white;
+  }
+
+  .opt-radio {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border-md);
+    margin-top: 2px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.12s;
+  }
+
+  .opt.sel .opt-radio {
+    border-color: var(--ink);
+    background: var(--ink);
+  }
+
+  .opt.sel .opt-radio::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: white;
+  }
+
+  .opt-content {}
+  .opt-title { font-size: 13.5px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+  .opt-desc { font-size: 12.5px; color: var(--ink-3); line-height: 1.4; }
+
+  .reserve-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 36px;
+  }
+
+  .res-btn {
+    padding: 11px 16px;
+    border: 1px solid var(--border-md);
+    border-radius: var(--r);
+    background: white;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-family: 'Inter', sans-serif;
+    color: var(--ink-2);
+    text-align: center;
+    transition: all 0.12s;
+  }
+
+  .res-btn:hover { border-color: var(--ink-3); }
+  .res-btn.sel { border-color: var(--ink); color: var(--ink); font-weight: 500; background: white; }
+
+  .btn-cta {
+    width: 100%;
+    padding: 14px 24px;
+    background: var(--ink);
+    color: white;
+    border: none;
+    border-radius: var(--r);
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    letter-spacing: -0.01em;
+    transition: opacity 0.15s;
+  }
+
+  .btn-cta:hover { opacity: 0.85; }
+  .btn-cta:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .form-note {
+    font-size: 11.5px;
+    color: var(--ink-4);
+    margin-top: 12px;
+    text-align: center;
+    letter-spacing: -0.01em;
+  }
+
+  /* ── PAINEL ── */
+  .panel-wrap {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: calc(100vh - 56px);
+  }
+
+  .sidebar {
+    border-right: 1px solid var(--border);
+    padding: 32px 0;
+    background: var(--paper);
+  }
+
+  .sb-group { margin-bottom: 24px; }
+
+  .sb-group-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    padding: 0 20px;
+    margin-bottom: 6px;
+  }
+
+  .sb-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px;
+    font-size: 13.5px;
+    color: var(--ink-2);
+    cursor: pointer;
+    border-left: 2px solid transparent;
+    transition: all 0.1s;
+  }
+
+  .sb-link:hover { color: var(--ink); background: var(--paper-2); }
+
+  .sb-link.active {
+    color: var(--ink);
+    font-weight: 500;
+    border-left-color: var(--ink);
+    background: var(--paper-2);
+  }
+
+  .sb-link svg { width: 14px; height: 14px; flex-shrink: 0; opacity: 0.6; }
+  .sb-link.active svg { opacity: 1; }
+
+  .sb-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 16px 20px;
+  }
+
+  .sb-ctx {
+    margin: 0 16px;
+    padding: 12px 14px;
+    background: var(--paper-2);
+    border-radius: var(--r);
+    border: 1px solid var(--border);
+  }
+
+  .sb-ctx-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin-bottom: 6px;
+  }
+
+  .sb-ctx-val {
+    font-size: 12.5px;
+    color: var(--ink-2);
+    line-height: 1.6;
+  }
+
+  .main {
+    padding: 48px 56px;
+    max-width: 740px;
+  }
+
+  .main-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin-bottom: 10px;
+  }
+
+  .main-h {
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+
+  .main-source {
+    font-size: 12px;
+    color: var(--ink-4);
+    margin-bottom: 36px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .card {
+    border: 1px solid var(--border-md);
+    border-radius: var(--r-lg);
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    background: white;
+  }
+
+  .card.featured {
+    border-color: var(--ink);
+    background: white;
+  }
+
+  .card-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin-bottom: 12px;
+  }
+
+  .card.featured .card-label { color: var(--ink-2); }
+
+  .card-h {
+    font-family: 'Instrument Serif', serif;
+    font-size: 19px;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    margin-bottom: 10px;
+    color: var(--ink);
+  }
+
+  .card p {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--ink-2);
+  }
+
+  /* Barras de dados */
+  .data-table {
+    margin: 20px 0 4px;
+  }
+
+  .data-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .data-row:first-child { border-top: none; }
+
+  .data-label {
+    font-size: 12.5px;
+    color: var(--ink-2);
+    min-width: 200px;
+    line-height: 1.3;
+  }
+
+  .data-bar {
+    flex: 1;
+    height: 3px;
+    background: var(--paper-3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .data-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--ink);
+    transition: width 0.6s ease;
+  }
+
+  .data-fill.accent { background: var(--accent); }
+  .data-fill.muted { background: var(--ink-4); }
+
+  .data-val {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    min-width: 36px;
+    text-align: right;
+  }
+
+  /* Ações */
+  .action-list { margin-top: 4px; }
+
+  .action-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 14px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .action-row:first-child { border-top: none; }
+
+  .action-what {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+
+  .action-when {
+    font-size: 11.5px;
+    color: var(--ink-4);
+    margin-top: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .action-result {
+    font-size: 13px;
+    color: var(--ink-2);
+    line-height: 1.55;
+  }
+
+  /* Glossário */
+  .gloss-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 20px;
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+    align-items: baseline;
+  }
+
+  .gloss-row:first-child { border-top: none; }
+
+  .gloss-term {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .gloss-def {
+    font-size: 13px;
+    color: var(--ink-2);
+    line-height: 1.6;
+  }
+
+  /* Próxima pergunta */
+  .next-q {
+    margin-top: 20px;
+    padding: 20px 24px;
+    border: 1px solid var(--border-md);
+    border-radius: var(--r-lg);
+    background: var(--paper-2);
+  }
+
+  .next-q-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin-bottom: 10px;
+  }
+
+  .next-q-text {
+    font-family: 'Instrument Serif', serif;
+    font-size: 17px;
+    font-style: italic;
+    color: var(--ink);
+    line-height: 1.55;
+    letter-spacing: -0.01em;
+  }
+
+  .btn-back {
+    margin-top: 28px;
+    padding: 9px 18px;
+    background: transparent;
+    border: 1px solid var(--border-md);
+    border-radius: var(--r);
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+
+  .btn-back:hover { border-color: var(--ink-3); color: var(--ink); }
+
+  .loading {
+    padding: 80px 0;
+    color: var(--ink-4);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+  }
+
+  /* fonte tab */
+  .source-card {
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    background: white;
+  }
+
+  .source-card-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin-bottom: 8px;
+  }
+
+  .source-card h3 {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .source-card p {
+    font-size: 13.5px;
+    color: var(--ink-2);
+    line-height: 1.7;
+  }
 </style>
 </head>
 <body>
-<div class="header">
-  <div class="logo">RBC <span>·</span> Risk Bridge Capital</div>
-  <div class="date" id="dt"></div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">e agora<em>?</em></div>
+  <nav class="nav">
+    <a href="#">como funciona</a>
+    <a href="#">a pesquisa</a>
+  </nav>
 </div>
-<div class="main">
-  <div class="tabs">
-    <button class="tab active" onclick="showTab('m1',this)">Modo 1 — Pré-mercado</button>
-    <button class="tab" onclick="showTab('m2',this)">Modo 2 — Abertura</button>
-    <button class="tab" onclick="showTab('m3',this)">Modo 3 — Operacional</button>
-  </div>
 
-  <div id="m1" class="panel active">
-    <div class="card">
-      <div class="card-title">SpotGamma — cole a string do dia</div>
-      <textarea id="sgStr" placeholder="$SPX, SPX, 7500, 6500 ..."></textarea>
-      <button class="btn" onclick="modo1()">Carregar níveis</button>
+<!-- TELA 1: ENTRADA -->
+<div id="screen-entry" class="screen active">
+  <div class="entry-wrap">
+
+    <div class="entry-left">
+      <p class="entry-eyebrow">Inteligência patrimonial</p>
+      <h1 class="entry-h">Sobrou<br>dinheiro.<br><em>E agora?</em></h1>
+      <p class="entry-body">
+        Você já pagou o que tinha para pagar. Agora tem alguma coisa sobrando — e o mercado financeiro não fala com você de um jeito que faça sentido.
+      </p>
+      <div class="entry-proof">
+        <div class="proof-item">
+          <div class="proof-dot"></div>
+          <p><strong>Dados reais.</strong> Survey of Consumer Finances, Federal Reserve americano.</p>
+        </div>
+        <div class="proof-item">
+          <div class="proof-dot"></div>
+          <p><strong>Sem cadastro.</strong> Sem coleta de dados financeiros.</p>
+        </div>
+        <div class="proof-item">
+          <div class="proof-dot"></div>
+          <p><strong>Você decide.</strong> A plataforma mostra padrões. A escolha é sua.</p>
+        </div>
+      </div>
     </div>
-    <div class="card" id="niveisCard" style="display:none">
-      <div class="card-title">Níveis SPY</div>
-      <div class="grid4" id="niveisGrid"></div>
-      <div id="niveisLista"></div>
+
+    <div class="entry-right">
+      <p class="form-label">Quanto está sobrando por mês?</p>
+      <div class="amount-field">
+        <span class="amount-prefix">R$</span>
+        <input class="amount-input" type="text" id="monthly-amount" value="1.200" />
+        <span class="amount-suffix">/ mês</span>
+      </div>
+
+      <p class="form-label">Sua situação agora</p>
+      <div class="options-grid" id="sit-grid">
+        <div class="opt sel" data-situation="estabilidade" onclick="selectSit(this)">
+          <div class="opt-radio"></div>
+          <div class="opt-content">
+            <p class="opt-title">Estabilidade</p>
+            <p class="opt-desc">Emprego fixo, contas em dia, sem dívidas</p>
+          </div>
+        </div>
+        <div class="opt" data-situation="transicao" onclick="selectSit(this)">
+          <div class="opt-radio"></div>
+          <div class="opt-content">
+            <p class="opt-title">Transição</p>
+            <p class="opt-desc">Mudei de emprego ou virei autônomo recentemente</p>
+          </div>
+        </div>
+        <div class="opt" data-situation="acumulando" onclick="selectSit(this)">
+          <div class="opt-radio"></div>
+          <div class="opt-content">
+            <p class="opt-title">Acumulando</p>
+            <p class="opt-desc">Já tenho alguma reserva mas não sei o que fazer</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="form-label">Reserva de emergência</p>
+      <div class="reserve-row">
+        <button class="res-btn sel" data-reserve="false" onclick="selectRes(this)">Não tenho ainda</button>
+        <button class="res-btn" data-reserve="true" onclick="selectRes(this)">Sim, tenho</button>
+      </div>
+
+      <button class="btn-cta" id="btn-analyze" onclick="analyze()">
+        Ver o que os dados mostram →
+      </button>
+      <p class="form-note">Sem cadastro · Sem coleta de dados financeiros</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- TELA 2: PAINEL -->
+<div id="screen-panel" class="screen">
+  <div class="panel-wrap">
+
+    <div class="sidebar">
+      <div class="sb-group">
+        <p class="sb-group-label">Análise</p>
+        <div class="sb-link active" onclick="showTab('pattern', this)">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+          O padrão
+        </div>
+        <div class="sb-link" onclick="showTab('actions', this)">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3 8 6 11 13 4"/></svg>
+          O que fizeram
+        </div>
+        <div class="sb-link" onclick="showTab('concepts', this)">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13.5A2 2 0 014 11.5H14"/><path d="M4 2H14v14H4A2 2 0 012 14V4a2 2 0 012-2z"/></svg>
+          O que significa
+        </div>
+      </div>
+      <div class="sb-divider"></div>
+      <div class="sb-group">
+        <p class="sb-group-label">Dados</p>
+        <div class="sb-link" onclick="showTab('source', this)">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8"/><line x1="8" y1="11" x2="8.01" y2="11"/></svg>
+          Fonte e limitações
+        </div>
+      </div>
+      <div class="sb-divider"></div>
+      <div class="sb-ctx" id="sb-ctx">
+        <p class="sb-ctx-label">Contexto</p>
+        <p class="sb-ctx-val" id="sb-ctx-val">—</p>
+      </div>
+    </div>
+
+    <div class="main">
+      <div id="loading" class="loading">Analisando perfil...</div>
+      <div id="panel-content" style="display:none">
+
+        <!-- TAB: PADRÃO -->
+        <div id="tab-pattern" class="tab">
+          <p class="main-eyebrow">Achado principal</p>
+          <h2 class="main-h" id="p-headline"></h2>
+          <p class="main-source" id="p-source"></p>
+
+          <div class="card featured">
+            <p class="card-label">O que os dados mostram</p>
+            <p id="p-finding"></p>
+          </div>
+
+          <div class="data-table" id="p-bars"></div>
+
+          <div class="next-q">
+            <p class="next-q-label">Próxima pergunta</p>
+            <p class="next-q-text" id="p-nextq"></p>
+          </div>
+
+          <button class="btn-back" onclick="goBack()">← Nova consulta</button>
+        </div>
+
+        <!-- TAB: O QUE FIZERAM -->
+        <div id="tab-actions" class="tab" style="display:none">
+          <p class="main-eyebrow">Comportamento observado</p>
+          <h2 class="main-h">O que pessoas na sua situação fizeram</h2>
+          <p class="main-source" id="p-source-2"></p>
+
+          <div class="card featured">
+            <p class="card-label">Ações e resultados</p>
+            <div class="action-list" id="p-actions"></div>
+          </div>
+
+          <div class="card">
+            <p class="card-label">O que acontece sem isso</p>
+            <p id="p-without"></p>
+          </div>
+
+          <button class="btn-back" onclick="goBack()">← Nova consulta</button>
+        </div>
+
+        <!-- TAB: GLOSSÁRIO -->
+        <div id="tab-concepts" class="tab" style="display:none">
+          <p class="main-eyebrow">Glossário</p>
+          <h2 class="main-h">O que cada termo significa</h2>
+          <p class="main-source">No contexto da sua situação — sem jargão.</p>
+
+          <div class="card">
+            <p class="card-label">Termos desta análise</p>
+            <div id="p-concepts"></div>
+          </div>
+
+          <button class="btn-back" onclick="goBack()">← Nova consulta</button>
+        </div>
+
+        <!-- TAB: FONTE -->
+        <div id="tab-source" class="tab" style="display:none">
+          <p class="main-eyebrow">Transparência</p>
+          <h2 class="main-h">Fonte dos dados e limitações</h2>
+          <p class="main-source">O que sabemos — e o que ainda não sabemos.</p>
+
+          <div class="source-card">
+            <p class="source-card-label">Base de dados</p>
+            <h3>Survey of Consumer Finances — Federal Reserve</h3>
+            <p>Pesquisa aplicada pelo Federal Reserve americano com mais de 4.000 famílias a cada três anos. Os dados de 2019 a 2022 foram analisados na pesquisa de mestrado em Finance and Investments da Universidade de Massachusetts Boston.</p>
+          </div>
+
+          <div class="source-card">
+            <p class="source-card-label">Limitações importantes</p>
+            <h3>O que os dados não garantem</h3>
+            <p>Os dados são americanos. O padrão pode variar no Brasil por diferenças culturais, regulatórias e de mercado. Os números são indicativos — não previsões. Esta plataforma não substitui orientação financeira profissional.</p>
+          </div>
+
+          <div class="source-card">
+            <p class="source-card-label">Autora da pesquisa</p>
+            <h3>Rosilaine Francisco</h3>
+            <p>Master's in Finance and Investments, University of Massachusetts Boston. Beacon Graduate Student Leadership Award. CFA Program Student Scholarship, CFA Institute. Empreendedora e ex-CEO com quase vinte anos de experiência em gestão financeira corporativa no Brasil.</p>
+          </div>
+
+          <button class="btn-back" onclick="goBack()">← Nova consulta</button>
+        </div>
+
+      </div>
     </div>
   </div>
-
-  <div id="m2" class="panel">
-    <div class="card">
-      <div class="card-title">Dados de abertura — TradingView</div>
-      <div class="input-row"><span class="input-label">VIX abertura (9:30)</span><input type="number" id="vixOpen" placeholder="17.75" step="0.01"></div>
-      <div class="input-row"><span class="input-label">VIX agora</span><input type="number" id="vixNow" placeholder="17.40" step="0.01"></div>
-      <div class="input-row"><span class="input-label">SPY abertura (9:30)</span><input type="number" id="spyOpen" placeholder="738.50" step="0.01"></div>
-      <div class="input-row"><span class="input-label">SPY agora</span><input type="number" id="spyNow" placeholder="741.20" step="0.01"></div>
-      <button class="btn" onclick="modo2()">Analisar abertura</button>
-    </div>
-    <div class="card" id="m2Result" style="display:none">
-      <div class="card-title">Sinais de abertura</div>
-      <div id="sinais"></div>
-      <div class="score-bar" id="scoreBar"></div>
-      <div id="verdictBox"></div>
-    </div>
-  </div>
-
-  <div id="m3" class="panel">
-    <div class="card">
-      <div class="card-title">Parâmetros operacionais</div>
-      <div class="input-row"><span class="input-label">SPY spot atual</span><input type="number" id="spot" placeholder="741.50" step="0.01"></div>
-      <div class="input-row"><span class="input-label">IV real IBKR (%)</span><input type="number" id="iv" placeholder="15.3" step="0.1"></div>
-      <div class="input-row"><span class="input-label">Prêmio pago ($)</span><input type="number" id="premio" placeholder="1.61 (opcional)" step="0.01"></div>
-      <button class="btn" onclick="modo3()">Recomendar strike</button>
-    </div>
-    <div class="card" id="m3Result" style="display:none">
-      <div id="strikeBox"></div>
-    </div>
-  </div>
-
-  <div class="disclaimer">Risk setup only — não é recomendação de compra ou venda · RBC v1.0</div>
 </div>
 
 <script>
-const API = '';
-let sgStr = '';
+  let state = { situation: 'estabilidade', has_reserve: false };
 
-document.getElementById('dt').textContent = new Date().toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'});
+  function selectSit(el) {
+    document.querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
+    el.classList.add('sel');
+    state.situation = el.dataset.situation;
+  }
 
-function showTab(id, el) {
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  el.classList.add('active');
-}
+  function selectRes(el) {
+    document.querySelectorAll('.res-btn').forEach(b => b.classList.remove('sel'));
+    el.classList.add('sel');
+    state.has_reserve = el.dataset.reserve === 'true';
+  }
 
-async function modo1() {
-  sgStr = document.getElementById('sgStr').value.trim();
-  if (!sgStr) { alert('Cole a string SpotGamma.'); return; }
-  const r = await fetch(API+'/api/modo1', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({sg_string:sgStr})});
-  const d = await r.json();
-  if (!d.ok) { alert('Erro: '+d.error); return; }
-  const s = d.spy;
-  document.getElementById('niveisCard').style.display='block';
-  document.getElementById('niveisGrid').innerHTML = `
-    <div class="metric"><div class="metric-label">Call Wall</div><div class="metric-value red">${s.call_wall}</div></div>
-    <div class="metric"><div class="metric-label">Zero Gamma</div><div class="metric-value amber">${s.zero_gamma}</div></div>
-    <div class="metric"><div class="metric-label">Vol Trigger</div><div class="metric-value">${s.vol_trigger}</div></div>
-    <div class="metric"><div class="metric-label">Put Wall</div><div class="metric-value green">${s.put_wall}</div></div>
-  `;
-  document.getElementById('niveisLista').innerHTML = `
-    <div style="font-size:12px;color:#888;margin-top:8px">Move 1D: ${(s.move_1d*100).toFixed(2)}% &nbsp;|&nbsp; Combos: ${(s.combos||[]).join(', ')}</div>
-  `;
-  showTab('m2', document.querySelectorAll('.tab')[1]);
-}
+  function getAmount() {
+    const raw = document.getElementById('monthly-amount').value.replace(/\./g, '').replace(',', '.');
+    return parseFloat(raw) || 0;
+  }
 
-async function modo2() {
-  const body = {vix_open:+document.getElementById('vixOpen').value, vix_now:+document.getElementById('vixNow').value, spy_open:+document.getElementById('spyOpen').value, spy_now:+document.getElementById('spyNow').value, sg_string:sgStr};
-  if (!body.vix_open||!body.vix_now||!body.spy_open||!body.spy_now){alert('Preencha todos os campos.');return;}
-  const r = await fetch(API+'/api/modo2',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  const d = await r.json();
-  if(!d.ok){alert('Erro: '+d.error);return;}
-  document.getElementById('m2Result').style.display='block';
-  document.getElementById('sinais').innerHTML=(d.signals||[]).map(s=>`
-    <div class="signal-row"><div style="font-size:16px">${s.icon}</div><div><div class="signal-title">${s.title}</div><div class="signal-desc">${s.desc}</div></div></div>
-  `).join('');
-  const score=d.score||0;
-  const filled=Math.min(10,Math.max(0,score+5));
-  document.getElementById('scoreBar').innerHTML=Array.from({length:10},(_,i)=>`<div class="block ${i<filled?'on':'off'}"></div>`).join('');
-  const cls=d.verdict==='OPERAR'?'operar':d.verdict==='AGUARDAR'?'aguardar':'nao';
-  const icon=d.verdict==='OPERAR'?'✅':d.verdict==='AGUARDAR'?'⚠️':'🚫';
-  document.getElementById('verdictBox').innerHTML=`<div class="verdict ${cls}"><div class="verdict-title">${icon} ${d.verdict}</div><div class="verdict-desc">${d.verdict==='OPERAR'?'Rode o Modo 3 após 10:00 ET.':d.verdict==='AGUARDAR'?'Aguardar até 10:00–10:15 ET.':'Preserve o capital. Amanhã tem mais.'}</div></div>`;
-  if(d.verdict==='OPERAR') showTab('m3',document.querySelectorAll('.tab')[2]);
-}
+  async function analyze() {
+    const btn = document.getElementById('btn-analyze');
+    btn.disabled = true;
+    btn.textContent = 'Analisando...';
 
-async function modo3() {
-  const spot=+document.getElementById('spot').value;
-  const iv=+document.getElementById('iv').value;
-  const premio=document.getElementById('premio').value||null;
-  if(!spot||!iv){alert('Preencha SPY e IV.');return;}
-  const r=await fetch(API+'/api/modo3',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({spot,iv,premio,sg_string:sgStr})});
-  const d=await r.json();
-  if(!d.ok){alert('Erro: '+d.error);return;}
-  document.getElementById('m3Result').style.display='block';
-  const st=d.strike;
-  const ex=d.exits;
-  document.getElementById('strikeBox').innerHTML=`
-    <div class="strike-card">
-      <div class="strike-header">
-        <div class="strike-name">${st?st.type.toUpperCase()+' '+st.strike:'—'}</div>
-        <div class="badge">★ Recomendado</div>
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          trigger: 'sobra_mensal',
+          situation: state.situation,
+          has_reserve: state.has_reserve,
+          monthly_amount: getAmount(),
+        })
+      });
+      const data = await res.json();
+      renderPanel(data);
+    } catch(e) {
+      btn.disabled = false;
+      btn.textContent = 'Ver o que os dados mostram →';
+      alert('Erro ao conectar. Verifique se o servidor está rodando.');
+    }
+  }
+
+  function renderPanel(data) {
+    const amt = new Intl.NumberFormat('pt-BR').format(getAmount());
+    const res = state.has_reserve ? 'com reserva' : 'sem reserva';
+    document.getElementById('sb-ctx-val').textContent = `R$ ${amt}/mês · ${state.situation} · ${res}`;
+
+    document.getElementById('p-headline').textContent = data.headline;
+    document.getElementById('p-source').textContent = data.source;
+    document.getElementById('p-source-2').textContent = data.source;
+    document.getElementById('p-finding').textContent = data.finding;
+    document.getElementById('p-nextq').textContent = data.next_question;
+    document.getElementById('p-without').textContent = data.what_happens_without;
+
+    // Barras
+    const bars = document.getElementById('p-bars');
+    if (data.pattern_id === 'stable_no_reserve') {
+      bars.innerHTML = `
+        <div class="data-row"><span class="data-label">Mantiveram investimento (com reserva)</span><div class="data-bar"><div class="data-fill" style="width:71%"></div></div><span class="data-val">71%</span></div>
+        <div class="data-row"><span class="data-label">Resgataram antes de 12 meses</span><div class="data-bar"><div class="data-fill muted" style="width:29%"></div></div><span class="data-val">29%</span></div>
+        <div class="data-row"><span class="data-label">Mantiveram investimento (sem reserva)</span><div class="data-bar"><div class="data-fill muted" style="width:52%"></div></div><span class="data-val">52%</span></div>
+      `;
+    } else { bars.innerHTML = ''; }
+
+    // Ações
+    document.getElementById('p-actions').innerHTML = (data.what_they_did || []).map(a => `
+      <div class="action-row">
+        <div><p class="action-what">${a.action}</p><p class="action-when">${a.timeframe}</p></div>
+        <p class="action-result">${a.outcome}</p>
       </div>
-      <div class="greeks">
-        <div class="greek"><div class="greek-val">$${st?st.price.toFixed(2):'—'}</div><div class="greek-label">Teórico BS</div></div>
-        <div class="greek"><div class="greek-val">${st?st.delta.toFixed(3):'—'}</div><div class="greek-label">Delta</div></div>
-        <div class="greek"><div class="greek-val">${d.hours}h</div><div class="greek-label">Horas</div></div>
-        <div class="greek"><div class="greek-val">${d.gate_open?'✅ Aberto':'🚫 Fechado'}</div><div class="greek-label">Gate</div></div>
+    `).join('');
+
+    // Glossário
+    document.getElementById('p-concepts').innerHTML = Object.values(data.concepts || {}).map(c => `
+      <div class="gloss-row">
+        <span class="gloss-term">${c.term}</span>
+        <span class="gloss-def">${c.definition}</span>
       </div>
-      <div style="font-size:11px;color:#aaa;margin-top:8px">⚠ Confirme o prêmio real no IBKR antes de entrar</div>
-    </div>
-    ${ex?`<div class="exit-box">
-      <div class="exit-row"><span class="dot" style="background:#3B6D11"></span><span class="exit-label">Alvo +75%</span><span class="exit-val" style="color:#3B6D11">$${ex.target_price.toFixed(2)} → +$${ex.target_usd.toFixed(0)}</span></div>
-      <div class="exit-row"><span class="dot" style="background:#A32D2D"></span><span class="exit-label">Stop -50%</span><span class="exit-val" style="color:#A32D2D">$${ex.stop_price.toFixed(2)} → -$${ex.stop_usd.toFixed(0)}</span></div>
-      <div class="exit-row"><span class="dot" style="background:#854F0B"></span><span class="exit-label">Tempo limite</span><span class="exit-val" style="color:#854F0B">12:00 ET</span></div>
-    </div>`:''}
-  `;
-}
+    `).join('');
+
+    document.getElementById('screen-entry').classList.remove('active');
+    document.getElementById('screen-panel').classList.add('active');
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('panel-content').style.display = 'block';
+    showTab('pattern', document.querySelector('.sb-link'));
+  }
+
+  function showTab(id, el) {
+    document.querySelectorAll('.tab').forEach(t => t.style.display = 'none');
+    document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'));
+    document.getElementById('tab-' + id).style.display = 'block';
+    if (el) el.classList.add('active');
+  }
+
+  function goBack() {
+    document.getElementById('screen-panel').classList.remove('active');
+    document.getElementById('screen-entry').classList.add('active');
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('panel-content').style.display = 'none';
+    const btn = document.getElementById('btn-analyze');
+    btn.disabled = false;
+    btn.textContent = 'Ver o que os dados mostram →';
+  }
 </script>
 </body>
 </html>
