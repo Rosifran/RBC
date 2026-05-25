@@ -1,451 +1,213 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RBC · Risk Bridge Capital</title>
-  <style>
-    body {
-      margin: 0;
-      background: #f5f3ef;
-      color: #111;
-      font-family: Arial, sans-serif;
-    }
-
-    .page {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 32px;
-    }
-
-    .header {
-      background: #fff;
-      border-bottom: 1px solid #ddd;
-      padding: 26px 32px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 30px;
-    }
-
-    .date {
-      border: 1px solid #ddd;
-      border-radius: 14px;
-      padding: 10px 16px;
-      background: #f5f3ef;
-      color: #333;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 10px;
-      margin: 28px 0 20px;
-    }
-
-    .tab {
-      border: 1px solid #bbb;
-      background: #fff;
-      padding: 14px 24px;
-      border-radius: 12px;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-    .tab.active {
-      background: #111;
-      color: #fff;
-      border-color: #111;
-    }
-
-    .card {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 18px;
-      padding: 26px;
-      margin-bottom: 20px;
-    }
-
-    .section {
-      display: none;
-    }
-
-    .section.active {
-      display: block;
-    }
-
-    textarea,
-    input,
-    select {
-      width: 100%;
-      box-sizing: border-box;
-      border: 1px solid #ccc;
-      border-radius: 12px;
-      padding: 12px;
-      font-size: 16px;
-      background: #f8f6f0;
-    }
-
-    textarea {
-      min-height: 130px;
-      font-family: monospace;
-    }
-
-    button {
-      width: 100%;
-      margin-top: 14px;
-      padding: 14px;
-      border-radius: 12px;
-      border: 1px solid #111;
-      background: #111;
-      color: white;
-      font-size: 17px;
-      cursor: pointer;
-    }
-
-    .secondary {
-      background: #444;
-      border-color: #444;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-top: 18px;
-    }
-
-    .metric {
-      background: #f8f6f0;
-      border: 1px solid #ddd;
-      border-radius: 14px;
-      padding: 18px;
-    }
-
-    .label {
-      color: #666;
-      font-size: 13px;
-    }
-
-    .value {
-      font-size: 28px;
-      font-weight: bold;
-      margin-top: 6px;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-      margin-top: 14px;
-    }
-
-    .list {
-      margin-top: 18px;
-      line-height: 1.8;
-      font-size: 17px;
-    }
-
-    .error {
-      color: #b00020;
-      font-weight: bold;
-      margin-top: 12px;
-    }
-
-    .note {
-      color: #666;
-      font-size: 14px;
-    }
-
-    pre {
-      background: #f8f6f0;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      padding: 14px;
-      white-space: pre-wrap;
-      overflow: auto;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RBC — Risk Bridge Capital</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f5f5f3;min-height:100vh;color:#1a1a18}
+.header{background:#fff;border-bottom:1px solid #e5e5e0;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:18px;font-weight:500;letter-spacing:-0.3px}
+.logo span{color:#3B6D11}
+.date{font-size:12px;color:#888;background:#f5f5f3;padding:4px 10px;border-radius:8px;border:1px solid #e5e5e0}
+.main{padding:1.5rem;max-width:860px;margin:0 auto}
+.tabs{display:flex;gap:4px;margin-bottom:1rem}
+.tab{font-size:13px;padding:6px 14px;border-radius:8px;border:1px solid #e5e5e0;cursor:pointer;color:#666;background:#fff}
+.tab.active{background:#f5f5f3;color:#1a1a18;font-weight:500}
+.panel{display:none}.panel.active{display:block}
+.card{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.card-title{font-size:12px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:1rem}
+textarea{width:100%;padding:8px;font-size:13px;font-family:monospace;min-height:80px;border-radius:8px;border:1px solid #e5e5e0;background:#f9f9f7;resize:vertical;margin-top:8px}
+.btn{width:100%;padding:10px;font-size:14px;font-weight:500;background:#fff;border:1px solid #ccc;border-radius:8px;cursor:pointer;margin-top:10px}
+.btn:hover{background:#f5f5f3}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1rem}
+.metric{background:#f5f5f3;border-radius:8px;padding:12px}
+.metric-label{font-size:11px;color:#888;margin-bottom:4px}
+.metric-value{font-size:20px;font-weight:500}
+.metric-value.green{color:#3B6D11}
+.metric-value.red{color:#A32D2D}
+.metric-value.amber{color:#854F0B}
+.input-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.input-label{font-size:13px;color:#666;min-width:160px}
+input[type=number]{flex:1;padding:6px 10px;font-size:14px;border:1px solid #e5e5e0;border-radius:8px;background:#fff}
+.signal-row{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid #f0f0ee}
+.signal-row:last-child{border-bottom:none}
+.signal-title{font-size:13px;font-weight:500}
+.signal-desc{font-size:12px;color:#888;margin-top:2px}
+.verdict{border-radius:8px;padding:1rem;margin-top:0.75rem}
+.verdict.operar{background:#EAF3DE;border:1px solid #3B6D11}
+.verdict.aguardar{background:#FAEEDA;border:1px solid #854F0B}
+.verdict.nao{background:#FCEBEB;border:1px solid #A32D2D}
+.verdict-title{font-size:15px;font-weight:500}
+.verdict.operar .verdict-title{color:#3B6D11}
+.verdict.aguardar .verdict-title{color:#854F0B}
+.verdict.nao .verdict-title{color:#A32D2D}
+.verdict-desc{font-size:13px;margin-top:4px;color:#555}
+.score-bar{display:flex;gap:3px;margin:0.75rem 0}
+.block{width:20px;height:8px;border-radius:2px}
+.block.on{background:#3B6D11}
+.block.off{background:#e5e5e0}
+.strike-card{border:2px solid #3B6D11;border-radius:10px;padding:1rem;margin-bottom:1rem}
+.strike-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.strike-name{font-size:17px;font-weight:500}
+.badge{font-size:11px;padding:3px 8px;border-radius:6px;background:#EAF3DE;color:#3B6D11}
+.greeks{display:flex;gap:16px;flex-wrap:wrap}
+.greek{text-align:center}
+.greek-val{font-size:14px;font-weight:500}
+.greek-label{font-size:11px;color:#888}
+.exit-box{background:#f5f5f3;border-radius:8px;padding:1rem;margin-top:0.75rem}
+.exit-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #eee}
+.exit-row:last-child{border-bottom:none}
+.exit-val{margin-left:auto;font-size:14px;font-weight:500}
+.exit-label{font-size:13px;color:#666}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.disclaimer{font-size:11px;color:#aaa;text-align:center;margin-top:1rem}
+</style>
 </head>
-
 <body>
-  <div class="page">
-    <div class="header">
-      <div>
-        <h1>RBC · Risk Bridge Capital</h1>
-        <p>0DTE SPY risk reading desk</p>
-      </div>
-      <div class="date" id="today"></div>
+<div class="header">
+  <div class="logo">RBC <span>·</span> Risk Bridge Capital</div>
+  <div class="date" id="dt"></div>
+</div>
+<div class="main">
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('m1',this)">Modo 1 — Pré-mercado</button>
+    <button class="tab" onclick="showTab('m2',this)">Modo 2 — Abertura</button>
+    <button class="tab" onclick="showTab('m3',this)">Modo 3 — Operacional</button>
+  </div>
+
+  <div id="m1" class="panel active">
+    <div class="card">
+      <div class="card-title">SpotGamma — cole a string do dia</div>
+      <textarea id="sgStr" placeholder="$SPX, SPX, 7500, 6500 ..."></textarea>
+      <button class="btn" onclick="modo1()">Carregar níveis</button>
     </div>
-
-    <div class="tabs">
-      <button class="tab active" onclick="showTab('modo1')">Modo 1 — Pré-mercado</button>
-      <button class="tab" onclick="showTab('modo2')">Modo 2 — Abertura</button>
-      <button class="tab" onclick="showTab('modo3')">Modo 3 — Operacional</button>
-    </div>
-
-    <div id="modo1" class="section active">
-      <div class="card">
-        <h2>SpotGamma — Dados do dia</h2>
-        <p>Cole a string atual da tela SpotGamma/TradingView.</p>
-
-        <textarea id="rawString" placeholder="$SPY, SPY, 750, 730, 745..."></textarea>
-        <button onclick="carregarNiveis()">Carregar níveis</button>
-
-        <div id="modo1Error" class="error"></div>
-      </div>
-
-      <div class="card">
-        <h2>PDF SpotGamma — Contexto do dia</h2>
-        <p class="note">O PDF não substitui a string. Ele só adiciona contexto.</p>
-
-        <input type="file" id="pdfFile" accept="application/pdf" />
-        <button class="secondary" onclick="extrairPDF()">Extrair contexto do PDF</button>
-
-        <div id="pdfContext" class="list" style="display:none;">
-          <strong>Resumo:</strong>
-          <p id="pdfSummary"></p>
-
-          <strong>Eventos:</strong>
-          <p id="pdfEvents"></p>
-
-          <details>
-            <summary>Ver texto extraído</summary>
-            <pre id="pdfText"></pre>
-          </details>
-        </div>
-      </div>
-
-      <div class="card" id="levelsCard" style="display:none;">
-        <h2>SPY — níveis carregados</h2>
-
-        <div class="grid">
-          <div class="metric">
-            <div class="label">Call Wall</div>
-            <div class="value" id="callWall">-</div>
-          </div>
-          <div class="metric">
-            <div class="label">Put Wall</div>
-            <div class="value" id="putWall">-</div>
-          </div>
-          <div class="metric">
-            <div class="label">Vol Trigger</div>
-            <div class="value" id="volTrigger">-</div>
-          </div>
-          <div class="metric">
-            <div class="label">Zero Gamma</div>
-            <div class="value" id="zeroGamma">-</div>
-          </div>
-        </div>
-
-        <div class="list">
-          <strong>Large Gamma:</strong> <span id="largeGamma"></span><br>
-          <strong>Combos:</strong> <span id="combos"></span><br>
-          <strong>Imp 1D:</strong> <span id="imp1d"></span><br>
-          <strong>Imp 5D:</strong> <span id="imp5d"></span>
-        </div>
-      </div>
-    </div>
-
-    <div id="modo2" class="section">
-      <div class="card">
-        <h2>Modo 2 — Abertura</h2>
-        <p>Digite os valores de abertura e atuais.</p>
-
-        <div class="form-grid">
-          <input id="vixOpen" placeholder="VIX abertura" />
-          <input id="vixNow" placeholder="VIX agora" />
-          <input id="spotOpen" placeholder="SPY abertura" />
-          <input id="spotNow" placeholder="SPY agora" />
-          <select id="hiroDirection">
-            <option value="neutral">HIRO neutral</option>
-            <option value="bullish">HIRO bullish</option>
-            <option value="bearish">HIRO bearish</option>
-          </select>
-        </div>
-
-        <button onclick="rodarModo2()">Rodar veredicto</button>
-        <div id="modo2Result" class="list"></div>
-      </div>
-    </div>
-
-    <div id="modo3" class="section">
-      <div class="card">
-        <h2>Modo 3 — Operacional</h2>
-        <p>Digite spot, IV e prêmio.</p>
-
-        <div class="form-grid">
-          <input id="opSpot" placeholder="SPY spot" />
-          <input id="opIv" placeholder="IV ex: 0.18" />
-          <input id="opPremium" placeholder="Prêmio da opção" />
-          <select id="opDirection">
-            <option value="call">Call</option>
-            <option value="put">Put</option>
-          </select>
-        </div>
-
-        <button onclick="rodarModo3()">Calcular setup</button>
-        <div id="modo3Result" class="list"></div>
-      </div>
+    <div class="card" id="niveisCard" style="display:none">
+      <div class="card-title">Níveis SPY</div>
+      <div class="grid4" id="niveisGrid"></div>
+      <div id="niveisLista"></div>
     </div>
   </div>
 
-  <script>
-    let currentLevels = null;
+  <div id="m2" class="panel">
+    <div class="card">
+      <div class="card-title">Dados de abertura — TradingView</div>
+      <div class="input-row"><span class="input-label">VIX abertura (9:30)</span><input type="number" id="vixOpen" placeholder="17.75" step="0.01"></div>
+      <div class="input-row"><span class="input-label">VIX agora</span><input type="number" id="vixNow" placeholder="17.40" step="0.01"></div>
+      <div class="input-row"><span class="input-label">SPY abertura (9:30)</span><input type="number" id="spyOpen" placeholder="738.50" step="0.01"></div>
+      <div class="input-row"><span class="input-label">SPY agora</span><input type="number" id="spyNow" placeholder="741.20" step="0.01"></div>
+      <button class="btn" onclick="modo2()">Analisar abertura</button>
+    </div>
+    <div class="card" id="m2Result" style="display:none">
+      <div class="card-title">Sinais de abertura</div>
+      <div id="sinais"></div>
+      <div class="score-bar" id="scoreBar"></div>
+      <div id="verdictBox"></div>
+    </div>
+  </div>
 
-    document.getElementById("today").textContent =
-      new Date().toLocaleDateString("pt-BR", {
-        weekday: "short",
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric"
-      });
+  <div id="m3" class="panel">
+    <div class="card">
+      <div class="card-title">Parâmetros operacionais</div>
+      <div class="input-row"><span class="input-label">SPY spot atual</span><input type="number" id="spot" placeholder="741.50" step="0.01"></div>
+      <div class="input-row"><span class="input-label">IV real IBKR (%)</span><input type="number" id="iv" placeholder="15.3" step="0.1"></div>
+      <div class="input-row"><span class="input-label">Prêmio pago ($)</span><input type="number" id="premio" placeholder="1.61 (opcional)" step="0.01"></div>
+      <button class="btn" onclick="modo3()">Recomendar strike</button>
+    </div>
+    <div class="card" id="m3Result" style="display:none">
+      <div id="strikeBox"></div>
+    </div>
+  </div>
 
-    function showTab(id) {
-      document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
-      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-      document.getElementById(id).classList.add("active");
-      event.target.classList.add("active");
-    }
+  <div class="disclaimer">Risk setup only — não é recomendação de compra ou venda · RBC v1.0</div>
+</div>
 
-    function extractSpyLargeGamma(rawString) {
-      const parts = rawString.split(",").map(x => x.trim());
-      const idx = parts.findIndex(x => x === "$SPY");
-      if (idx === -1) return [];
-      return [parts[idx + 5], parts[idx + 6], parts[idx + 7], parts[idx + 8]].filter(Boolean);
-    }
+<script>
+const API = '';
+let sgStr = '';
 
-    async function carregarNiveis() {
-      const rawString = document.getElementById("rawString").value.trim();
-      const error = document.getElementById("modo1Error");
-      error.textContent = "";
+document.getElementById('dt').textContent = new Date().toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'});
 
-      if (!rawString) {
-        error.textContent = "Cole a string SpotGamma primeiro.";
-        return;
-      }
+function showTab(id, el) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+}
 
-      const response = await fetch("/api/modo1", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ raw_string: rawString })
-      });
+async function modo1() {
+  sgStr = document.getElementById('sgStr').value.trim();
+  if (!sgStr) { alert('Cole a string SpotGamma.'); return; }
+  const r = await fetch(API+'/api/modo1', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({sg_string:sgStr})});
+  const d = await r.json();
+  if (!d.ok) { alert('Erro: '+d.error); return; }
+  const s = d.spy;
+  document.getElementById('niveisCard').style.display='block';
+  document.getElementById('niveisGrid').innerHTML = `
+    <div class="metric"><div class="metric-label">Call Wall</div><div class="metric-value red">${s.call_wall}</div></div>
+    <div class="metric"><div class="metric-label">Zero Gamma</div><div class="metric-value amber">${s.zero_gamma}</div></div>
+    <div class="metric"><div class="metric-label">Vol Trigger</div><div class="metric-value">${s.vol_trigger}</div></div>
+    <div class="metric"><div class="metric-label">Put Wall</div><div class="metric-value green">${s.put_wall}</div></div>
+  `;
+  document.getElementById('niveisLista').innerHTML = `
+    <div style="font-size:12px;color:#888;margin-top:8px">Move 1D: ${(s.move_1d*100).toFixed(2)}% &nbsp;|&nbsp; Combos: ${(s.combos||[]).join(', ')}</div>
+  `;
+  showTab('m2', document.querySelectorAll('.tab')[1]);
+}
 
-      const data = await response.json();
+async function modo2() {
+  const body = {vix_open:+document.getElementById('vixOpen').value, vix_now:+document.getElementById('vixNow').value, spy_open:+document.getElementById('spyOpen').value, spy_now:+document.getElementById('spyNow').value, sg_string:sgStr};
+  if (!body.vix_open||!body.vix_now||!body.spy_open||!body.spy_now){alert('Preencha todos os campos.');return;}
+  const r = await fetch(API+'/api/modo2',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const d = await r.json();
+  if(!d.ok){alert('Erro: '+d.error);return;}
+  document.getElementById('m2Result').style.display='block';
+  document.getElementById('sinais').innerHTML=(d.signals||[]).map(s=>`
+    <div class="signal-row"><div style="font-size:16px">${s.icon}</div><div><div class="signal-title">${s.title}</div><div class="signal-desc">${s.desc}</div></div></div>
+  `).join('');
+  const score=d.score||0;
+  const filled=Math.min(10,Math.max(0,score+5));
+  document.getElementById('scoreBar').innerHTML=Array.from({length:10},(_,i)=>`<div class="block ${i<filled?'on':'off'}"></div>`).join('');
+  const cls=d.verdict==='OPERAR'?'operar':d.verdict==='AGUARDAR'?'aguardar':'nao';
+  const icon=d.verdict==='OPERAR'?'✅':d.verdict==='AGUARDAR'?'⚠️':'🚫';
+  document.getElementById('verdictBox').innerHTML=`<div class="verdict ${cls}"><div class="verdict-title">${icon} ${d.verdict}</div><div class="verdict-desc">${d.verdict==='OPERAR'?'Rode o Modo 3 após 10:00 ET.':d.verdict==='AGUARDAR'?'Aguardar até 10:00–10:15 ET.':'Preserve o capital. Amanhã tem mais.'}</div></div>`;
+  if(d.verdict==='OPERAR') showTab('m3',document.querySelectorAll('.tab')[2]);
+}
 
-      if (!data.ok) {
-        error.textContent = data.error || "Erro ao carregar níveis.";
-        return;
-      }
-
-      const spy = data.parsed.SPY;
-      currentLevels = spy;
-
-      document.getElementById("levelsCard").style.display = "block";
-      document.getElementById("callWall").textContent = spy.call_wall;
-      document.getElementById("putWall").textContent = spy.put_wall;
-      document.getElementById("volTrigger").textContent = spy.vol_trigger;
-      document.getElementById("zeroGamma").textContent = spy.zero_gamma;
-      document.getElementById("largeGamma").textContent = extractSpyLargeGamma(rawString).join(" / ");
-      document.getElementById("combos").textContent = (spy.combos || []).join(" / ");
-      document.getElementById("imp1d").textContent = spy.imp_1d;
-      document.getElementById("imp5d").textContent = spy.imp_5d;
-    }
-
-    async function extrairPDF() {
-      const file = document.getElementById("pdfFile").files[0];
-      const error = document.getElementById("modo1Error");
-      error.textContent = "";
-
-      if (!file) {
-        error.textContent = "Escolha um PDF primeiro.";
-        return;
-      }
-
-      const form = new FormData();
-      form.append("file", file);
-
-      const response = await fetch("/api/parse-pdf", {
-        method: "POST",
-        body: form
-      });
-
-      const data = await response.json();
-
-      if (!data.ok) {
-        error.textContent = data.error || "Erro ao processar PDF.";
-        return;
-      }
-
-      const text = data.text || "";
-      const lower = text.toLowerCase();
-
-      let summary = "Contexto extraído. Faça leitura manual do texto.";
-      if (lower.includes("positive gamma")) summary = "Dealer gamma positivo: tende a dar suporte e reduzir volatilidade.";
-      if (lower.includes("negative gamma")) summary = "Dealer gamma negativo: risco de movimento mais acelerado.";
-      if (lower.includes("sideways") || lower.includes("quiet")) summary += " Tom do relatório sugere sessão mais quieta/sideways.";
-
-      const events = [];
-      ["PCE", "CPI", "FOMC", "NFP", "NVDA", "VIX", "OPEX"].forEach(e => {
-        if (text.includes(e)) events.push(e);
-      });
-
-      document.getElementById("pdfContext").style.display = "block";
-      document.getElementById("pdfSummary").textContent = summary;
-      document.getElementById("pdfEvents").textContent = events.length ? events.join(" / ") : "Nenhum evento detectado automaticamente.";
-      document.getElementById("pdfText").textContent = text;
-    }
-
-    async function rodarModo2() {
-      const result = document.getElementById("modo2Result");
-
-      if (!currentLevels) {
-        result.innerHTML = "<strong>Carregue os níveis no Modo 1 primeiro.</strong>";
-        return;
-      }
-
-      const payload = {
-        vix_open: Number(document.getElementById("vixOpen").value),
-        vix_now: Number(document.getElementById("vixNow").value),
-        spot_open: Number(document.getElementById("spotOpen").value),
-        spot_now: Number(document.getElementById("spotNow").value),
-        hiro_direction: document.getElementById("hiroDirection").value,
-        levels: currentLevels
-      };
-
-      const response = await fetch("/api/modo2", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(payload)
-      });
-
-      const data = await response.json();
-      result.innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
-    }
-
-    async function rodarModo3() {
-      const result = document.getElementById("modo3Result");
-
-      const payload = {
-        spot: Number(document.getElementById("opSpot").value),
-        iv: Number(document.getElementById("opIv").value),
-        premium: Number(document.getElementById("opPremium").value),
-        direction: document.getElementById("opDirection").value,
-        levels: currentLevels || {}
-      };
-
-      const response = await fetch("/api/modo3", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(payload)
-      });
-
-      const data = await response.json();
-      result.innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
-    }
-  </script>
+async function modo3() {
+  const spot=+document.getElementById('spot').value;
+  const iv=+document.getElementById('iv').value;
+  const premio=document.getElementById('premio').value||null;
+  if(!spot||!iv){alert('Preencha SPY e IV.');return;}
+  const r=await fetch(API+'/api/modo3',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({spot,iv,premio,sg_string:sgStr})});
+  const d=await r.json();
+  if(!d.ok){alert('Erro: '+d.error);return;}
+  document.getElementById('m3Result').style.display='block';
+  const st=d.strike;
+  const ex=d.exits;
+  document.getElementById('strikeBox').innerHTML=`
+    <div class="strike-card">
+      <div class="strike-header">
+        <div class="strike-name">${st?st.type.toUpperCase()+' '+st.strike:'—'}</div>
+        <div class="badge">★ Recomendado</div>
+      </div>
+      <div class="greeks">
+        <div class="greek"><div class="greek-val">$${st?st.price.toFixed(2):'—'}</div><div class="greek-label">Teórico BS</div></div>
+        <div class="greek"><div class="greek-val">${st?st.delta.toFixed(3):'—'}</div><div class="greek-label">Delta</div></div>
+        <div class="greek"><div class="greek-val">${d.hours}h</div><div class="greek-label">Horas</div></div>
+        <div class="greek"><div class="greek-val">${d.gate_open?'✅ Aberto':'🚫 Fechado'}</div><div class="greek-label">Gate</div></div>
+      </div>
+      <div style="font-size:11px;color:#aaa;margin-top:8px">⚠ Confirme o prêmio real no IBKR antes de entrar</div>
+    </div>
+    ${ex?`<div class="exit-box">
+      <div class="exit-row"><span class="dot" style="background:#3B6D11"></span><span class="exit-label">Alvo +75%</span><span class="exit-val" style="color:#3B6D11">$${ex.target_price.toFixed(2)} → +$${ex.target_usd.toFixed(0)}</span></div>
+      <div class="exit-row"><span class="dot" style="background:#A32D2D"></span><span class="exit-label">Stop -50%</span><span class="exit-val" style="color:#A32D2D">$${ex.stop_price.toFixed(2)} → -$${ex.stop_usd.toFixed(0)}</span></div>
+      <div class="exit-row"><span class="dot" style="background:#854F0B"></span><span class="exit-label">Tempo limite</span><span class="exit-val" style="color:#854F0B">12:00 ET</span></div>
+    </div>`:''}
+  `;
+}
+</script>
 </body>
 </html>
