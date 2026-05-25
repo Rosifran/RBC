@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>RBC · Risk Bridge Capital</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f3ef;
+      margin: 0;
+      padding: 32px;
+      color: #111;
+    }
+    .container { max-width: 1100px; margin: auto; }
+    .header {
+      background: white;
+      padding: 24px;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 24px;
+    }
+    h1 { margin: 0; font-size: 30px; }
+    .card {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 18px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    textarea {
+      width: 100%;
+      height: 130px;
+      font-family: monospace;
+      font-size: 15px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid #222;
+      background: #111;
+      color: white;
+      font-size: 17px;
+      cursor: pointer;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .metric {
+      background: #f7f5ef;
+      padding: 18px;
+      border-radius: 14px;
+      border: 1px solid #ddd;
+    }
+    .label { font-size: 13px; color: #666; }
+    .value { font-size: 28px; font-weight: bold; margin-top: 6px; }
+    .list { margin-top: 18px; font-size: 17px; line-height: 1.8; }
+    .error { color: #b00020; margin-top: 12px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>RBC · Risk Bridge Capital</h1>
+      <p>0DTE SPY risk reading desk</p>
+    </div>
+
+    <div class="card">
+      <h2>Modo 1 — Carregar níveis SpotGamma</h2>
+      <p>Cole aqui a string atual da tela SpotGamma/TradingView.</p>
+
+      <textarea id="rawString" placeholder="$SPY, SPY, 750, 730, 745..."></textarea>
+
+      <button onclick="carregarNiveis()">Carregar níveis</button>
+
+      <div id="error" class="error"></div>
+    </div>
+
+    <div class="card" id="resultCard" style="display:none;">
+      <h2>SPY — níveis carregados</h2>
+
+      <div class="grid">
+        <div class="metric">
+          <div class="label">Call Wall</div>
+          <div class="value" id="callWall">-</div>
+        </div>
+        <div class="metric">
+          <div class="label">Put Wall</div>
+          <div class="value" id="putWall">-</div>
+        </div>
+        <div class="metric">
+          <div class="label">Vol Trigger</div>
+          <div class="value" id="volTrigger">-</div>
+        </div>
+        <div class="metric">
+          <div class="label">Zero Gamma</div>
+          <div class="value" id="zeroGamma">-</div>
+        </div>
+      </div>
+
+      <div class="list">
+        <strong>Large Gamma:</strong>
+        <span id="largeGamma"></span>
+        <br />
+        <strong>Combos:</strong>
+        <span id="combos"></span>
+        <br />
+        <strong>Imp 1D:</strong>
+        <span id="imp1d"></span>
+        <br />
+        <strong>Imp 5D:</strong>
+        <span id="imp5d"></span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function extractSpyLargeGamma(rawString) {
+      const parts = rawString.split(",").map(x => x.trim());
+      const idx = parts.findIndex(x => x === "$SPY");
+      if (idx === -1) return [];
+
+      return [
+        parts[idx + 5],
+        parts[idx + 6],
+        parts[idx + 7],
+        parts[idx + 8]
+      ].filter(Boolean);
+    }
+
+    async function carregarNiveis() {
+      const rawString = document.getElementById("rawString").value.trim();
+      const error = document.getElementById("error");
+      error.textContent = "";
+
+      if (!rawString) {
+        error.textContent = "Cole a string SpotGamma primeiro.";
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/modo1", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({raw_string: rawString})
+        });
+
+        const data = await response.json();
+
+        if (!data.ok) {
+          error.textContent = data.error || "Erro ao carregar níveis.";
+          return;
+        }
+
+        const spy = data.parsed.SPY;
+
+        if (!spy) {
+          error.textContent = "SPY não encontrado no retorno.";
+          return;
+        }
+
+        document.getElementById("resultCard").style.display = "block";
+        document.getElementById("callWall").textContent = spy.call_wall;
+        document.getElementById("putWall").textContent = spy.put_wall;
+        document.getElementById("volTrigger").textContent = spy.vol_trigger;
+        document.getElementById("zeroGamma").textContent = spy.zero_gamma;
+        document.getElementById("largeGamma").textContent = extractSpyLargeGamma(rawString).join(" / ");
+        document.getElementById("combos").textContent = (spy.combos || []).join(" / ");
+        document.getElementById("imp1d").textContent = spy.imp_1d;
+        document.getElementById("imp5d").textContent = spy.imp_5d;
+
+      } catch (err) {
+        error.textContent = "Erro de conexão com o backend.";
+      }
+    }
+  </script>
+</body>
+</html>
