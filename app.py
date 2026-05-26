@@ -17,8 +17,8 @@ You are a quantitative trading assistant. Below is text extracted from a SpotGam
 
 Extract the following for SPY (and only SPY) and return ONLY a valid JSON object — no markdown, no explanation:
 
-{
-  "spy": {
+{{
+  "spy": {{
     "call_wall":   <number>,
     "put_wall":    <number>,
     "zero_gamma":  <number>,
@@ -26,11 +26,11 @@ Extract the following for SPY (and only SPY) and return ONLY a valid JSON object
     "abs_gamma":   <number>,
     "move_1d":     <decimal, e.g. 0.0061 for 0.61%>,
     "combos":      [<number>, <number>, <number>, <number>]
-  },
+  }},
   "sg_string": "$SPY, SPY, <call_wall>, <put_wall>, <vol_trigger>, <abs_gamma>, <support1>, <support2>, <support3>, <combo1>, <combo2>, <combo3>, <combo4>, <move_1d>, <move_5d>, <zero_gamma>",
   "briefing": "<2-3 sentence macro summary from the founder note or commentary section>",
   "eventos": ["<key market event or risk today>", ...]
-}
+}}
 
 Rules:
 - combos: pick the 4 combo/support levels closest to current price, ascending.
@@ -80,15 +80,38 @@ def parse_pdf():
         return jsonify({"error": f"PDF extraction failed: {e}"}), 500
 
     try:
-        msg = _anthropic.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=1024,
-            messages=[{
-                "role": "user",
-                "content": _PDF_PROMPT.format(text=text[:12000]),
-            }],
-        )
-        raw = msg.content[0].text.strip()
+        api_key = os.environ.get("ANTHROPIC_API_KEY")
+        print(f"=== ANTHROPIC_API_KEY present: {bool(api_key)}, starts with: {api_key[:8] + '...' if api_key else 'NOT SET'} ===")
+
+        prompt_text = _PDF_PROMPT.format(text=text[:12000])
+        print("=== EXACT PROMPT SENT TO CLAUDE ===")
+        print(prompt_text)
+        print("=== END PROMPT ===")
+
+        try:
+            msg = _anthropic.messages.create(
+                model="claude-sonnet-4-5",
+                max_tokens=1024,
+                timeout=30,
+                messages=[{
+                    "role": "user",
+                    "content": prompt_text,
+                }],
+            )
+        except Exception as api_exc:
+            import traceback
+            print("=== ANTHROPIC API EXCEPTION ===")
+            traceback.print_exc()
+            print(f"=== EXCEPTION TYPE: {type(api_exc).__name__} ===")
+            print(f"=== EXCEPTION ARGS: {api_exc.args} ===")
+            print("=== END ANTHROPIC API EXCEPTION ===")
+            return jsonify({"error": f"Claude API call failed: {api_exc}", "raw": None}), 200
+        print(f"=== RESPONSE METADATA: model={msg.model}, stop_reason={msg.stop_reason}, usage={msg.usage} ===")
+        raw = msg.content[0].text
+        print("=== FULL RAW CLAUDE RESPONSE (before any processing) ===")
+        print(repr(raw))
+        print("=== END RAW CLAUDE RESPONSE ===")
+        raw = raw.strip()
         cleaned = raw
         if cleaned.startswith("```"):
             cleaned = cleaned.split("\n", 1)[-1]
@@ -98,9 +121,11 @@ def parse_pdf():
         try:
             parsed = json.loads(cleaned)
         except json.JSONDecodeError as e:
-            return jsonify({"error": f"Claude returned invalid JSON: {e}", "raw": raw}), 502
+            return jsonify({"error": f"Claude returned invalid JSON: {e}", "raw": raw}), 200
     except Exception as e:
-        return jsonify({"error": f"Claude API error: {e}"}), 502
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": f"Claude API error: {e}", "raw": locals().get("raw")}), 200
 
     return jsonify({
         "ok":       True,
