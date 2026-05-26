@@ -89,9 +89,16 @@ def parse_pdf():
             }],
         )
         raw = msg.content[0].text.strip()
-        parsed = json.loads(raw)
-    except json.JSONDecodeError as e:
-        return jsonify({"error": f"Claude returned invalid JSON: {e}", "raw": raw}), 502
+        cleaned = raw
+        if cleaned.startswith("```"):
+            cleaned = cleaned.split("\n", 1)[-1]
+        if cleaned.endswith("```"):
+            cleaned = cleaned.rsplit("```", 1)[0]
+        cleaned = cleaned.strip()
+        try:
+            parsed = json.loads(cleaned)
+        except json.JSONDecodeError as e:
+            return jsonify({"error": f"Claude returned invalid JSON: {e}", "raw": raw}), 502
     except Exception as e:
         return jsonify({"error": f"Claude API error: {e}"}), 502
 
