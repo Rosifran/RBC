@@ -3,10 +3,45 @@ RBC — Risk Bridge Capital | Flask API
 """
 
 import io
+import json
 import os
 
+import anthropic
 import pdfplumber
 from flask import Flask, jsonify, render_template, request
+
+_anthropic = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from env
+
+_PDF_PROMPT = """\
+You are a quantitative trading assistant. Below is text extracted from a SpotGamma PDF report.
+
+Extract the following for SPY (and only SPY) and return ONLY a valid JSON object — no markdown, no explanation:
+
+{
+  "spy": {
+    "call_wall":   <number>,
+    "put_wall":    <number>,
+    "zero_gamma":  <number>,
+    "vol_trigger": <number>,
+    "abs_gamma":   <number>,
+    "move_1d":     <decimal, e.g. 0.0061 for 0.61%>,
+    "combos":      [<number>, <number>, <number>, <number>]
+  },
+  "sg_string": "$SPY, SPY, <call_wall>, <put_wall>, <vol_trigger>, <abs_gamma>, <support1>, <support2>, <support3>, <combo1>, <combo2>, <combo3>, <combo4>, <move_1d>, <move_5d>, <zero_gamma>",
+  "briefing": "<2-3 sentence macro summary from the founder note or commentary section>",
+  "eventos": ["<key market event or risk today>", ...]
+}
+
+Rules:
+- combos: pick the 4 combo/support levels closest to current price, ascending.
+- sg_string supports (support1-3): use put_wall and next two support levels if available.
+- move_1d and move_5d as decimals (divide % by 100).
+- If a field is not found, use null.
+- Return raw JSON only.
+
+PDF TEXT:
+{text}
+"""
 
 from rbc_0dte_scanner import (
     analyze_spy_0dte,
@@ -41,9 +76,32 @@ def parse_pdf():
         with pdfplumber.open(io.BytesIO(f.read())) as pdf:
             pages = [page.extract_text() or "" for page in pdf.pages]
         text = "\n".join(pages).strip()
-        return jsonify({"text": text, "pages": len(pages)})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": f"PDF extraction failed: {e}"}), 500
+
+    try:
+        msg = _anthropic.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=1024,
+            messages=[{
+                "role": "user",
+                "content": _PDF_PROMPT.format(text=text[:12000]),
+            }],
+        )
+        raw = msg.content[0].text.strip()
+        parsed = json.loads(raw)
+    except json.JSONDecodeError as e:
+        return jsonify({"error": f"Claude returned invalid JSON: {e}", "raw": raw}), 502
+    except Exception as e:
+        return jsonify({"error": f"Claude API error: {e}"}), 502
+
+    return jsonify({
+        "ok":       True,
+        "spy":      parsed.get("spy"),
+        "sg_string": parsed.get("sg_string"),
+        "briefing": parsed.get("briefing"),
+        "eventos":  parsed.get("eventos", []),
+    })
 
 
 @app.route("/api/modo1", methods=["POST"])
