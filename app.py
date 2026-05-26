@@ -50,7 +50,7 @@ def parse_pdf():
 def modo1():
     """Pre-market: parse SpotGamma data and return SPY key levels."""
     data = request.get_json(silent=True) or {}
-    raw = data.get("sg_raw", "")
+    raw = data.get("sg_raw") or data.get("sg_string", "")
     if not raw:
         return jsonify({"error": "sg_raw is required"}), 400
 

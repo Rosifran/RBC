@@ -430,6 +430,41 @@
     background: var(--border);
     margin: 28px 0;
   }
+
+  .or-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 32px 0 24px;
+    color: var(--ink-4);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .or-divider::before, .or-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-md);
+  }
+
+  textarea.form-input {
+    resize: vertical;
+    min-height: 100px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .sg-metrics {
+    display: none;
+    gap: 16px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  .sg-metrics.visible { display: flex; }
 </style>
 </head>
 <body>
@@ -484,6 +519,46 @@
   <div class="result-box" id="parse-result">
     <div class="result-header">Dados extraídos</div>
     <div class="result-body"><pre id="parse-result-content"></pre></div>
+  </div>
+
+  <!-- ── SpotGamma string input ── -->
+  <div class="or-divider">ou cole a string manualmente</div>
+
+  <div class="inputs-card">
+    <p class="inputs-card-title">SpotGamma String</p>
+    <div class="form-group">
+      <label class="form-label">String de níveis SPY</label>
+      <textarea class="form-input" id="sg-string" placeholder="Cole aqui a string do SpotGamma com os níveis de SPY..."></textarea>
+    </div>
+    <div style="margin-top:16px">
+      <button class="btn-primary" id="btn-sg" onclick="loadSgString()">Carregar string →</button>
+    </div>
+  </div>
+
+  <div class="status-row" id="sg-status"><div class="spinner"></div><span>Processando string...</span></div>
+  <div class="error-box" id="sg-error"></div>
+
+  <div class="sg-metrics" id="sg-metrics">
+    <div class="metric-card">
+      <p class="metric-label">Call Wall</p>
+      <p class="metric-val" id="sg-call-wall">—</p>
+      <p class="metric-sub">Resistência de calls</p>
+    </div>
+    <div class="metric-card">
+      <p class="metric-label">Put Wall</p>
+      <p class="metric-val" id="sg-put-wall">—</p>
+      <p class="metric-sub">Suporte de puts</p>
+    </div>
+    <div class="metric-card">
+      <p class="metric-label">Zero Gamma</p>
+      <p class="metric-val" id="sg-zero-gamma">—</p>
+      <p class="metric-sub">Nível de reversão</p>
+    </div>
+    <div class="metric-card">
+      <p class="metric-label">Vol Trigger</p>
+      <p class="metric-val" id="sg-vol-trigger">—</p>
+      <p class="metric-sub">Gatilho de volatilidade</p>
+    </div>
   </div>
 
   <div class="divider" id="modo1-form-divider" style="display:none"></div>
@@ -766,6 +841,40 @@
       showError('modo1', e.message);
     } finally {
       setLoading('modo1', false);
+      btn.disabled = false;
+    }
+  }
+
+  // ── Modo 1: SpotGamma string ──
+  async function loadSgString() {
+    const sgString = document.getElementById('sg-string').value.trim();
+    if (!sgString) { showError('sg', 'Cole a string antes de carregar.'); return; }
+
+    const btn = document.getElementById('btn-sg');
+    btn.disabled = true;
+    document.getElementById('sg-status').classList.add('visible');
+    showError('sg', '');
+    document.getElementById('sg-metrics').classList.remove('visible');
+
+    try {
+      const res = await fetch('/api/modo1', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sg_string: sgString })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erro ao processar string');
+
+      const fmt = v => (v != null && v !== '') ? parseFloat(v).toFixed(2) : '—';
+      document.getElementById('sg-call-wall').textContent  = fmt(data.call_wall);
+      document.getElementById('sg-put-wall').textContent   = fmt(data.put_wall);
+      document.getElementById('sg-zero-gamma').textContent = fmt(data.zero_gamma);
+      document.getElementById('sg-vol-trigger').textContent = fmt(data.vol_trigger);
+      document.getElementById('sg-metrics').classList.add('visible');
+    } catch (e) {
+      showError('sg', e.message);
+    } finally {
+      document.getElementById('sg-status').classList.remove('visible');
       btn.disabled = false;
     }
   }

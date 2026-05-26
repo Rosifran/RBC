@@ -4,7 +4,8 @@
       "Bash(cp ~/Downloads/rbc_0dte_scanner.py ~/RBC/)",
       "Bash(cp ~/Downloads/rbc_hiro_sintetico.py ~/RBC/)",
       "Bash(git init *)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Bash(python *)"
     ]
   }
 }
