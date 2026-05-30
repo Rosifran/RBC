@@ -12,109 +12,54 @@ from flask import Flask, jsonify, render_template, request
 
 _anthropic = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from env
 
-_PDF_PROMPT = """\\
-You are an institutional options/gamma trading assistant for a SPY 0DTE scanner.
+_PDF_PROMPT = """You are a quantitative trading assistant. Below is text extracted from a SpotGamma PDF report.
 
-Below is raw text extracted from a daily SpotGamma PDF report.
-Each PDF can be different.
+Extract the relevant trading information and return ONLY a valid JSON object — no markdown, no explanation.
 
-Your job is NOT only to extract numbers.
-Your job is to:
-1. Extract SPY and SPX gamma levels.
-2. Read the Founder's Note / SG Summary / macro comments.
-3. Identify today's market regime.
-4. Interpret how today's alerts change the meaning of the gamma levels.
-5. Return a practical SPY 0DTE operating map.
-
-Return ONLY valid JSON. No markdown. No explanation.
-
-Use this exact structure:
+Return this structure:
 
 {{
-  "report_info": {{
-    "date": "<date or null>",
-    "time": "<time or null>",
-    "source_type": "SpotGamma PDF"
+  "market": {{
+    "date": "<report date if found>",
+    "macro_theme": "<macro theme if found>",
+    "bias": "<bullish, bearish, neutral, sideways, or mixed>",
+    "gamma_regime": "<positive gamma, negative gamma, neutral, or unknown>",
+    "summary": "<short practical summary in 2-3 sentences>"
   }},
-  "daily_context": {{
-    "market_regime": "<positive_gamma | negative_gamma | mixed_gamma | neutral | unknown>",
-    "expected_session": "<sideways | trending_up | trending_down | volatile | compressed | unknown>",
-    "risk_tone": "<risk_on | risk_off | neutral | mixed>",
-    "macro_alerts": ["<alerts found>"],
-    "founders_note_summary": "<short practical summary>"
-  }},
-  "spx_levels": {{
-    "reference_price": <number or null>,
+  "spx": {{
+    "reference_price": <number>,
     "resistance": [<number>, <number>],
-    "pivot": <number or null>,
+    "pivot": <number>,
     "support": [<number>, <number>, <number>],
-    "call_wall": <number or null>,
-    "put_wall": <number or null>,
-    "zero_gamma": <number or null>,
-    "vol_trigger": <number or null>,
-    "absolute_gamma": <number or null>,
-    "implied_1d_move": <decimal or null>,
-    "implied_5d_move": <decimal or null>
+    "call_wall": <number>,
+    "put_wall": <number>,
+    "zero_gamma": <number>,
+    "vol_trigger": <number>,
+    "abs_gamma": <number>,
+    "move_1d": <decimal>,
+    "move_5d": <decimal>
   }},
-  "spy_levels": {{
-    "reference_price": <number or null>,
-    "call_wall": <number or null>,
-    "put_wall": <number or null>,
-    "zero_gamma": <number or null>,
-    "vol_trigger": <number or null>,
-    "absolute_gamma": <number or null>,
-    "implied_1d_move": <decimal or null>,
-    "implied_5d_move": <decimal or null>,
-    "key_levels": [<number>, <number>, <number>, <number>],
-    "combos": [<number>, <number>, <number>, <number>]
+  "spy": {{
+    "reference_price": <number>,
+    "call_wall": <number>,
+    "put_wall": <number>,
+    "zero_gamma": <number>,
+    "vol_trigger": <number>,
+    "abs_gamma": <number>,
+    "move_1d": <decimal>,
+    "move_5d": <decimal>,
+    "combos": [<number>, <number>, <number>, <number>],
+    "key_levels": [<number>, <number>, <number>, <number>]
   }},
-  "gamma_interpretation": {{
-    "call_wall_meaning": "<interpretation today>",
-    "put_wall_meaning": "<interpretation today>",
-    "zero_gamma_meaning": "<interpretation today>",
-    "vol_trigger_meaning": "<interpretation today>",
-    "most_important_level_today": <number or null>,
-    "why_this_level_matters": "<short explanation>"
-  }},
-  "spy_0dte_plan": {{
-    "bias": "<bullish | bearish | neutral | neutral_to_bullish | neutral_to_bearish | mixed>",
-    "preferred_trade_type": "<calls_only_above_level | puts_only_below_level | scalp_range | wait | avoid>",
-    "no_trade_zone": {{
-      "low": <number or null>,
-      "high": <number or null>,
-      "reason": "<why this area is bad>"
-    }},
-    "call_trigger": {{
-      "level": <number or null>,
-      "condition": "<confirmation needed>"
-    }},
-    "put_trigger": {{
-      "level": <number or null>,
-      "condition": "<confirmation needed>"
-    }},
-    "support_zones": [<number>, <number>, <number>],
-    "resistance_zones": [<number>, <number>, <number>],
-    "avoid": ["<what not to do today>"],
-    "best_setup": "<best practical setup>",
-    "warning": "<main risk today>"
-  }},
-  "sg_string": "$SPY, SPY, <call_wall>, <put_wall>, <vol_trigger>, <absolute_gamma>, <support1>, <support2>, <support3>, <combo1>, <combo2>, <combo3>, <combo4>, <implied_1d_move>, <implied_5d_move>, <zero_gamma>",
-  "confidence": {{
-    "level": "<high | medium | low>",
-    "missing_data": ["<missing fields>"]
-  }}
+  "briefing": "<founder's note summarized in practical trading language>",
+  "eventos": ["<key date, macro event, earnings, geopolitical risk, or market risk>", "..."],
+  "sg_string": "$SPY, SPY, <call_wall>, <put_wall>, <vol_trigger>, <abs_gamma>, <support1>, <support2>, <support3>, <combo1>, <combo2>, <combo3>, <combo4>, <move_1d>, <move_5d>, <zero_gamma>"
 }}
 
 Rules:
-- Do not invent numbers.
-- If a number is not found, use null.
-- implied_1d_move and implied_5d_move must be decimals. Example: 0.65% = 0.0065.
-- Interpret levels using BOTH the table and the Founder's Note.
-- Positive gamma + sideways = call wall often acts as resistance/pin zone.
-- Negative gamma + risk-off = levels can break faster and moves can expand.
-- VIX rising or macro risk = vol trigger becomes more important.
-- Risk-on + call buying = call wall can become magnet or breakout target.
-- If quiet/sideways/compressed, warn against chasing in the middle of the range.
+- move_1d and move_5d must be decimals. Example: 0.65% = 0.0065.
+- If a field is not found, use null.
+- Do not invent values.
 - Return raw JSON only.
 
 PDF TEXT:
@@ -169,7 +114,7 @@ def parse_pdf():
         try:
             msg = _anthropic.messages.create(
                 model="claude-sonnet-4-5",
-                max_tokens=2048,
+                max_tokens=1024,
                 timeout=30,
                 messages=[{
                     "role": "user",
