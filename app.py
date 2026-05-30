@@ -12,55 +12,54 @@ from flask import Flask, jsonify, render_template, request
 
 _anthropic = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from env
 
-_PDF_PROMPT = """You are a quantitative trading assistant. Below is text extracted from a SpotGamma PDF report.
+_PDF_PROMPT = """You are a quantitative trading assistant analyzing a SpotGamma daily report for SPY 0DTE options trading.
 
-Extract the relevant trading information and return ONLY a valid JSON object — no markdown, no explanation.
-
-Return this structure:
+Extract and analyze the report and return ONLY a valid JSON object with this structure:
 
 {{
-  "market": {{
-    "date": "<report date if found>",
-    "macro_theme": "<macro theme if found>",
-    "bias": "<bullish, bearish, neutral, sideways, or mixed>",
-    "gamma_regime": "<positive gamma, negative gamma, neutral, or unknown>",
-    "summary": "<short practical summary in 2-3 sentences>"
+  "spy": {{
+    "reference_price": null,
+    "call_wall": null,
+    "put_wall": null,
+    "zero_gamma": null,
+    "vol_trigger": null,
+    "abs_gamma": null,
+    "move_1d": null,
+    "move_5d": null,
+    "combos": [],
+    "key_levels": []
   }},
   "spx": {{
-    "reference_price": <number>,
-    "resistance": [<number>, <number>],
-    "pivot": <number>,
-    "support": [<number>, <number>, <number>],
-    "call_wall": <number>,
-    "put_wall": <number>,
-    "zero_gamma": <number>,
-    "vol_trigger": <number>,
-    "abs_gamma": <number>,
-    "move_1d": <decimal>,
-    "move_5d": <decimal>
+    "reference_price": null,
+    "pivot": null,
+    "resistance": [],
+    "support": [],
+    "call_wall": null,
+    "put_wall": null,
+    "zero_gamma": null,
+    "vol_trigger": null
   }},
-  "spy": {{
-    "reference_price": <number>,
-    "call_wall": <number>,
-    "put_wall": <number>,
-    "zero_gamma": <number>,
-    "vol_trigger": <number>,
-    "abs_gamma": <number>,
-    "move_1d": <decimal>,
-    "move_5d": <decimal>,
-    "combos": [<number>, <number>, <number>, <number>],
-    "key_levels": [<number>, <number>, <number>, <number>]
+  "regime": {{
+    "gamma": null,
+    "bias": null,
+    "vix_posture": null,
+    "summary": null
   }},
-  "briefing": "<founder's note summarized in practical trading language>",
-  "eventos": ["<key date, macro event, earnings, geopolitical risk, or market risk>", "..."],
-  "sg_string": "$SPY, SPY, <call_wall>, <put_wall>, <vol_trigger>, <abs_gamma>, <support1>, <support2>, <support3>, <combo1>, <combo2>, <combo3>, <combo4>, <move_1d>, <move_5d>, <zero_gamma>"
+  "founder_alerts": [],
+  "gamma_interpretation": null,
+  "plan": {{
+    "no_trade_zone": null,
+    "call_trigger": null,
+    "put_trigger": null,
+    "avoid": null,
+    "best_setup": null
+  }}
 }}
 
 Rules:
-- move_1d and move_5d must be decimals. Example: 0.65% = 0.0065.
-- If a field is not found, use null.
-- Do not invent values.
-- Return raw JSON only.
+- move_1d and move_5d as decimals (0.65% = 0.0065)
+- If field not found use null
+- Return raw JSON only, no markdown
 
 PDF TEXT:
 {text}
@@ -152,14 +151,15 @@ def parse_pdf():
 
     return jsonify({
         "ok": True,
-        "data": parsed,
         "spy": parsed.get("spy"),
         "spx": parsed.get("spx"),
-        "market": parsed.get("market"),
+        "regime": parsed.get("regime"),
+        "founder_alerts": parsed.get("founder_alerts", []),
+        "gamma_interpretation": parsed.get("gamma_interpretation"),
+        "plan": parsed.get("plan"),
         "sg_string": parsed.get("sg_string"),
         "briefing": parsed.get("briefing"),
         "eventos": parsed.get("eventos", []),
-        "raw_claude": raw
     })
 
 
