@@ -758,6 +758,74 @@
     box.classList.add('visible');
   }
 
+  function showParseResult(data) {
+    const spy = data.spy || {};
+    const spx = data.spx || {};
+    const regime = data.regime || {};
+    const plan = data.plan || {};
+    const alerts = data.founder_alerts || [];
+
+    const biasColor = regime.bias === 'bullish' ? '#3B6D11' : regime.bias === 'bearish' ? '#c0392b' : '#7f8c8d';
+    const gammaColor = regime.gamma === 'positive' ? '#3B6D11' : '#c0392b';
+
+    const html = `
+      <div style="display:grid;gap:12px;font-family:-apple-system,sans-serif;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
+            <div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:8px;">SPY Níveis</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:13px;">
+              <span style="color:#6b7f5a;">Call Wall</span><span style="font-weight:700;">${spy.call_wall ?? '—'}</span>
+              <span style="color:#6b7f5a;">Put Wall</span><span style="font-weight:700;">${spy.put_wall ?? '—'}</span>
+              <span style="color:#6b7f5a;">Vol Trigger</span><span style="font-weight:700;">${spy.vol_trigger ?? '—'}</span>
+              <span style="color:#6b7f5a;">Zero Gamma</span><span style="font-weight:700;">${spy.zero_gamma ?? '—'}</span>
+              <span style="color:#6b7f5a;">Move 1D</span><span style="font-weight:700;">${spy.move_1d ? (spy.move_1d*100).toFixed(2)+'%' : '—'}</span>
+              <span style="color:#6b7f5a;">Ref Price</span><span style="font-weight:700;">${spy.reference_price ?? '—'}</span>
+            </div>
+          </div>
+          <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
+            <div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:8px;">SPX Níveis</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:13px;">
+              <span style="color:#6b7f5a;">Pivot</span><span style="font-weight:700;">${spx.pivot ?? '—'}</span>
+              <span style="color:#6b7f5a;">Call Wall</span><span style="font-weight:700;">${spx.call_wall ?? '—'}</span>
+              <span style="color:#6b7f5a;">Put Wall</span><span style="font-weight:700;">${spx.put_wall ?? '—'}</span>
+              <span style="color:#6b7f5a;">Vol Trigger</span><span style="font-weight:700;">${spx.vol_trigger ?? '—'}</span>
+              <span style="color:#6b7f5a;">Resistência</span><span style="font-weight:700;">${(spx.resistance||[]).join(' / ')}</span>
+              <span style="color:#6b7f5a;">Suporte</span><span style="font-weight:700;">${(spx.support||[]).join(' / ')}</span>
+            </div>
+          </div>
+        </div>
+        <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
+          <div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:8px;">Regime do Dia</div>
+          <div style="display:flex;gap:12px;margin-bottom:8px;">
+            <span style="background:${gammaColor};color:#fff;padding:3px 10px;border-radius:4px;font-size:12px;font-weight:700;">Gamma ${regime.gamma ?? '—'}</span>
+            <span style="background:${biasColor};color:#fff;padding:3px 10px;border-radius:4px;font-size:12px;font-weight:700;">${regime.bias ?? '—'}</span>
+            <span style="background:#eee;padding:3px 10px;border-radius:4px;font-size:12px;">VIX ${regime.vix_posture ?? '—'}</span>
+          </div>
+          <div style="font-size:13px;color:#3a4c2e;">${regime.summary ?? ''}</div>
+        </div>
+        <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
+          <div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:8px;">Plano Operacional</div>
+          <div style="display:grid;gap:6px;font-size:13px;">
+            <div><span style="color:#3B6D11;font-weight:700;">▲ Call Trigger: </span>${plan.call_trigger ?? '—'}</div>
+            <div><span style="color:#c0392b;font-weight:700;">▼ Put Trigger: </span>${plan.put_trigger ?? '—'}</div>
+            <div><span style="color:#e67e22;font-weight:700;">⚠ Avoid: </span>${plan.avoid ?? '—'}</div>
+            <div><span style="color:#6b7f5a;font-weight:700;">★ Best Setup: </span>${plan.best_setup ?? '—'}</div>
+          </div>
+        </div>
+        <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
+          <div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:8px;">Founder Alerts</div>
+          <ul style="list-style:none;display:grid;gap:4px;">
+            ${alerts.map(a => `<li style="font-size:13px;color:#3a4c2e;">• ${a}</li>`).join('')}
+          </ul>
+        </div>
+      </div>`;
+
+    const box = document.getElementById('parse-result');
+    const pre = document.getElementById('parse-result-content');
+    pre.innerHTML = html;
+    box.classList.add('visible');
+  }
+
   // ── Modo 1: PDF upload ──
   let selectedFile = null;
 
@@ -806,7 +874,7 @@
       const res = await fetch('/api/parse-pdf', { method: 'POST', body: form });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Erro ao processar PDF');
-      showResult('parse', data);
+      showParseResult(data);
       document.getElementById('modo1-form-divider').style.display = 'block';
       document.getElementById('modo1-form').style.display = 'block';
     } catch (e) {
