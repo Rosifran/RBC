@@ -12,31 +12,54 @@ from flask import Flask, jsonify, render_template, request
 
 _anthropic = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from env
 
-_PDF_PROMPT = """\
-You are a quantitative trading assistant. Below is text extracted from a SpotGamma PDF report.
+_PDF_PROMPT = """You are a quantitative trading assistant. Below is text extracted from a SpotGamma PDF report.
 
-Extract the following for SPY (and only SPY) and return ONLY a valid JSON object — no markdown, no explanation:
+Extract the relevant trading information and return ONLY a valid JSON object — no markdown, no explanation.
+
+Return this structure:
 
 {{
-  "spy": {{
-    "call_wall":   <number>,
-    "put_wall":    <number>,
-    "zero_gamma":  <number>,
-    "vol_trigger": <number>,
-    "abs_gamma":   <number>,
-    "move_1d":     <decimal, e.g. 0.0061 for 0.61%>,
-    "combos":      [<number>, <number>, <number>, <number>]
+  "market": {{
+    "date": "<report date if found>",
+    "macro_theme": "<macro theme if found>",
+    "bias": "<bullish, bearish, neutral, sideways, or mixed>",
+    "gamma_regime": "<positive gamma, negative gamma, neutral, or unknown>",
+    "summary": "<short practical summary in 2-3 sentences>"
   }},
-  "sg_string": "$SPY, SPY, <call_wall>, <put_wall>, <vol_trigger>, <abs_gamma>, <support1>, <support2>, <support3>, <combo1>, <combo2>, <combo3>, <combo4>, <move_1d>, <move_5d>, <zero_gamma>",
-  "briefing": "<2-3 sentence macro summary from the founder note or commentary section>",
-  "eventos": ["<key market event or risk today>", ...]
+  "spx": {{
+    "reference_price": <number>,
+    "resistance": [<number>, <number>],
+    "pivot": <number>,
+    "support": [<number>, <number>, <number>],
+    "call_wall": <number>,
+    "put_wall": <number>,
+    "zero_gamma": <number>,
+    "vol_trigger": <number>,
+    "abs_gamma": <number>,
+    "move_1d": <decimal>,
+    "move_5d": <decimal>
+  }},
+  "spy": {{
+    "reference_price": <number>,
+    "call_wall": <number>,
+    "put_wall": <number>,
+    "zero_gamma": <number>,
+    "vol_trigger": <number>,
+    "abs_gamma": <number>,
+    "move_1d": <decimal>,
+    "move_5d": <decimal>,
+    "combos": [<number>, <number>, <number>, <number>],
+    "key_levels": [<number>, <number>, <number>, <number>]
+  }},
+  "briefing": "<founder's note summarized in practical trading language>",
+  "eventos": ["<key date, macro event, earnings, geopolitical risk, or market risk>", "..."],
+  "sg_string": "$SPY, SPY, <call_wall>, <put_wall>, <vol_trigger>, <abs_gamma>, <support1>, <support2>, <support3>, <combo1>, <combo2>, <combo3>, <combo4>, <move_1d>, <move_5d>, <zero_gamma>"
 }}
 
 Rules:
-- combos: pick the 4 combo/support levels closest to current price, ascending.
-- sg_string supports (support1-3): use put_wall and next two support levels if available.
-- move_1d and move_5d as decimals (divide % by 100).
+- move_1d and move_5d must be decimals. Example: 0.65% = 0.0065.
 - If a field is not found, use null.
+- Do not invent values.
 - Return raw JSON only.
 
 PDF TEXT:
@@ -128,11 +151,15 @@ def parse_pdf():
         return jsonify({"error": f"Claude API error: {e}", "raw": locals().get("raw")}), 200
 
     return jsonify({
-        "ok":       True,
-        "spy":      parsed.get("spy"),
+        "ok": True,
+        "data": parsed,
+        "spy": parsed.get("spy"),
+        "spx": parsed.get("spx"),
+        "market": parsed.get("market"),
         "sg_string": parsed.get("sg_string"),
         "briefing": parsed.get("briefing"),
-        "eventos":  parsed.get("eventos", []),
+        "eventos": parsed.get("eventos", []),
+        "raw_claude": raw
     })
 
 
