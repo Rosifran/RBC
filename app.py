@@ -78,7 +78,7 @@ app = Flask(__name__, template_folder="templates")
 
 @app.route("/health")
 def health():
-    return jsonify({"status": "ok", "version": "1.5-beta"})
+    return jsonify({"status": "ok", "version": "1.6-railway-test"})
 
 
 @app.route("/")
