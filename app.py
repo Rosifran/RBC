@@ -53,8 +53,8 @@ Rules:
 - move_1d_high/move_1d_low: absolute SPY price levels for the implied move range
 - call_trigger and put_trigger: use SPX level, add note "(SPY ~X)" in the value string
 - founder_alerts: array of strings, most important alerts from the Founder Note
-- score.value: 1-5 integer (5=ideal setup, 1=avoid trading today)
-- score.justification: one sentence explaining the score
+- score.value: REQUIRED integer 1-5 (5=perfect setup, 4=good, 3=ok with caution, 2=risky, 1=avoid)
+- score.justification: REQUIRED one sentence. Never return null for score fields.
 - If field not found use null
 - Return raw JSON only, no markdown
 
