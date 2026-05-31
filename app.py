@@ -99,6 +99,65 @@ def index():
     return render_template("index.html")
 
 
+
+def normalize_claude_output(parsed):
+    """Normalize and sanitize Claude JSON output."""
+
+    def limit_sentences(text, max_sentences):
+        if not text or not isinstance(text, str):
+            return text
+        sentences = text.replace('!', '.').replace('?', '.').split('.')
+        sentences = [s.strip() for s in sentences if s.strip()]
+        return '. '.join(sentences[:max_sentences]) + ('.' if sentences[:max_sentences] else '')
+
+    # 1. score always exists
+    if not parsed.get("score") or not isinstance(parsed.get("score"), dict):
+        parsed["score"] = {"value": None, "justification": None}
+    else:
+        parsed["score"].setdefault("value", None)
+        parsed["score"].setdefault("justification", None)
+
+    # 2. plan always exists with required keys
+    if not parsed.get("plan") or not isinstance(parsed.get("plan"), dict):
+        parsed["plan"] = {}
+    for key in ["call_trigger", "put_trigger", "avoid", "best_setup"]:
+        parsed["plan"].setdefault(key, None)
+
+    # 3. founder_alerts always a list
+    fa = parsed.get("founder_alerts")
+    if fa is None:
+        parsed["founder_alerts"] = []
+    elif isinstance(fa, str):
+        parsed["founder_alerts"] = [fa]
+    elif not isinstance(fa, list):
+        parsed["founder_alerts"] = []
+
+    # 4. call_trigger SPY-first
+    spy = parsed.get("spy") or {}
+    ct = parsed["plan"].get("call_trigger")
+    if ct and isinstance(ct, str) and not ct.strip().upper().startswith("SPY"):
+        level = spy.get("call_wall") or spy.get("vol_trigger") or ""
+        parsed["plan"]["call_trigger"] = f"SPY {level} — {ct}" if level else ct
+
+    # 5. put_trigger SPY-first
+    pt = parsed["plan"].get("put_trigger")
+    if pt and isinstance(pt, str) and not pt.strip().upper().startswith("SPY"):
+        level = spy.get("vol_trigger") or spy.get("zero_gamma") or ""
+        parsed["plan"]["put_trigger"] = f"SPY {level} — {pt}" if level else pt
+
+    # 6. Limit text lengths
+    regime = parsed.get("regime") or {}
+    if isinstance(regime, dict):
+        regime["summary"] = limit_sentences(regime.get("summary"), 2)
+        parsed["regime"] = regime
+
+    parsed["gamma_interpretation"] = limit_sentences(parsed.get("gamma_interpretation"), 2)
+    parsed["plan"]["avoid"]         = limit_sentences(parsed["plan"].get("avoid"), 1)
+    parsed["plan"]["best_setup"]    = limit_sentences(parsed["plan"].get("best_setup"), 2)
+    parsed["score"]["justification"] = limit_sentences(parsed["score"].get("justification"), 1)
+
+    return parsed
+
 @app.route("/api/parse-pdf", methods=["POST"])
 def parse_pdf():
     if "file" not in request.files:
@@ -161,6 +220,7 @@ def parse_pdf():
         cleaned = cleaned.strip()
         try:
             parsed = json.loads(cleaned)
+            parsed = normalize_claude_output(parsed)
         except json.JSONDecodeError as e:
             return jsonify({"error": f"Claude returned invalid JSON: {e}", "raw": raw}), 200
     except Exception as e:
