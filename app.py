@@ -160,6 +160,7 @@ def parse_pdf():
         "gamma_interpretation": parsed.get("gamma_interpretation"),
         "plan": parsed.get("plan"),
         "score": parsed.get("score"),
+        "analysis": parsed.get("analysis"),
         "sg_string": parsed.get("sg_string"),
         "briefing": parsed.get("briefing"),
         "eventos": parsed.get("eventos", []),
