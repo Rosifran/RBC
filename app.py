@@ -56,6 +56,21 @@ Rules:
 - score.value: REQUIRED integer 1-5 (5=perfect setup, 4=good, 3=ok with caution, 2=risky, 1=avoid)
 - score.justification: REQUIRED one sentence. Never return null for score fields.
 - If field not found use null
+
+IMPORTANT FOR analysis:
+- The field "analysis" is REQUIRED.
+- Write analysis as an institutional pre-market briefing for a SPY 0DTE trader.
+- Do NOT write long paragraphs.
+- Do NOT repeat the whole PDF.
+- Use short, direct, decision-oriented language.
+- Tone: institutional, concise, operational, no hype.
+- Use terms like: Regime, Risk Pivot, Compression, Upside Froth, Vol Trigger, Call Wall, Put Wall, No-Trade Zone, Breakout, Breakdown, Hedge, Exhaustion.
+- analysis.headline: one sharp sentence about the day.
+- analysis.context: 2-3 short sentences about regime, macro risk, and volatility posture.
+- analysis.key_levels: explain the 3-5 most important levels and WHY they matter.
+- analysis.trade_plan: include call trigger, put trigger, no-trade zone, size recommendation, and what to avoid.
+- analysis.watch_for: include VIX/volatility behavior, SPY/SPX level breaks, and any Founder Note risk.
+- If the PDF is mixed or contradictory, say so clearly.
 - Return raw JSON only, no markdown
 
 PDF TEXT:
