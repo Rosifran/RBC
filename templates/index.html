@@ -759,105 +759,102 @@
   }
 
   function showParseResult(data) {
-    const spy = data.spy || {};
-    const spx = data.spx || {};
+    console.log("PARSE RESULT:", JSON.stringify(data.score));
+    const spy    = data.spy    || {};
+    const spx    = data.spx    || {};
     const regime = data.regime || {};
-    const plan = data.plan || {};
+    const plan   = data.plan   || {};
     const alerts = data.founder_alerts || [];
+    const score  = data.score  || {};
 
-    const score = data.score || {};
-    const scoreColor = (score.value||0) >= 4 ? '#3B6D11' : (score.value||0) >= 3 ? '#e67e22' : '#c0392b';
-    const biasColor = regime.bias === 'bullish' ? '#3B6D11' : regime.bias === 'bearish' ? '#c0392b' : '#7f8c8d';
-    const gammaColor = regime.gamma === 'positive' ? '#3B6D11' : '#c0392b';
+    const scoreColor = (score.value||0) >= 4 ? '#2d6a1f' : (score.value||0) >= 3 ? '#b45309' : '#b91c1c';
+    const biasColor  = regime.bias === 'bullish' ? '#2d6a1f' : regime.bias === 'bearish' ? '#b91c1c' : '#64748b';
+    const gammaLabel = regime.gamma ? regime.gamma.charAt(0).toUpperCase() + regime.gamma.slice(1) + ' Gamma' : '—';
 
-    const html = `
-      <div style="display:grid;gap:12px;font-family:-apple-system,sans-serif;">
-        <div style="background:#f7f9f5;border:2px solid ${scoreColor};border-radius:8px;padding:14px;display:flex;align-items:center;gap:16px;margin-bottom:0;">
-          <div style="font-size:36px;font-weight:700;color:${scoreColor};">${score.value ?? '—'}<span style="font-size:16px;">/5</span></div>
-          <div><div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;">Score do Dia</div>
-          <div style="font-size:13px;color:#3a4c2e;">${score.justification ?? ''}</div></div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
-            <div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:8px;">SPY Níveis</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:13px;">
-              <span style="color:#6b7f5a;">Call Wall</span><span style="font-weight:700;">${spy.call_wall ?? '—'}</span>
-              <span style="color:#6b7f5a;">Put Wall</span><span style="font-weight:700;">${spy.put_wall ?? '—'}</span>
-              <span style="color:#6b7f5a;">Vol Trigger</span><span style="font-weight:700;">${spy.vol_trigger ?? '—'}</span>
-              <span style="color:#6b7f5a;">Zero Gamma</span><span style="font-weight:700;">${spy.zero_gamma ?? '—'}</span>
-              <span style="color:#6b7f5a;">Move 1D</span><span style="font-weight:700;">${spy.move_1d ? (spy.move_1d*100).toFixed(2)+'%' : '—'}</span>
-              <span style="color:#6b7f5a;">Ref Price</span><span style="font-weight:700;">${spy.reference_price ?? '—'}</span>
-            </div>
-          </div>
-          <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
-            <div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:8px;">SPX Níveis</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:13px;">
-              <span style="color:#6b7f5a;">Pivot</span><span style="font-weight:700;">${spx.pivot ?? '—'}</span>
-              <span style="color:#6b7f5a;">Call Wall</span><span style="font-weight:700;">${spx.call_wall ?? '—'}</span>
-              <span style="color:#6b7f5a;">Put Wall</span><span style="font-weight:700;">${spx.put_wall ?? '—'}</span>
-              <span style="color:#6b7f5a;">Vol Trigger</span><span style="font-weight:700;">${spx.vol_trigger ?? '—'}</span>
-              <span style="color:#6b7f5a;">Resistência</span><span style="font-weight:700;">${(spx.resistance||[]).join(' / ')}</span>
-              <span style="color:#6b7f5a;">Suporte</span><span style="font-weight:700;">${(spx.support||[]).join(' / ')}</span>
-            </div>
-          </div>
-        </div>
-        <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
-          <div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:8px;">Regime do Dia</div>
-          <div style="display:flex;gap:12px;margin-bottom:8px;">
-            <span style="background:${gammaColor};color:#fff;padding:3px 10px;border-radius:4px;font-size:12px;font-weight:700;">Gamma ${regime.gamma ?? '—'}</span>
-            <span style="background:${biasColor};color:#fff;padding:3px 10px;border-radius:4px;font-size:12px;font-weight:700;">${regime.bias ?? '—'}</span>
-            <span style="background:#eee;padding:3px 10px;border-radius:4px;font-size:12px;">VIX ${regime.vix_posture ?? '—'}</span>
-          </div>
-          <div style="font-size:13px;color:#3a4c2e;">${regime.summary ?? ''}</div>
-        </div>
-        <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
-          <div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:10px;">Plano Operacional 0DTE</div>
+    const bs = plan.best_setup || '';
+    const hedgeIdx = bs.toLowerCase().indexOf('hedge note');
+    const bsMain  = hedgeIdx > 0 ? bs.slice(0, hedgeIdx).trim().replace(/[,;.]$/, '') : bs;
+    const bsHedge = hedgeIdx > 0 ? bs.slice(hedgeIdx).trim() : '';
 
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-            <div style="background:#f0f7ed;border-left:4px solid #3B6D11;border-radius:6px;padding:10px;">
-              <div style="font-size:10px;font-weight:700;color:#3B6D11;text-transform:uppercase;margin-bottom:4px;">▲ Call Setup</div>
-              <div style="font-size:12px;color:#0f1a09;line-height:1.45;">${plan.call_trigger ?? '—'}</div>
-            </div>
-            <div style="background:#fdf0f0;border-left:4px solid #c0392b;border-radius:6px;padding:10px;">
-              <div style="font-size:10px;font-weight:700;color:#c0392b;text-transform:uppercase;margin-bottom:4px;">▼ Put Setup</div>
-              <div style="font-size:12px;color:#0f1a09;line-height:1.45;">${plan.put_trigger ?? '—'}</div>
-            </div>
-          </div>
+    const content = `
+<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1a;display:grid;gap:10px;">
 
-          <div style="background:#fff8ee;border-left:4px solid #e67e22;border-radius:6px;padding:10px;margin-bottom:8px;">
-            <div style="font-size:10px;font-weight:700;color:#e67e22;text-transform:uppercase;margin-bottom:4px;">⚠ No-Trade Zone</div>
-            <div style="font-size:12px;color:#0f1a09;line-height:1.45;">${plan.avoid ?? '—'}</div>
-          </div>
+  <!-- 1. Top Bar: Score + Regime -->
+  <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;gap:12px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:baseline;gap:6px;">
+      <span style="font-size:32px;font-weight:800;color:${scoreColor};line-height:1;">${score.value ?? '—'}</span>
+      <span style="font-size:13px;color:#64748b;">/5</span>
+      <span style="font-size:12px;color:#475569;margin-left:6px;">${score.justification || ''}</span>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+      <span style="background:#f1f5f9;border:1px solid #cbd5e1;border-radius:4px;padding:3px 8px;font-size:11px;font-weight:700;color:#334155;">${gammaLabel}</span>
+      <span style="background:${biasColor};color:#fff;border-radius:4px;padding:3px 8px;font-size:11px;font-weight:700;">${(regime.bias||'—').toUpperCase()}</span>
+      <span style="background:#f1f5f9;border:1px solid #cbd5e1;border-radius:4px;padding:3px 8px;font-size:11px;color:#334155;">VIX ${regime.vix_posture || '—'}</span>
+    </div>
+  </div>
 
-          ${(()=>{
-            const bs = plan.best_setup ?? '';
-            const hedgeIdx = bs.toLowerCase().indexOf('hedge note');
-            if (hedgeIdx > 0) {
-              const main = bs.slice(0, hedgeIdx).trim().replace(/[,;]$/, '');
-              const hedge = bs.slice(hedgeIdx).trim();
-              return `<div style="background:#ffffff;border:1px solid #d0dcc8;border-radius:6px;padding:10px;">
-                <div style="font-size:10px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:4px;">★ Best Setup</div>
-                <div style="font-size:12px;color:#0f1a09;line-height:1.45;margin-bottom:6px;">${main}</div>
-                <div style="background:#f0f0f0;border-radius:4px;padding:6px 8px;font-size:11px;color:#666;line-height:1.35;">${hedge}</div>
-              </div>`;
-            }
-            return `<div style="background:#ffffff;border:1px solid #d0dcc8;border-radius:6px;padding:10px;">
-              <div style="font-size:10px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:4px;">★ Best Setup</div>
-              <div style="font-size:12px;color:#0f1a09;line-height:1.45;">${bs || '—'}</div>
-            </div>`;
-          })()}
-        </div>
-        <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
-          <div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:8px;">Founder Alerts</div>
-          <ul style="list-style:none;display:grid;gap:4px;">
-            ${alerts.map(a => `<li style="font-size:13px;color:#3a4c2e;">• ${a}</li>`).join('')}
-          </ul>
-        </div>
-      </div>`;
+  <!-- 2. Key Levels Row -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+    ${[
+      {label:'Call Wall', val:spy.call_wall, color:'#2d6a1f'},
+      {label:'Vol Trigger', val:spy.vol_trigger, color:'#b45309'},
+      {label:'Zero Gamma', val:spy.zero_gamma, color:'#64748b'},
+      {label:'Put Wall', val:spy.put_wall, color:'#b91c1c'},
+    ].map(k=>`<div style="background:#fff;border:1px solid #e2e8f0;border-top:3px solid ${k.color};border-radius:6px;padding:8px 10px;text-align:center;">
+      <div style="font-size:10px;color:#64748b;text-transform:uppercase;font-weight:600;margin-bottom:2px;">${k.label}</div>
+      <div style="font-size:18px;font-weight:800;color:${k.color};">${k.val ?? '—'}</div>
+    </div>`).join('')}
+  </div>
+
+  <!-- 3. Plano 0DTE -->
+  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px;">
+    <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Plano Operacional 0DTE</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
+      <div style="background:#f0fdf4;border-left:3px solid #16a34a;border-radius:4px;padding:8px 10px;">
+        <div style="font-size:10px;font-weight:700;color:#16a34a;text-transform:uppercase;margin-bottom:3px;">▲ Call Setup</div>
+        <div style="font-size:12px;color:#1a1a1a;line-height:1.4;">${plan.call_trigger || '—'}</div>
+      </div>
+      <div style="background:#fff1f2;border-left:3px solid #dc2626;border-radius:4px;padding:8px 10px;">
+        <div style="font-size:10px;font-weight:700;color:#dc2626;text-transform:uppercase;margin-bottom:3px;">▼ Put Setup</div>
+        <div style="font-size:12px;color:#1a1a1a;line-height:1.4;">${plan.put_trigger || '—'}</div>
+      </div>
+    </div>
+    <div style="background:#fffbeb;border-left:3px solid #d97706;border-radius:4px;padding:8px 10px;margin-bottom:6px;">
+      <div style="font-size:10px;font-weight:700;color:#d97706;text-transform:uppercase;margin-bottom:3px;">⚠ No-Trade Zone</div>
+      <div style="font-size:12px;color:#1a1a1a;line-height:1.4;">${plan.avoid || '—'}</div>
+    </div>
+    <div style="background:#f8fafc;border-left:3px solid #94a3b8;border-radius:4px;padding:8px 10px;">
+      <div style="font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;margin-bottom:3px;">★ Best Setup</div>
+      <div style="font-size:12px;color:#1a1a1a;line-height:1.4;margin-bottom:${bsHedge?'4px':'0'};">${bsMain || '—'}</div>
+      ${bsHedge ? `<div style="font-size:11px;color:#64748b;font-style:italic;">${bsHedge}</div>` : ''}
+    </div>
+  </div>
+
+  <!-- 4. SPX Context -->
+  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;">
+    <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:6px;">SPX Context</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;">
+      <span><span style="color:#94a3b8;">Pivot</span> <strong>${spx.pivot ?? '—'}</strong></span>
+      <span><span style="color:#94a3b8;">Call Wall</span> <strong>${spx.call_wall ?? '—'}</strong></span>
+      <span><span style="color:#94a3b8;">Put Wall</span> <strong>${spx.put_wall ?? '—'}</strong></span>
+      <span><span style="color:#94a3b8;">Vol Trigger</span> <strong>${spx.vol_trigger ?? '—'}</strong></span>
+      <span><span style="color:#94a3b8;">Support</span> <strong>${(spx.support||[]).join(' / ') || '—'}</strong></span>
+    </div>
+  </div>
+
+  <!-- 5. Founder Alerts -->
+  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;">
+    <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:6px;">Founder Alerts</div>
+    <ul style="list-style:none;padding:0;margin:0;display:grid;gap:3px;">
+      ${(Array.isArray(alerts)?alerts:[]).map(a=>`<li style="font-size:12px;color:#334155;padding:2px 0;border-bottom:1px solid #f1f5f9;">• ${a}</li>`).join('')}
+    </ul>
+  </div>
+
+</div>`;
 
     const box = document.getElementById('parse-result');
     const pre = document.getElementById('parse-result-content');
-    pre.innerHTML = html;
+    pre.innerHTML = content;
     box.classList.add('visible');
   }
 
