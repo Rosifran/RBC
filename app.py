@@ -57,6 +57,17 @@ Rules:
 - score.justification: REQUIRED one sentence. Never return null for score fields.
 - If field not found use null
 - Return raw JSON only, no markdown
+- Use institutional pre-market gamma desk language. Be concise and decision-oriented.
+- Use these terms where appropriate: Regime, Risk Pivot, Compression, Upside Froth, Vol Trigger, Call Wall, Put Wall, No-Trade Zone.
+- No long paragraphs. Max 2 sentences per field.
+- regime.summary: state the regime and one key risk or condition.
+- gamma_interpretation: state what gamma means for price action today.
+- plan.call_trigger: exact level and condition to enter call.
+- plan.put_trigger: exact level and condition to enter put.
+- plan.avoid: one clear rule.
+- plan.best_setup: one actionable setup.
+- founder_alerts: max 6 items, most important first.
+- score.justification: one sentence, trading-desk style.
 
 PDF TEXT:
 {text}
