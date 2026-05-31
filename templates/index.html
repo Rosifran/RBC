@@ -782,7 +782,7 @@
 
     const row = (color, label, text) => !text ? '' :
       `<div style="display:flex;align-items:baseline;gap:0;border-left:3px solid ${color};margin-bottom:1px;">
-        <span style="min-width:80px;padding:5px 8px;font-size:10px;font-weight:700;color:${color};text-transform:uppercase;flex-shrink:0;">${label}</span>
+        <span style="min-width:90px;padding:5px 8px;font-size:10px;font-weight:700;color:${color};text-transform:uppercase;flex-shrink:0;">${label}</span>
         <span style="padding:5px 8px 5px 6px;font-size:12px;color:#1e293b;line-height:1.4;border-bottom:1px solid #f1f5f9;flex:1;">${text}</span>
       </div>`;
 
@@ -792,8 +792,8 @@
   <!-- 1. Verdict Bar -->
   <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
     <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
-      <span style="font-size:36px;font-weight:800;color:${scoreColor};line-height:1;">${sc || '—'}</span>
-      <span style="font-size:12px;color:#64748b;">/5 &nbsp;${score.justification || ''}</span>
+      <span style="font-size:32px;font-weight:800;color:${scoreColor};line-height:1;">${sc || '—'}<span style="font-size:16px;font-weight:600;color:#94a3b8;">/5</span></span>
+      <span style="font-size:12px;color:#64748b;max-width:420px;line-height:1.4;">${score.justification || ''}</span>
     </div>
     <div style="display:flex;gap:5px;flex-wrap:wrap;">
       <span style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:600;color:#334155;">${gammaLabel}</span>
