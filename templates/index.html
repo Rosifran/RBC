@@ -759,17 +759,34 @@
   }
 
   function showParseResult(data) {
-    const spy = data.spy || {};
-    const spx = data.spx || {};
+    const spy    = data.spy    || {};
+    const spx    = data.spx    || {};
     const regime = data.regime || {};
-    const plan = data.plan || {};
-    const alerts = data.founder_alerts || [];
+    const plan   = data.plan   || {};
+    const alerts = data.founder_alerts || {};
+    const score  = data.score  || {};
 
-    const biasColor = regime.bias === 'bullish' ? '#3B6D11' : regime.bias === 'bearish' ? '#c0392b' : '#7f8c8d';
+    const biasColor  = regime.bias  === 'bullish' ? '#3B6D11' : regime.bias  === 'bearish' ? '#c0392b' : '#7f8c8d';
     const gammaColor = regime.gamma === 'positive' ? '#3B6D11' : '#c0392b';
+    const scoreColor = (score.value||0) >= 4 ? '#3B6D11' : (score.value||0) >= 3 ? '#e67e22' : '#c0392b';
+
+    const alertSection = (emoji, title, items) => !items||!items.length ? '' :
+      `<div style="margin-bottom:6px"><span style="font-weight:700;">${emoji} ${title}:</span>
+       <ul style="list-style:none;margin:2px 0 0 8px;">${items.map(a=>`<li style="font-size:13px;color:#3a4c2e;">• ${a}</li>`).join('')}</ul></div>`;
 
     const html = `
       <div style="display:grid;gap:12px;font-family:-apple-system,sans-serif;">
+
+        <!-- Score -->
+        <div style="background:#f7f9f5;border:2px solid ${scoreColor};border-radius:8px;padding:14px;display:flex;align-items:center;gap:16px;">
+          <div style="font-size:36px;font-weight:700;color:${scoreColor};">${score.value ?? '—'}<span style="font-size:16px;">/5</span></div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;">Score do Dia</div>
+            <div style="font-size:13px;color:#3a4c2e;">${score.justification ?? ''}</div>
+          </div>
+        </div>
+
+        <!-- SPY + SPX -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
             <div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:8px;">SPY Níveis</div>
@@ -779,7 +796,7 @@
               <span style="color:#6b7f5a;">Vol Trigger</span><span style="font-weight:700;">${spy.vol_trigger ?? '—'}</span>
               <span style="color:#6b7f5a;">Zero Gamma</span><span style="font-weight:700;">${spy.zero_gamma ?? '—'}</span>
               <span style="color:#6b7f5a;">Move 1D</span><span style="font-weight:700;">${spy.move_1d ? (spy.move_1d*100).toFixed(2)+'%' : '—'}</span>
-              <span style="color:#6b7f5a;">Ref Price</span><span style="font-weight:700;">${spy.reference_price ?? '—'}</span>
+              <span style="color:#6b7f5a;">Range</span><span style="font-weight:700;">${spy.move_1d_low ?? '—'} / ${spy.move_1d_high ?? '—'}</span>
             </div>
           </div>
           <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
@@ -794,30 +811,39 @@
             </div>
           </div>
         </div>
+
+        <!-- Regime -->
         <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
           <div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:8px;">Regime do Dia</div>
-          <div style="display:flex;gap:12px;margin-bottom:8px;">
+          <div style="display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap;">
             <span style="background:${gammaColor};color:#fff;padding:3px 10px;border-radius:4px;font-size:12px;font-weight:700;">Gamma ${regime.gamma ?? '—'}</span>
             <span style="background:${biasColor};color:#fff;padding:3px 10px;border-radius:4px;font-size:12px;font-weight:700;">${regime.bias ?? '—'}</span>
             <span style="background:#eee;padding:3px 10px;border-radius:4px;font-size:12px;">VIX ${regime.vix_posture ?? '—'}</span>
           </div>
-          <div style="font-size:13px;color:#3a4c2e;">${regime.summary ?? ''}</div>
+          <div style="font-size:13px;color:#3a4c2e;margin-bottom:6px;">${regime.summary ?? ''}</div>
+          ${regime.contradiction_alert ? `<div style="background:#fff3cd;border:1px solid #ffc107;border-radius:4px;padding:8px;font-size:12px;color:#856404;">⚠️ ${regime.contradiction_alert}</div>` : ''}
         </div>
+
+        <!-- Plano -->
         <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
           <div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:8px;">Plano Operacional</div>
           <div style="display:grid;gap:6px;font-size:13px;">
-            <div><span style="color:#3B6D11;font-weight:700;">▲ Call Trigger: </span>${plan.call_trigger ?? '—'}</div>
-            <div><span style="color:#c0392b;font-weight:700;">▼ Put Trigger: </span>${plan.put_trigger ?? '—'}</div>
+            <div><span style="color:#3B6D11;font-weight:700;">▲ Call Trigger: </span>SPX ${plan.call_trigger_spx ?? '—'} → SPY ${plan.call_trigger_spy ?? '—'}</div>
+            <div><span style="color:#c0392b;font-weight:700;">▼ Put Trigger: </span>SPX ${plan.put_trigger_spx ?? '—'} → SPY ${plan.put_trigger_spy ?? '—'}</div>
             <div><span style="color:#e67e22;font-weight:700;">⚠ Avoid: </span>${plan.avoid ?? '—'}</div>
             <div><span style="color:#6b7f5a;font-weight:700;">★ Best Setup: </span>${plan.best_setup ?? '—'}</div>
           </div>
         </div>
+
+        <!-- Founder Alerts -->
         <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
           <div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:8px;">Founder Alerts</div>
-          <ul style="list-style:none;display:grid;gap:4px;">
-            ${alerts.map(a => `<li style="font-size:13px;color:#3a4c2e;">• ${a}</li>`).join('')}
-          </ul>
+          ${alertSection('📅','Datas', alerts.dates)}
+          ${alertSection('⚠️','Riscos', alerts.risks)}
+          ${alertSection('💡','Ideias', alerts.ideas)}
+          ${alertSection('🛢️','Macro', alerts.macro)}
         </div>
+
       </div>`;
 
     const box = document.getElementById('parse-result');
