@@ -656,7 +656,7 @@
 <div id="panel-modo3" class="tab-panel">
   <p class="section-label">Modo 3</p>
   <h2 class="section-title">Análise Operacional</h2>
-  <p class="section-sub">Insira spot, IV e prêmio para análise operacional de opções.</p>
+  <p class="section-sub">Análise operacional 0DTE — insira spot, IV e prêmio da opção.</p>
 
   <div class="metrics-row" id="modo3-metrics" style="display:none">
     <div class="metric-card">
@@ -701,17 +701,21 @@
       </div>
       <div class="form-group">
         <label class="form-label">Tipo</label>
-        <input class="form-input" id="m3-tipo" type="text" placeholder="CALL / PUT">
-        <span class="form-hint">Tipo da opção</span>
+        <select class="form-input" id="m3-tipo">
+          <option value="">Selecionar...</option>
+          <option value="CALL">CALL</option>
+          <option value="PUT">PUT</option>
+        </select>
+        <span class="form-hint">Direção da opção</span>
       </div>
       <div class="form-group">
-        <label class="form-label">DTE (dias)</label>
-        <input class="form-input" id="m3-dte" type="number" placeholder="ex: 7">
-        <span class="form-hint">Dias até o vencimento</span>
+        <label class="form-label">Horário (ET)</label>
+        <input class="form-input" id="m3-dte" type="text" placeholder="ex: 10:15">
+        <span class="form-hint">Hora da entrada (0DTE = vence hoje)</span>
       </div>
       <div class="form-group full">
         <label class="form-label">Observações operacionais</label>
-        <input class="form-input" id="m3-obs" type="text" placeholder="ex: hedge de carteira, especulativo direcional...">
+        <input class="form-input" id="m3-obs" type="text" placeholder="ex: entrada no ZG, recuo do Vol Trigger...">
       </div>
     </div>
   </div>
