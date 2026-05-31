@@ -126,7 +126,7 @@ def parse_pdf():
             msg = _anthropic.messages.create(
                 model="claude-sonnet-4-5",
                 max_tokens=1024,
-                timeout=30,
+                timeout=90,
                 messages=[{
                     "role": "user",
                     "content": prompt_text,
