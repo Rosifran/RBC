@@ -62,12 +62,16 @@ Rules:
 - No long paragraphs. Max 2 sentences per field.
 - regime.summary: state the regime and one key risk or condition.
 - gamma_interpretation: state what gamma means for price action today.
-- plan.call_trigger: exact SPY level and condition to enter 0DTE call. If using SPX, include SPY equivalent.
-- plan.put_trigger: exact SPY level and condition to enter 0DTE put. If using SPX, include SPY equivalent.
-- plan.avoid: one clear 0DTE rule. Include No-Trade Zone in SPY terms.
-- plan.best_setup: one actionable 0DTE setup. If the report mentions 2-3 month puts or hedges, add it only as a short "Hedge note", not as the main trade.
+- plan.call_trigger MUST start with SPY first, then SPX in parentheses.
+  Example: "SPY 760 (SPX 7600) — breakout above Call Wall with follow-through and stable volatility."
+- plan.put_trigger MUST start with SPY first, then SPX in parentheses.
+  Example: "SPY 749 (SPX 7490) — Risk Pivot break confirms weakness."
+- plan.avoid: one clear 0DTE rule. No-Trade Zone must be written in SPY terms first.
+  Example: "No-Trade Zone: SPY 751–755 inside compressed gamma range."
+- plan.best_setup: one actionable 0DTE setup first. If the report mentions 2-3 month puts or hedges, add only a short "Hedge note" at the end.
 - Use SPY as the primary trading instrument. SPX levels are context only.
 - Do not mix 0DTE trade plan with swing hedge.
+- Do not write triggers starting with SPX. Always start with SPY.
 - founder_alerts: max 6 items, most important first.
 - score.justification: one sentence, trading-desk style.
 
