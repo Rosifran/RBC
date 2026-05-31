@@ -616,24 +616,24 @@
     <p class="inputs-card-title">Dados de mercado</p>
     <div class="form-grid">
       <div class="form-group">
-        <label class="form-label">VIX</label>
+        <label class="form-label">VIX — fechamento ontem</label>
         <input class="form-input" id="m2-vix" type="number" step="0.01" placeholder="ex: 18.50" oninput="updateModo2Preview()">
-        <span class="form-hint">CBOE Volatility Index</span>
+        <span class="form-hint">VIX do fechamento anterior</span>
       </div>
       <div class="form-group">
-        <label class="form-label">SPY (fechamento anterior)</label>
+        <label class="form-label">SPY — fechamento ontem</label>
         <input class="form-input" id="m2-spy" type="number" step="0.01" placeholder="ex: 522.30" oninput="updateModo2Preview()">
-        <span class="form-hint">Preço de referência</span>
+        <span class="form-hint">Preço de fechamento anterior</span>
       </div>
       <div class="form-group">
-        <label class="form-label">VIX abertura</label>
+        <label class="form-label">VIX — abertura hoje (9:30)</label>
         <input class="form-input" id="m2-vix-open" type="number" step="0.01" placeholder="ex: 19.10">
-        <span class="form-hint">VIX na abertura do dia</span>
+        <span class="form-hint">VIX no momento da abertura</span>
       </div>
       <div class="form-group">
-        <label class="form-label">SPY abertura</label>
+        <label class="form-label">SPY — abertura hoje (9:30)</label>
         <input class="form-input" id="m2-spy-open" type="number" step="0.01" placeholder="ex: 521.00">
-        <span class="form-hint">SPY na abertura do dia</span>
+        <span class="form-hint">SPY no momento da abertura</span>
       </div>
       <div class="form-group full">
         <label class="form-label">Contexto macro</label>
@@ -912,6 +912,11 @@
       if (data.regime && data.regime.bias) document.getElementById('m1-bias').value = data.regime.bias;
       document.getElementById('m1-hora').value = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
       if (data.regime && data.regime.summary) document.getElementById('m1-obs').value = data.regime.summary;
+      // Auto-fill Modo 2 macro context from PDF founder alerts
+      if (data.founder_alerts && data.founder_alerts.length) {
+        const macro = data.founder_alerts.slice(0,3).join(' | ');
+        document.getElementById('m2-macro').value = macro;
+      }
     } catch (e) {
       showError('parse', e.message);
     } finally {
