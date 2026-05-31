@@ -159,6 +159,7 @@ def parse_pdf():
         "founder_alerts": parsed.get("founder_alerts", []),
         "gamma_interpretation": parsed.get("gamma_interpretation"),
         "plan": parsed.get("plan"),
+        "score": parsed.get("score"),
         "sg_string": parsed.get("sg_string"),
         "briefing": parsed.get("briefing"),
         "eventos": parsed.get("eventos", []),
