@@ -45,13 +45,6 @@ Extract and analyze the report and return ONLY a valid JSON object. Keep exact f
     "value": null,
     "justification": null
   }},
-  "analysis": {
-    "headline": null,
-    "context": null,
-    "key_levels": null,
-    "trade_plan": null,
-    "watch_for": null
-  },
   "sg_string": "$SPY, SPY, <call_wall>, <put_wall>, <vol_trigger>, <abs_gamma>, <put_wall>, <key_level_1>, <key_level_2>, <combo1>, <combo2>, <combo3>, <combo4>, <move_1d>, <move_5d>, <zero_gamma>"
 }}
 
@@ -63,12 +56,6 @@ Rules:
 - score.value: REQUIRED integer 1-5 (5=perfect setup, 4=good, 3=ok with caution, 2=risky, 1=avoid)
 - score.justification: REQUIRED one sentence. Never return null for score fields.
 - If field not found use null
-- analysis fields REQUIRED — write as an experienced trader briefing a colleague before the open
-- analysis.headline: one punchy sentence summarizing today's trading environment
-- analysis.context: 2-3 sentences on gamma regime, macro risks, and what's driving the market today
-- analysis.key_levels: which SPY levels matter most today and WHY (support/resistance/trigger)
-- analysis.trade_plan: specific actionable plan — when to enter call, when to enter put, size recommendation
-- analysis.watch_for: 2-3 things to monitor intraday that would change the plan
 - Return raw JSON only, no markdown
 
 PDF TEXT:
@@ -173,7 +160,6 @@ def parse_pdf():
         "gamma_interpretation": parsed.get("gamma_interpretation"),
         "plan": parsed.get("plan"),
         "score": parsed.get("score"),
-        "analysis": parsed.get("analysis"),
         "sg_string": parsed.get("sg_string"),
         "briefing": parsed.get("briefing"),
         "eventos": parsed.get("eventos", []),

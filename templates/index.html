@@ -820,15 +820,7 @@
             <div><span style="color:#6b7f5a;font-weight:700;">★ Best Setup: </span>${plan.best_setup ?? '—'}</div>
           </div>
         </div>
-        <div style="background:#f0f4eb;border:1px solid #c5d5b0;border-radius:8px;padding:16px;border-left:4px solid #3B6D11;">
-          <div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:10px;">📋 Daily Analysis</div>
-          <div style="font-size:15px;font-weight:700;color:#0f1a09;margin-bottom:12px;">${(data.analysis||{}).headline ?? ''}</div>
-          ${(data.analysis||{}).context ? `<div style="margin-bottom:8px;"><span style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;">Context</span><div style="font-size:13px;color:#3a4c2e;margin-top:4px;">${data.analysis.context}</div></div>` : ''}
-          ${(data.analysis||{}).key_levels ? `<div style="margin-bottom:8px;"><span style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;">Key Levels</span><div style="font-size:13px;color:#3a4c2e;margin-top:4px;">${data.analysis.key_levels}</div></div>` : ''}
-          ${(data.analysis||{}).trade_plan ? `<div style="margin-bottom:8px;"><span style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;">Trade Plan</span><div style="font-size:13px;color:#3a4c2e;margin-top:4px;">${data.analysis.trade_plan}</div></div>` : ''}
-          ${(data.analysis||{}).watch_for ? `<div><span style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;">Watch For</span><div style="font-size:13px;color:#3a4c2e;margin-top:4px;">${data.analysis.watch_for}</div></div>` : ''}
-        </div>
-                <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
+        <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
           <div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:8px;">Founder Alerts</div>
           <ul style="list-style:none;display:grid;gap:4px;">
             ${alerts.map(a => `<li style="font-size:13px;color:#3a4c2e;">• ${a}</li>`).join('')}
