@@ -62,10 +62,12 @@ Rules:
 - No long paragraphs. Max 2 sentences per field.
 - regime.summary: state the regime and one key risk or condition.
 - gamma_interpretation: state what gamma means for price action today.
-- plan.call_trigger: exact level and condition to enter call.
-- plan.put_trigger: exact level and condition to enter put.
-- plan.avoid: one clear rule.
-- plan.best_setup: one actionable setup.
+- plan.call_trigger: exact SPY level and condition to enter 0DTE call. If using SPX, include SPY equivalent.
+- plan.put_trigger: exact SPY level and condition to enter 0DTE put. If using SPX, include SPY equivalent.
+- plan.avoid: one clear 0DTE rule. Include No-Trade Zone in SPY terms.
+- plan.best_setup: one actionable 0DTE setup. If the report mentions 2-3 month puts or hedges, add it only as a short "Hedge note", not as the main trade.
+- Use SPY as the primary trading instrument. SPX levels are context only.
+- Do not mix 0DTE trade plan with swing hedge.
 - founder_alerts: max 6 items, most important first.
 - score.justification: one sentence, trading-desk style.
 
