@@ -159,7 +159,11 @@ def normalize_claude_output(parsed):
             level = spy.get("vol_trigger") or spy.get("zero_gamma") or ""
             parsed["plan"]["put_trigger"] = f"SPY {level} — {put_text}" if level else put_text
 
-    # 6. Limit text lengths
+    # 6. Normalize bias to single word
+    regime = parsed.get("regime") or {}
+    if regime.get("bias"):
+        regime["bias"] = regime["bias"].strip().split()[0].lower()
+    parsed["regime"] = regime
     regime = parsed.get("regime") or {}
     if isinstance(regime, dict):
         regime["summary"] = limit_sentences(regime.get("summary"), 2)
