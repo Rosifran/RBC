@@ -26,6 +26,8 @@ Extract and analyze the report and return ONLY a valid JSON object with this str
     "abs_gamma": null,
     "move_1d": null,
     "move_5d": null,
+    "move_1d_high": null,
+    "move_1d_low": null,
     "combos": [],
     "key_levels": []
   }},
@@ -43,22 +45,40 @@ Extract and analyze the report and return ONLY a valid JSON object with this str
     "gamma": null,
     "bias": null,
     "vix_posture": null,
-    "summary": null
+    "summary": null,
+    "contradiction_alert": null
   }},
-  "founder_alerts": [],
+  "founder_alerts": {{
+    "dates": [],
+    "risks": [],
+    "ideas": [],
+    "macro": []
+  }},
   "gamma_interpretation": null,
   "plan": {{
     "no_trade_zone": null,
-    "call_trigger": null,
-    "put_trigger": null,
+    "call_trigger_spx": null,
+    "call_trigger_spy": null,
+    "put_trigger_spx": null,
+    "put_trigger_spy": null,
     "avoid": null,
     "best_setup": null
+  }},
+  "score": {{
+    "value": null,
+    "justification": null
   }},
   "sg_string": "$SPY, SPY, <call_wall>, <put_wall>, <vol_trigger>, <abs_gamma>, <put_wall>, <key_level_1>, <key_level_2>, <combo1>, <combo2>, <combo3>, <combo4>, <move_1d>, <move_5d>, <zero_gamma>"
 }}
 
 Rules:
 - move_1d and move_5d as decimals (0.65% = 0.0065)
+- move_1d_high and move_1d_low: absolute SPY price levels for the implied 1-day move
+- call_trigger_spy and put_trigger_spy: convert SPX triggers to SPY (divide SPX by ~10.03)
+- founder_alerts: categorize each alert into dates (📅), risks (⚠️), ideas (💡), or macro (🛢️)
+- contradiction_alert: if gamma is positive but COR1M > 8 or risk signals are elevated, describe the contradiction
+- score.value: integer 1-5 based on setup quality for 0DTE trading today (5=ideal, 1=avoid)
+- score.justification: one sentence explaining the score
 - If field not found use null
 - Return raw JSON only, no markdown
 
