@@ -132,18 +132,32 @@ def normalize_claude_output(parsed):
     elif not isinstance(fa, list):
         parsed["founder_alerts"] = []
 
-    # 4. call_trigger SPY-first
+    # 4. call_trigger SPY-first and coherent with SPX
     spy = parsed.get("spy") or {}
-    ct = parsed["plan"].get("call_trigger")
-    if ct and isinstance(ct, str) and not ct.strip().upper().startswith("SPY"):
-        level = spy.get("call_wall") or spy.get("vol_trigger") or ""
-        parsed["plan"]["call_trigger"] = f"SPY {level} — {ct}" if level else ct
+    spx = parsed.get("spx") or {}
 
-    # 5. put_trigger SPY-first
-    pt = parsed["plan"].get("put_trigger")
-    if pt and isinstance(pt, str) and not pt.strip().upper().startswith("SPY"):
-        level = spy.get("vol_trigger") or spy.get("zero_gamma") or ""
-        parsed["plan"]["put_trigger"] = f"SPY {level} — {pt}" if level else pt
+    call_text = parsed["plan"].get("call_trigger")
+    spx_call = spx.get("call_wall")
+    spy_call_breakout = round(float(spx_call) / 10, 1) if spx_call else spy.get("call_wall")
+
+    if call_text and isinstance(call_text, str):
+        if "SPX 7600" in call_text or "7600" in call_text:
+            parsed["plan"]["call_trigger"] = f"SPY {spy_call_breakout:g} (SPX {spx_call}) — breakout above Call Wall with follow-through."
+        elif not call_text.strip().upper().startswith("SPY"):
+            level = spy.get("call_wall") or spy.get("vol_trigger") or ""
+            parsed["plan"]["call_trigger"] = f"SPY {level} — {call_text}" if level else call_text
+
+    # 5. put_trigger SPY-first and coherent with SPX Risk Pivot
+    put_text = parsed["plan"].get("put_trigger")
+    spx_pivot = spx.get("pivot")
+    spy_put_break = round(float(spx_pivot) / 10, 1) if spx_pivot else (spy.get("vol_trigger") or spy.get("zero_gamma"))
+
+    if put_text and isinstance(put_text, str):
+        if "SPX 7490" in put_text or "7490" in put_text:
+            parsed["plan"]["put_trigger"] = f"SPY {spy_put_break:g} (SPX {spx_pivot}) — Risk Pivot break confirms weakness."
+        elif not put_text.strip().upper().startswith("SPY"):
+            level = spy.get("vol_trigger") or spy.get("zero_gamma") or ""
+            parsed["plan"]["put_trigger"] = f"SPY {level} — {put_text}" if level else put_text
 
     # 6. Limit text lengths
     regime = parsed.get("regime") or {}

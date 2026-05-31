@@ -810,28 +810,23 @@
           </div>
           <div style="font-size:13px;color:#3a4c2e;">${regime.summary ?? ''}</div>
         </div>
-        <div style="display:grid;gap:8px;">
-          <div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;padding:0 2px;">Plano Operacional 0DTE</div>
+        <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
+          <div style="font-size:11px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:10px;">Plano Operacional 0DTE</div>
 
-          <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:12px;">
-            <div style="font-size:28px;font-weight:700;color:${scoreColor};line-height:1;">${score.value ?? '—'}<span style="font-size:13px;">/5</span></div>
-            <div style="font-size:12px;color:#3a4c2e;">${score.justification ?? ''}</div>
-          </div>
-
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-            <div style="background:#f0f7ed;border:2px solid #3B6D11;border-radius:8px;padding:10px 12px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+            <div style="background:#f0f7ed;border-left:4px solid #3B6D11;border-radius:6px;padding:10px;">
               <div style="font-size:10px;font-weight:700;color:#3B6D11;text-transform:uppercase;margin-bottom:4px;">▲ Call Setup</div>
-              <div style="font-size:12px;color:#0f1a09;">${plan.call_trigger ?? '—'}</div>
+              <div style="font-size:12px;color:#0f1a09;line-height:1.45;">${plan.call_trigger ?? '—'}</div>
             </div>
-            <div style="background:#fdf0f0;border:2px solid #c0392b;border-radius:8px;padding:10px 12px;">
+            <div style="background:#fdf0f0;border-left:4px solid #c0392b;border-radius:6px;padding:10px;">
               <div style="font-size:10px;font-weight:700;color:#c0392b;text-transform:uppercase;margin-bottom:4px;">▼ Put Setup</div>
-              <div style="font-size:12px;color:#0f1a09;">${plan.put_trigger ?? '—'}</div>
+              <div style="font-size:12px;color:#0f1a09;line-height:1.45;">${plan.put_trigger ?? '—'}</div>
             </div>
           </div>
 
-          <div style="background:#fff8ee;border:2px solid #e67e22;border-radius:8px;padding:10px 12px;">
-            <div style="font-size:10px;font-weight:700;color:#e67e22;text-transform:uppercase;margin-bottom:4px;">⚠ No-Trade Zone / Avoid</div>
-            <div style="font-size:12px;color:#0f1a09;">${plan.avoid ?? '—'}</div>
+          <div style="background:#fff8ee;border-left:4px solid #e67e22;border-radius:6px;padding:10px;margin-bottom:8px;">
+            <div style="font-size:10px;font-weight:700;color:#e67e22;text-transform:uppercase;margin-bottom:4px;">⚠ No-Trade Zone</div>
+            <div style="font-size:12px;color:#0f1a09;line-height:1.45;">${plan.avoid ?? '—'}</div>
           </div>
 
           ${(()=>{
@@ -840,16 +835,16 @@
             if (hedgeIdx > 0) {
               const main = bs.slice(0, hedgeIdx).trim().replace(/[,;]$/, '');
               const hedge = bs.slice(hedgeIdx).trim();
-              return `<div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:10px 12px;">
+              return \`<div style="background:#ffffff;border:1px solid #d0dcc8;border-radius:6px;padding:10px;">
                 <div style="font-size:10px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:4px;">★ Best Setup</div>
-                <div style="font-size:12px;color:#0f1a09;margin-bottom:6px;">${main}</div>
-                <div style="background:#f0f0f0;border-radius:4px;padding:6px 8px;font-size:11px;color:#666;">${hedge}</div>
-              </div>`;
+                <div style="font-size:12px;color:#0f1a09;line-height:1.45;margin-bottom:6px;">\${main}</div>
+                <div style="background:#f0f0f0;border-radius:4px;padding:6px 8px;font-size:11px;color:#666;line-height:1.35;">\${hedge}</div>
+              </div>\`;
             }
-            return `<div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:10px 12px;">
+            return \`<div style="background:#ffffff;border:1px solid #d0dcc8;border-radius:6px;padding:10px;">
               <div style="font-size:10px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:4px;">★ Best Setup</div>
-              <div style="font-size:12px;color:#0f1a09;">${bs || '—'}</div>
-            </div>`;
+              <div style="font-size:12px;color:#0f1a09;line-height:1.45;">\${bs || '—'}</div>
+            </div>\`;
           })()}
         </div>
         <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
