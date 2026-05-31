@@ -125,7 +125,7 @@ def parse_pdf():
         try:
             msg = _anthropic.messages.create(
                 model="claude-sonnet-4-5",
-                max_tokens=1024,
+                max_tokens=2048,
                 timeout=90,
                 messages=[{
                     "role": "user",
@@ -175,6 +175,7 @@ def parse_pdf():
         "gamma_interpretation": parsed.get("gamma_interpretation"),
         "plan": parsed.get("plan"),
         "score": parsed.get("score"),
+        "analysis": parsed.get("analysis"),
         "analysis": parsed.get("analysis"),
         "sg_string": parsed.get("sg_string"),
         "briefing": parsed.get("briefing"),
