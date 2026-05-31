@@ -14,7 +14,7 @@ _anthropic = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from env
 
 _PDF_PROMPT = """You are a quantitative trading assistant analyzing a SpotGamma daily report for SPY 0DTE options trading.
 
-Extract and analyze the report and return ONLY a valid JSON object with this structure:
+Extract and analyze the report and return ONLY a valid JSON object. Keep exact field names below:
 
 {{
   "spy": {{
@@ -31,32 +31,30 @@ Extract and analyze the report and return ONLY a valid JSON object with this str
     "zero_gamma": null, "vol_trigger": null
   }},
   "regime": {{
-    "gamma": null, "bias": null, "vix_posture": null,
-    "summary": null, "contradiction_alert": null
+    "gamma": null, "bias": null, "vix_posture": null, "summary": null
   }},
-  "founder_alerts": {{
-    "dates": [], "risks": [], "ideas": [], "macro": []
-  }},
+  "founder_alerts": ["<alert1>", "<alert2>"],
   "gamma_interpretation": null,
   "plan": {{
-    "no_trade_zone": null,
-    "call_trigger_spx": null, "call_trigger_spy": null,
-    "put_trigger_spx": null,  "put_trigger_spy": null,
-    "avoid": null, "best_setup": null
+    "call_trigger": null,
+    "put_trigger": null,
+    "avoid": null,
+    "best_setup": null
   }},
-  "score": {{ "value": null, "justification": null }},
+  "score": {{
+    "value": null,
+    "justification": null
+  }},
   "sg_string": "$SPY, SPY, <call_wall>, <put_wall>, <vol_trigger>, <abs_gamma>, <put_wall>, <key_level_1>, <key_level_2>, <combo1>, <combo2>, <combo3>, <combo4>, <move_1d>, <move_5d>, <zero_gamma>"
 }}
 
 Rules:
 - move_1d/move_5d as decimals (0.65% = 0.0065)
-- move_1d_high/move_1d_low: absolute SPY price for implied move range
-- call_trigger_spy = call_trigger_spx / 10.03 (rounded to 2 decimals)
-- put_trigger_spy  = put_trigger_spx  / 10.03 (rounded to 2 decimals)
-- founder_alerts: categorize into dates, risks, ideas, macro
-- contradiction_alert: describe if gamma positive but COR1M>8 or red-alert signals present
+- move_1d_high/move_1d_low: absolute SPY price levels for the implied move range
+- call_trigger and put_trigger: use SPX level, add note "(SPY ~X)" in the value string
+- founder_alerts: array of strings, most important alerts from the Founder Note
 - score.value: 1-5 integer (5=ideal setup, 1=avoid trading today)
-- score.justification: one sentence
+- score.justification: one sentence explaining the score
 - If field not found use null
 - Return raw JSON only, no markdown
 
@@ -150,14 +148,15 @@ def parse_pdf():
 
     return jsonify({
         "ok": True,
-        "spy":      parsed.get("spy"),
-        "spx":      parsed.get("spx"),
-        "regime":   parsed.get("regime"),
-        "founder_alerts": parsed.get("founder_alerts", {}),
+        "spy": parsed.get("spy"),
+        "spx": parsed.get("spx"),
+        "regime": parsed.get("regime"),
+        "founder_alerts": parsed.get("founder_alerts", []),
         "gamma_interpretation": parsed.get("gamma_interpretation"),
-        "plan":     parsed.get("plan"),
-        "score":    parsed.get("score"),
+        "plan": parsed.get("plan"),
         "sg_string": parsed.get("sg_string"),
+        "briefing": parsed.get("briefing"),
+        "eventos": parsed.get("eventos", []),
     })
 
 
