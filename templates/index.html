@@ -767,93 +767,91 @@
     const alerts = data.founder_alerts || [];
     const score  = data.score  || {};
 
-    const scoreColor = (score.value||0) >= 4 ? '#2d6a1f' : (score.value||0) >= 3 ? '#b45309' : '#b91c1c';
-    const biasColor  = regime.bias === 'bullish' ? '#2d6a1f' : regime.bias === 'bearish' ? '#b91c1c' : '#64748b';
-    const gammaLabel = regime.gamma ? regime.gamma.charAt(0).toUpperCase() + regime.gamma.slice(1) + ' Gamma' : '—';
+    const sc = score.value || 0;
+    const scoreColor = sc >= 4 ? '#16a34a' : sc >= 3 ? '#d97706' : '#dc2626';
+    const biasColor  = regime.bias === 'bullish' ? '#16a34a' : regime.bias === 'bearish' ? '#dc2626' : '#64748b';
+    const gammaRaw = (regime.gamma || '').trim();
+    const gammaLabel = gammaRaw.toLowerCase().includes('gamma')
+      ? gammaRaw.charAt(0).toUpperCase() + gammaRaw.slice(1)
+      : (gammaRaw ? gammaRaw.charAt(0).toUpperCase() + gammaRaw.slice(1) + ' Gamma' : '—');
 
     const bs = plan.best_setup || '';
-    const hedgeIdx = bs.toLowerCase().indexOf('hedge note');
-    const bsMain  = hedgeIdx > 0 ? bs.slice(0, hedgeIdx).trim().replace(/[,;.]$/, '') : bs;
-    const bsHedge = hedgeIdx > 0 ? bs.slice(hedgeIdx).trim() : '';
+    const hi = bs.toLowerCase().indexOf('hedge note');
+    const bsMain  = hi > 0 ? bs.slice(0, hi).trim().replace(/[,;.]$/, '') : bs;
+    const bsHedge = hi > 0 ? bs.slice(hi).trim() : '';
+
+    const row = (color, label, text) => !text ? '' :
+      `<div style="display:flex;align-items:baseline;gap:0;border-left:3px solid ${color};margin-bottom:1px;">
+        <span style="min-width:80px;padding:5px 8px;font-size:10px;font-weight:700;color:${color};text-transform:uppercase;flex-shrink:0;">${label}</span>
+        <span style="padding:5px 8px 5px 6px;font-size:12px;color:#1e293b;line-height:1.4;border-bottom:1px solid #f1f5f9;flex:1;">${text}</span>
+      </div>`;
 
     const content = `
-<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1a;display:grid;gap:10px;">
+<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:grid;gap:8px;color:#1e293b;">
 
-  <!-- 1. Top Bar: Score + Regime -->
-  <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;gap:12px;flex-wrap:wrap;">
-    <div style="display:flex;align-items:baseline;gap:6px;">
-      <span style="font-size:32px;font-weight:800;color:${scoreColor};line-height:1;">${score.value ?? '—'}</span>
-      <span style="font-size:13px;color:#64748b;">/5</span>
-      <span style="font-size:12px;color:#475569;margin-left:6px;">${score.justification || ''}</span>
+  <!-- 1. Verdict Bar -->
+  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+      <span style="font-size:36px;font-weight:800;color:${scoreColor};line-height:1;">${sc || '—'}</span>
+      <span style="font-size:12px;color:#64748b;">/5 &nbsp;${score.justification || ''}</span>
     </div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;">
-      <span style="background:#f1f5f9;border:1px solid #cbd5e1;border-radius:4px;padding:3px 8px;font-size:11px;font-weight:700;color:#334155;">${gammaLabel}</span>
-      <span style="background:${biasColor};color:#fff;border-radius:4px;padding:3px 8px;font-size:11px;font-weight:700;">${(regime.bias||'—').toUpperCase()}</span>
-      <span style="background:#f1f5f9;border:1px solid #cbd5e1;border-radius:4px;padding:3px 8px;font-size:11px;color:#334155;">VIX ${regime.vix_posture || '—'}</span>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;">
+      <span style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:600;color:#334155;">${gammaLabel}</span>
+      <span style="background:${biasColor};color:#fff;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;">${(regime.bias||'—').toUpperCase()}</span>
+      <span style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:2px 7px;font-size:11px;color:#475569;">VIX ${regime.vix_posture||'—'}</span>
     </div>
   </div>
 
-  <!-- 2. Key Levels Row -->
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+  <!-- 2. SPY Key Levels -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;">
     ${[
-      {label:'Call Wall', val:spy.call_wall, color:'#2d6a1f'},
-      {label:'Vol Trigger', val:spy.vol_trigger, color:'#b45309'},
-      {label:'Zero Gamma', val:spy.zero_gamma, color:'#64748b'},
-      {label:'Put Wall', val:spy.put_wall, color:'#b91c1c'},
-    ].map(k=>`<div style="background:#fff;border:1px solid #e2e8f0;border-top:3px solid ${k.color};border-radius:6px;padding:8px 10px;text-align:center;">
-      <div style="font-size:10px;color:#64748b;text-transform:uppercase;font-weight:600;margin-bottom:2px;">${k.label}</div>
-      <div style="font-size:18px;font-weight:800;color:${k.color};">${k.val ?? '—'}</div>
+      ['Call Wall',   spy.call_wall,    '#16a34a'],
+      ['Vol Trigger', spy.vol_trigger,  '#d97706'],
+      ['Zero Gamma',  spy.zero_gamma,   '#64748b'],
+      ['Put Wall',    spy.put_wall,     '#dc2626'],
+    ].map(([lbl,val,col])=>`
+    <div style="background:#fff;border:1px solid #e2e8f0;border-top:2px solid ${col};border-radius:6px;padding:6px 8px;text-align:center;">
+      <div style="font-size:9px;color:#94a3b8;text-transform:uppercase;font-weight:600;letter-spacing:.04em;">${lbl}</div>
+      <div style="font-size:20px;font-weight:800;color:${col};line-height:1.2;">${val??'—'}</div>
     </div>`).join('')}
   </div>
 
-  <!-- 3. Plano 0DTE -->
-  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px;">
-    <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Plano Operacional 0DTE</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
-      <div style="background:#f0fdf4;border-left:3px solid #16a34a;border-radius:4px;padding:8px 10px;">
-        <div style="font-size:10px;font-weight:700;color:#16a34a;text-transform:uppercase;margin-bottom:3px;">▲ Call Setup</div>
-        <div style="font-size:12px;color:#1a1a1a;line-height:1.4;">${plan.call_trigger || '—'}</div>
-      </div>
-      <div style="background:#fff1f2;border-left:3px solid #dc2626;border-radius:4px;padding:8px 10px;">
-        <div style="font-size:10px;font-weight:700;color:#dc2626;text-transform:uppercase;margin-bottom:3px;">▼ Put Setup</div>
-        <div style="font-size:12px;color:#1a1a1a;line-height:1.4;">${plan.put_trigger || '—'}</div>
-      </div>
-    </div>
-    <div style="background:#fffbeb;border-left:3px solid #d97706;border-radius:4px;padding:8px 10px;margin-bottom:6px;">
-      <div style="font-size:10px;font-weight:700;color:#d97706;text-transform:uppercase;margin-bottom:3px;">⚠ No-Trade Zone</div>
-      <div style="font-size:12px;color:#1a1a1a;line-height:1.4;">${plan.avoid || '—'}</div>
-    </div>
-    <div style="background:#f8fafc;border-left:3px solid #94a3b8;border-radius:4px;padding:8px 10px;">
-      <div style="font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;margin-bottom:3px;">★ Best Setup</div>
-      <div style="font-size:12px;color:#1a1a1a;line-height:1.4;margin-bottom:${bsHedge?'4px':'0'};">${bsMain || '—'}</div>
-      ${bsHedge ? `<div style="font-size:11px;color:#64748b;font-style:italic;">${bsHedge}</div>` : ''}
-    </div>
+  <!-- 3. Decision Table -->
+  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
+    <div style="padding:6px 10px;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #f1f5f9;">0DTE Decision</div>
+    ${row('#16a34a', '▲ Call',     plan.call_trigger)}
+    ${row('#dc2626', '▼ Put',      plan.put_trigger)}
+    ${row('#d97706', '⚠ No Trade', plan.avoid)}
+    ${row('#475569', '★ Best',     bsMain)}
+    ${bsHedge ? row('#94a3b8', 'Hedge', bsHedge) : ''}
   </div>
 
   <!-- 4. SPX Context -->
-  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;">
-    <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:6px;">SPX Context</div>
-    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;">
-      <span><span style="color:#94a3b8;">Pivot</span> <strong>${spx.pivot ?? '—'}</strong></span>
-      <span><span style="color:#94a3b8;">Call Wall</span> <strong>${spx.call_wall ?? '—'}</strong></span>
-      <span><span style="color:#94a3b8;">Put Wall</span> <strong>${spx.put_wall ?? '—'}</strong></span>
-      <span><span style="color:#94a3b8;">Vol Trigger</span> <strong>${spx.vol_trigger ?? '—'}</strong></span>
-      <span><span style="color:#94a3b8;">Support</span> <strong>${(spx.support||[]).join(' / ') || '—'}</strong></span>
-    </div>
+  <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:7px 12px;display:flex;gap:14px;flex-wrap:wrap;font-size:12px;">
+    <span style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;align-self:center;">SPX</span>
+    ${[
+      ['Pivot',       spx.pivot],
+      ['Call Wall',   spx.call_wall],
+      ['Put Wall',    spx.put_wall],
+      ['Vol Trigger', spx.vol_trigger],
+      ['Support',     (spx.support||[]).join(' / ') || null],
+    ].filter(([,v])=>v).map(([l,v])=>`<span><span style="color:#94a3b8;">${l} </span><strong>${v}</strong></span>`).join('')}
   </div>
 
   <!-- 5. Founder Alerts -->
-  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;">
-    <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:6px;">Founder Alerts</div>
-    <ul style="list-style:none;padding:0;margin:0;display:grid;gap:3px;">
-      ${(Array.isArray(alerts)?alerts:[]).map(a=>`<li style="font-size:12px;color:#334155;padding:2px 0;border-bottom:1px solid #f1f5f9;">• ${a}</li>`).join('')}
-    </ul>
+  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;">
+    <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Founder Alerts</div>
+    ${(Array.isArray(alerts)?alerts:[]).slice(0,6).map(a=>`
+    <div style="font-size:12px;color:#334155;padding:3px 0;border-bottom:1px solid #f8fafc;line-height:1.4;">• ${a}</div>`).join('')}
   </div>
 
 </div>`;
 
     const box = document.getElementById('parse-result');
     const pre = document.getElementById('parse-result-content');
+    pre.style.whiteSpace = 'normal';
+    pre.style.fontFamily = 'inherit';
+    pre.style.margin = '0';
     pre.innerHTML = content;
     box.classList.add('visible');
   }
