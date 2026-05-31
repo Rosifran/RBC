@@ -53,7 +53,8 @@ Extract and analyze the report and return ONLY a valid JSON object with this str
     "put_trigger": null,
     "avoid": null,
     "best_setup": null
-  }}
+  }},
+  "sg_string": "$SPY, SPY, <call_wall>, <put_wall>, <vol_trigger>, <abs_gamma>, <put_wall>, <key_level_1>, <key_level_2>, <combo1>, <combo2>, <combo3>, <combo4>, <move_1d>, <move_5d>, <zero_gamma>"
 }}
 
 Rules:
