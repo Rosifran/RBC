@@ -835,16 +835,16 @@
             if (hedgeIdx > 0) {
               const main = bs.slice(0, hedgeIdx).trim().replace(/[,;]$/, '');
               const hedge = bs.slice(hedgeIdx).trim();
-              return \`<div style="background:#ffffff;border:1px solid #d0dcc8;border-radius:6px;padding:10px;">
+              return `<div style="background:#ffffff;border:1px solid #d0dcc8;border-radius:6px;padding:10px;">
                 <div style="font-size:10px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:4px;">★ Best Setup</div>
-                <div style="font-size:12px;color:#0f1a09;line-height:1.45;margin-bottom:6px;">\${main}</div>
-                <div style="background:#f0f0f0;border-radius:4px;padding:6px 8px;font-size:11px;color:#666;line-height:1.35;">\${hedge}</div>
-              </div>\`;
+                <div style="font-size:12px;color:#0f1a09;line-height:1.45;margin-bottom:6px;">${main}</div>
+                <div style="background:#f0f0f0;border-radius:4px;padding:6px 8px;font-size:11px;color:#666;line-height:1.35;">${hedge}</div>
+              </div>`;
             }
-            return \`<div style="background:#ffffff;border:1px solid #d0dcc8;border-radius:6px;padding:10px;">
+            return `<div style="background:#ffffff;border:1px solid #d0dcc8;border-radius:6px;padding:10px;">
               <div style="font-size:10px;font-weight:700;color:#6b7f5a;text-transform:uppercase;margin-bottom:4px;">★ Best Setup</div>
-              <div style="font-size:12px;color:#0f1a09;line-height:1.45;">\${bs || '—'}</div>
-            </div>\`;
+              <div style="font-size:12px;color:#0f1a09;line-height:1.45;">${bs || '—'}</div>
+            </div>`;
           })()}
         </div>
         <div style="background:#f7f9f5;border:1px solid #d0dcc8;border-radius:8px;padding:14px;">
