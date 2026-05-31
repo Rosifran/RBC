@@ -877,6 +877,11 @@
       showParseResult(data);
       document.getElementById('modo1-form-divider').style.display = 'block';
       document.getElementById('modo1-form').style.display = 'block';
+      // Auto-fill Modo 1 fields from PDF
+      if (data.sg_string) document.getElementById('sg-string').value = data.sg_string;
+      if (data.regime && data.regime.bias) document.getElementById('m1-bias').value = data.regime.bias;
+      document.getElementById('m1-hora').value = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+      if (data.regime && data.regime.summary) document.getElementById('m1-obs').value = data.regime.summary;
     } catch (e) {
       showError('parse', e.message);
     } finally {
