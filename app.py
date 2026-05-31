@@ -132,10 +132,15 @@ def parse_pdf():
         print("=== END RAW CLAUDE RESPONSE ===")
         raw = raw.strip()
         cleaned = raw
-        if cleaned.startswith("```"):
-            cleaned = cleaned.split("\n", 1)[-1]
-        if cleaned.endswith("```"):
-            cleaned = cleaned.rsplit("```", 1)[0]
+        if "```" in cleaned:
+            parts = cleaned.split("```")
+            for part in parts:
+                part = part.strip()
+                if part.startswith("json"):
+                    part = part[4:].strip()
+                if part.startswith("{"):
+                    cleaned = part
+                    break
         cleaned = cleaned.strip()
         try:
             parsed = json.loads(cleaned)
