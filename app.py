@@ -12,29 +12,50 @@ from flask import Flask, jsonify, render_template, request
 
 _anthropic = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from env
 
-_PDF_PROMPT = """You are a quantitative trading assistant analyzing a SpotGamma daily report for SPY 0DTE options trading.
+_PDF_PROMPT = """You are a quantitative trading assistant. Extract structured data from this SpotGamma PDF report.
 
-Extract and analyze the report and return ONLY a valid JSON object. Keep exact field names below:
+Return ONLY a valid JSON object with exactly these fields. No markdown, no explanation.
 
 {{
   "spy": {{
-    "reference_price": null, "call_wall": null, "put_wall": null,
-    "zero_gamma": null, "vol_trigger": null, "abs_gamma": null,
-    "move_1d": null, "move_5d": null,
-    "move_1d_high": null, "move_1d_low": null,
-    "combos": [], "key_levels": []
+    "reference_price": null,
+    "call_wall": null,
+    "put_wall": null,
+    "vol_trigger": null,
+    "zero_gamma": null,
+    "absolute_gamma": null,
+    "move_1d": null,
+    "move_5d": null,
+    "move_1d_high": null,
+    "move_1d_low": null,
+    "spy_levels": [],
+    "combos": []
   }},
   "spx": {{
-    "reference_price": null, "pivot": null,
-    "resistance": [], "support": [],
-    "call_wall": null, "put_wall": null,
-    "zero_gamma": null, "vol_trigger": null
+    "reference_price": null,
+    "call_wall": null,
+    "put_wall": null,
+    "vol_trigger": null,
+    "zero_gamma": null,
+    "pivot": null,
+    "resistance": [],
+    "support": []
+  }},
+  "macro": {{
+    "cor1m": null,
+    "risk_pivot_spx": null,
+    "positive_gamma_support": null,
+    "extreme_call_froth": null,
+    "volatility_spasm_risk": null,
+    "key_events": []
   }},
   "regime": {{
-    "gamma": null, "bias": null, "vix_posture": null, "summary": null
+    "gamma": null,
+    "bias": null,
+    "vix_posture": null,
+    "summary": null
   }},
-  "founder_alerts": ["<alert1>", "<alert2>"],
-  "gamma_interpretation": null,
+  "founder_alerts": [],
   "plan": {{
     "call_trigger": null,
     "put_trigger": null,
@@ -45,35 +66,25 @@ Extract and analyze the report and return ONLY a valid JSON object. Keep exact f
     "value": null,
     "justification": null
   }},
-  "sg_string": "$SPY, SPY, <call_wall>, <put_wall>, <vol_trigger>, <abs_gamma>, <put_wall>, <key_level_1>, <key_level_2>, <combo1>, <combo2>, <combo3>, <combo4>, <move_1d>, <move_5d>, <zero_gamma>"
+  "sg_string": "$SPY, SPY, <call_wall>, <put_wall>, <vol_trigger>, <absolute_gamma>, <put_wall>, <spy_level_1>, <spy_level_2>, <combo1>, <combo2>, <combo3>, <combo4>, <move_1d>, <move_5d>, <zero_gamma>"
 }}
 
 Rules:
-- move_1d/move_5d as decimals (0.65% = 0.0065)
-- move_1d_high/move_1d_low: absolute SPY price levels for the implied move range
-- call_trigger and put_trigger: use SPX level, add note "(SPY ~X)" in the value string
-- founder_alerts: array of strings, most important alerts from the Founder Note
-- score.value: REQUIRED integer 1-5 (5=perfect setup, 4=good, 3=ok with caution, 2=risky, 1=avoid)
-- score.justification: REQUIRED one sentence. Never return null for score fields.
+- move_1d and move_5d as decimals (0.61% = 0.0061)
+- move_1d_high and move_1d_low: absolute SPY price levels
+- cor1m: extract the COR1M indicator value if mentioned
+- risk_pivot_spx: extract the Risk Pivot SPX level if mentioned
+- positive_gamma_support: true/false
+- extreme_call_froth: true/false
+- volatility_spasm_risk: true/false
+- key_events: list of key dates/events mentioned
+- plan.call_trigger: SPY level to enter call (start with SPY)
+- plan.put_trigger: SPY level to enter put (start with SPY)
+- score.value: 1-5 integer (5=ideal, 1=avoid)
+- score.justification: one sentence, trading-desk style
+- founder_alerts: max 6 items, most important first
 - If field not found use null
 - Return raw JSON only, no markdown
-- Use institutional pre-market gamma desk language. Be concise and decision-oriented.
-- Use these terms where appropriate: Regime, Risk Pivot, Compression, Upside Froth, Vol Trigger, Call Wall, Put Wall, No-Trade Zone.
-- No long paragraphs. Max 2 sentences per field.
-- regime.summary: state the regime and one key risk or condition.
-- gamma_interpretation: state what gamma means for price action today.
-- plan.call_trigger MUST start with SPY first, then SPX in parentheses.
-  Example: "SPY 760 (SPX 7600) — breakout above Call Wall with follow-through and stable volatility."
-- plan.put_trigger MUST start with SPY first, then SPX in parentheses.
-  Example: "SPY 749 (SPX 7490) — Risk Pivot break confirms weakness."
-- plan.avoid: one clear 0DTE rule. No-Trade Zone must be written in SPY terms first.
-  Example: "No-Trade Zone: SPY 751–755 inside compressed gamma range."
-- plan.best_setup: one actionable 0DTE setup first. If the report mentions 2-3 month puts or hedges, add only a short "Hedge note" at the end.
-- Use SPY as the primary trading instrument. SPX levels are context only.
-- Do not mix 0DTE trade plan with swing hedge.
-- Do not write triggers starting with SPX. Always start with SPY.
-- founder_alerts: max 6 items, most important first.
-- score.justification: one sentence, trading-desk style.
 
 PDF TEXT:
 {text}
