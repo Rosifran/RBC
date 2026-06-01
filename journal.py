@@ -49,6 +49,25 @@ def init_db():
     with get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute(CREATE_TABLE)
+            # Adiciona colunas novas se não existirem
+            new_cols = [
+                ("c4_reclaimed",       "BOOLEAN"),
+                ("c4_reclaimed_time",  "VARCHAR(10)"),
+                ("c1_hit",             "BOOLEAN"),
+                ("c1_hit_time",        "VARCHAR(10)"),
+                ("call_wall_hit",      "BOOLEAN"),
+                ("call_wall_hit_time", "VARCHAR(10)"),
+                ("near_call_wall",     "BOOLEAN"),
+                ("max_spy",            "NUMERIC(8,2)"),
+                ("min_spy",            "NUMERIC(8,2)"),
+                ("trade_path",         "VARCHAR(100)"),
+                ("trade_quality",      "VARCHAR(50)"),
+            ]
+            for col, typ in new_cols:
+                cur.execute(f"""
+                    ALTER TABLE trade_journal
+                    ADD COLUMN IF NOT EXISTS {col} {typ};
+                """)
         conn.commit()
 
 def save_snapshot(data):
