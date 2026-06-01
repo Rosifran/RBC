@@ -694,9 +694,9 @@
         <span class="form-hint">Volatilidade implícita anualizada</span>
       </div>
       <div class="form-group">
-        <label class="form-label">Prêmio</label>
-        <input class="form-input" id="m3-premio" type="number" step="0.01" placeholder="ex: 3.40" oninput="updateModo3Preview()">
-        <span class="form-hint">Prêmio da opção (bid/ask mid)</span>
+        <label class="form-label">Prêmio <span style="color:#94a3b8;font-weight:400;">(opcional)</span></label>
+        <input class="form-input" id="m3-premio" type="number" step="0.01" placeholder="ex: 1.80 — opcional">
+        <span class="form-hint">Se não informado, alvo/stop serão calculados após entrada</span>
       </div>
       <div class="form-group">
         <label class="form-label">Strike</label>
@@ -1000,7 +1000,7 @@
     const tipo    = (document.getElementById('m3-tipo').value || '').toUpperCase();
     const strike  = parseFloat(document.getElementById('m3-strike').value) || 0;
     const premio  = parseFloat(document.getElementById('m3-premio').value) || 0;
-    const iv      = parseFloat(document.getElementById('m3-iv').value) || 0;
+    const iv      = parseFloat(document.getElementById('m3-iv').value) || 13.0;
     const spot    = parseFloat(document.getElementById('m3-spot').value) || 0;
     const horario = document.getElementById('m3-dte').value || '';
 
@@ -1034,9 +1034,6 @@
     if (!hasPDF) {
       verdict = 'SEM CONTEXTO'; verdictColor = '#94a3b8';
       motivo = 'Processar PDF no Modo 1 primeiro para ativar o contexto do dia.';
-    } else if (!premio) {
-      verdict = 'INCOMPLETO'; verdictColor = '#94a3b8';
-      motivo = 'Informe o prêmio da opção para calcular o plano.';
     } else if (score > 0 && score <= 2) {
       verdict = 'NO TRADE'; verdictColor = '#dc2626';
       motivo = `Score ${score}/5 — condições insuficientes. Não operar hoje.`;
@@ -1060,8 +1057,8 @@
       motivo = 'Selecione CALL ou PUT e confirme os dados.';
     }
 
-    const target   = premio ? (premio * 1.75).toFixed(2) : '—';
-    const stop     = premio ? (premio * 0.50).toFixed(2) : '—';
+    const target   = premio ? \`$\${(premio * 1.75).toFixed(2)} (+75%)\` : 'Defina após entrada real na IBKR';
+    const stop     = premio ? \`$\${(premio * 0.50).toFixed(2)} (-50%)\` : 'Defina após entrada real na IBKR';
     const trigDist = tipo === 'CALL' && callTrig ? (callTrig - spot).toFixed(2)
                    : tipo === 'PUT'  && putTrig  ? (spot - putTrig).toFixed(2) : '—';
 
@@ -1092,8 +1089,8 @@
   <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
     <div style="padding:6px 12px;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #f1f5f9;">Plano 0DTE <span style="font-weight:400;color:#94a3b8;">(regra padrão)</span></div>
     ${row('Entry', tipo==='CALL' ? `≥ SPY ${callTrig}` : `≤ SPY ${putTrig}`, '#1e293b')}
-    ${row('Target', `$${target} (+75%)`, '#16a34a')}
-    ${row('Stop', `$${stop} (-50%)`, '#dc2626')}
+    ${row('Target', target, premio ? '#16a34a' : '#94a3b8')}
+    ${row('Stop', stop, premio ? '#dc2626' : '#94a3b8')}
     ${row('Trigger Dist', trigDist !== '—' ? `${trigDist} pts` : '—', parseFloat(trigDist) > 2 ? '#d97706' : '#1e293b')}
     ${row('Time Risk', timeRisk, timeRisk.includes('ALTO') ? '#dc2626' : timeRisk.includes('MÉDIO') ? '#d97706' : '#16a34a')}
     ${row('Score PDF', score ? `${score}/5` : '—', score>=4?'#16a34a':score>=3?'#d97706':'#dc2626')}
