@@ -36,7 +36,20 @@ CREATE TABLE IF NOT EXISTS trade_journal (
     max_favorable_move  NUMERIC(6,2),
     max_adverse_move    NUMERIC(6,2),
     best_trade_window   VARCHAR(20),
-    notes               TEXT
+    notes               TEXT,
+    c4_reclaimed        BOOLEAN,
+    c4_reclaimed_time   VARCHAR(10),
+    c1_hit              BOOLEAN,
+    c1_hit_time         VARCHAR(10),
+    call_wall_hit       BOOLEAN,
+    call_wall_hit_time  VARCHAR(10),
+    near_call_wall      BOOLEAN,
+    max_spy             NUMERIC(8,2),
+    min_spy             NUMERIC(8,2),
+    trade_path          VARCHAR(100),
+    trade_quality       VARCHAR(50),
+    vol_trigger_lost      BOOLEAN,
+    vol_trigger_lost_time VARCHAR(10)
 );
 """
 
@@ -49,25 +62,23 @@ def init_db():
     with get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute(CREATE_TABLE)
-            # Adiciona colunas novas se não existirem
             new_cols = [
-                ("c4_reclaimed",       "BOOLEAN"),
-                ("c4_reclaimed_time",  "VARCHAR(10)"),
-                ("c1_hit",             "BOOLEAN"),
-                ("c1_hit_time",        "VARCHAR(10)"),
-                ("call_wall_hit",      "BOOLEAN"),
-                ("call_wall_hit_time", "VARCHAR(10)"),
-                ("near_call_wall",     "BOOLEAN"),
-                ("max_spy",            "NUMERIC(8,2)"),
-                ("min_spy",            "NUMERIC(8,2)"),
-                ("trade_path",         "VARCHAR(100)"),
-                ("trade_quality",      "VARCHAR(50)"),
+                ("c4_reclaimed",          "BOOLEAN"),
+                ("c4_reclaimed_time",     "VARCHAR(10)"),
+                ("c1_hit",                "BOOLEAN"),
+                ("c1_hit_time",           "VARCHAR(10)"),
+                ("call_wall_hit",         "BOOLEAN"),
+                ("call_wall_hit_time",    "VARCHAR(10)"),
+                ("near_call_wall",        "BOOLEAN"),
+                ("max_spy",               "NUMERIC(8,2)"),
+                ("min_spy",               "NUMERIC(8,2)"),
+                ("trade_path",            "VARCHAR(100)"),
+                ("trade_quality",         "VARCHAR(50)"),
+                ("vol_trigger_lost",      "BOOLEAN"),
+                ("vol_trigger_lost_time", "VARCHAR(10)"),
             ]
             for col, typ in new_cols:
-                cur.execute(f"""
-                    ALTER TABLE trade_journal
-                    ADD COLUMN IF NOT EXISTS {col} {typ};
-                """)
+                cur.execute("ALTER TABLE trade_journal ADD COLUMN IF NOT EXISTS %s %s;" % (col, typ))
         conn.commit()
 
 def save_snapshot(data):
@@ -78,14 +89,14 @@ def save_snapshot(data):
         "open_spy","vix_open","spy_10am","spy_1030","spy_12pm","close_spy",
         "modo2_decision","entry_level","target_1","target_2","stop_level",
         "hit_target_1","hit_target_2","hit_stop",
-        "max_favorable_move","max_adverse_move","best_trade_window","notes"
+        "max_favorable_move","max_adverse_move","best_trade_window","notes",
+        "c4_reclaimed","c4_reclaimed_time","c1_hit","c1_hit_time",
+        "call_wall_hit","call_wall_hit_time","near_call_wall",
+        "max_spy","min_spy","trade_path","trade_quality",
+        "vol_trigger_lost","vol_trigger_lost_time"
     ]
-    # Só incluir campos que vieram preenchidos — não sobrescrever com null
     vals = {f: data.get(f) for f in fields if data.get(f) is not None}
-    # date é obrigatório
     if "date" not in vals:
-        vals["date"] = date.today().isoformat()
-    if not vals["date"]:
         vals["date"] = date.today().isoformat()
     vals["weekday"] = vals.get("weekday") or date.fromisoformat(str(vals["date"])).strftime("%A")
 
@@ -109,3 +120,11 @@ def get_journal(limit=30):
             cur.execute("SELECT * FROM trade_journal ORDER BY date DESC LIMIT %s", (limit,))
             rows = cur.fetchall()
     return [dict(r) for r in rows]
+
+def get_snapshot_by_date(date_str):
+    init_db()
+    with get_conn() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute("SELECT * FROM trade_journal WHERE date = %s LIMIT 1", (date_str,))
+            row = cur.fetchone()
+    return dict(row) if row else {}
