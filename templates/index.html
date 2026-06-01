@@ -1204,9 +1204,23 @@
     showError('modo3', '');
 
     try {
+      const spotVal = document.getElementById('m3-spot').value;
+      const ivVal = document.getElementById('m3-iv').value;
+
+      if (!_pdfData || !_pdfData.sg_string) {
+        showModo3Result({});
+        return;
+      }
+
       const body = {
-        spot: document.getElementById('m3-spot').value,
-        iv: document.getElementById('m3-iv').value,
+        // campos exigidos pelo backend atual
+        sg_raw: _pdfData.sg_string,
+        spot_spy: spotVal,
+        vix: ivVal,
+
+        // campos adicionais para o painel operacional
+        spot: spotVal,
+        iv: ivVal,
         premio: document.getElementById('m3-premio').value,
         strike: document.getElementById('m3-strike').value,
         tipo: document.getElementById('m3-tipo').value,
