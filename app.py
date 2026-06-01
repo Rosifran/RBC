@@ -332,13 +332,15 @@ def modo2():
     spot_now  = data.get("spot_now")  or data.get("spy_open_today") or data.get("spy_close_yesterday")
     sg_raw    = data.get("sg_raw")    or data.get("sg_string") or ""
 
+    # só vix_now e spot_now são obrigatórios
     required = []
-    if not vix_open:  required.append("vix_close_yesterday")
-    if not vix_now:   required.append("vix_open_today")
-    if not spot_open: required.append("spy_close_yesterday")
-    if not spot_now:  required.append("spy_open_today")
+    if not vix_now:  required.append("vix_now")
+    if not spot_now: required.append("spot_now")
     if required:
         return jsonify({"error": f"Missing fields: {', '.join(required)}"}), 400
+    # opcionais com fallback
+    if not vix_open:  vix_open  = vix_now
+    if not spot_open: spot_open = spot_now
 
     try:
         vix_open  = float(vix_open)
