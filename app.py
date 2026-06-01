@@ -278,6 +278,37 @@ def parse_pdf():
         traceback.print_exc()
         return jsonify({"error": f"Claude API error: {e}", "raw": locals().get("raw")}), 200
 
+    # ── Auto-save journal snapshot pré-market ──
+    try:
+        from journal import save_snapshot
+        spy_data  = parsed.get("spy") or {}
+        plan_data = parsed.get("plan") or {}
+        score_data = parsed.get("score") or {}
+        combos = sorted([c for c in (spy_data.get("combos") or []) if isinstance(c, (int, float))])
+        vol_trig = spy_data.get("vol_trigger") or spy_data.get("zero_gamma")
+        above = [c for c in combos if vol_trig and c > vol_trig]
+
+        import re
+        def extract_spy_level(txt):
+            if not txt: return None
+            m = re.search(r"SPY\s*([\d.]+)", txt or "")
+            return float(m.group(1)) if m else None
+
+        save_snapshot({
+            "pdf_score":    score_data.get("value"),
+            "call_wall":    spy_data.get("call_wall"),
+            "put_wall":     spy_data.get("put_wall"),
+            "vol_trigger":  spy_data.get("vol_trigger"),
+            "zero_gamma":   spy_data.get("zero_gamma"),
+            "c3":           above[0] if len(above) >= 1 else None,
+            "c4":           above[1] if len(above) >= 2 else None,
+            "c1":           above[2] if len(above) >= 3 else None,
+            "target_1":     plan_data.get("call_trigger") and extract_spy_level(plan_data.get("call_trigger")),
+            "stop_level":   plan_data.get("put_trigger") and extract_spy_level(plan_data.get("put_trigger")),
+        })
+    except Exception as je:
+        print(f"Journal auto-save warning: {je}")
+
     return jsonify({
         "ok": True,
         "spy": parsed.get("spy"),
@@ -478,6 +509,58 @@ def modo3():
 
     return jsonify(result)
 
+
+@app.route("/api/webhook", methods=["POST"])
+def tradingview_webhook():
+    """Recebe eventos do TradingView e atualiza o journal do dia."""
+    data = request.get_json(silent=True) or {}
+    event = data.get("event")
+    date  = data.get("date")
+    price = data.get("price")
+    time  = data.get("time")
+
+    if not event:
+        return jsonify({"error": "event required"}), 400
+
+    try:
+        from journal import save_snapshot, get_journal
+        update = {"date": date} if date else {}
+
+        if event == "c4_reclaimed":
+            update.update({"c4_reclaimed": True, "c4_reclaimed_time": time})
+        elif event == "c1_hit":
+            update.update({"c1_hit": True, "c1_hit_time": time})
+        elif event == "call_wall_hit":
+            update.update({"call_wall_hit": True, "call_wall_hit_time": time})
+        elif event == "near_call_wall":
+            update.update({"near_call_wall": True})
+        elif event == "vol_trigger_lost":
+            update.update({"hit_stop": True})
+        elif event == "close_day":
+            update.update({
+                "open_spy":  data.get("open"),
+                "close_spy": data.get("close"),
+                "max_spy":   data.get("high"),
+                "min_spy":   data.get("low"),
+            })
+
+        # Recalcula trade_path baseado nos eventos do dia
+        rows = get_journal(1)
+        if rows:
+            row = rows[0]
+            path_parts = []
+            if row.get("c4_reclaimed"): path_parts.append("c4")
+            if row.get("c1_hit"):       path_parts.append("c1")
+            if row.get("near_call_wall"): path_parts.append("near_call_wall")
+            if row.get("call_wall_hit"): path_parts.append("call_wall")
+            if row.get("hit_stop"):     path_parts.append("stop")
+            if path_parts:
+                update["trade_path"] = "compression -> " + " -> ".join(path_parts)
+
+        row = save_snapshot(update)
+        return jsonify({"ok": True, "event": event, "date": str(row["date"])})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/api/save-snapshot", methods=["POST"])
 def save_snapshot_route():
