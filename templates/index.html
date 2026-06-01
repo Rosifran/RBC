@@ -678,6 +678,10 @@
 
   <div class="inputs-card">
     <p class="inputs-card-title">Dados do ativo e opção</p>
+    <div style="display:flex;gap:8px;margin-bottom:12px;">
+      <button type="button" onclick="fillFromPDF3()" style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:600;color:#334155;cursor:pointer;">📄 Usar dados do PDF</button>
+      <button type="button" onclick="fillExample3()" style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:600;color:#334155;cursor:pointer;">⚡ Exemplo 0DTE</button>
+    </div>
     <div class="form-grid">
       <div class="form-group">
         <label class="form-label">Spot</label>
@@ -908,6 +912,7 @@
       const res = await fetch('/api/parse-pdf', { method: 'POST', body: form });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Erro ao processar PDF');
+      _pdfData = data;
       showParseResult(data);
       document.getElementById('modo1-form-divider').style.display = 'block';
       document.getElementById('modo1-form').style.display = 'block';
@@ -955,6 +960,155 @@
       setLoading('modo1', false);
       btn.disabled = false;
     }
+  }
+
+  // ── Modo 3: Global PDF data + Auto-fill + Verdict ──
+  let _pdfData = null;
+
+  function fillFromPDF3() {
+    const spy   = _pdfData && _pdfData.spy   || {};
+    const regime= _pdfData && _pdfData.regime || {};
+    const plan  = _pdfData && _pdfData.plan  || {};
+    if (!spy.reference_price) { alert('Processar PDF primeiro no Modo 1.'); return; }
+    document.getElementById('m3-spot').value   = spy.reference_price || '';
+    document.getElementById('m3-iv').value     = spy.move_1d ? (spy.move_1d * 100 * Math.sqrt(252)).toFixed(1) : '';
+    document.getElementById('m3-strike').value = spy.call_wall || '';
+    document.getElementById('m3-tipo').value   = regime.bias === 'bearish' ? 'PUT' : 'CALL';
+    document.getElementById('m3-dte').value    = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('m3-obs').value    = plan.avoid || regime.summary || '';
+  }
+
+  function fillExample3() {
+    const spy  = _pdfData && _pdfData.spy  || {};
+    const plan = _pdfData && _pdfData.plan || {};
+    document.getElementById('m3-spot').value   = spy.reference_price || 754;
+    document.getElementById('m3-iv').value     = 15.4;
+    document.getElementById('m3-premio').value = 1.80;
+    document.getElementById('m3-strike').value = spy.call_wall || 755;
+    document.getElementById('m3-tipo').value   = 'CALL';
+    document.getElementById('m3-dte').value    = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('m3-obs').value    = (plan && plan.avoid) || 'Dentro da No-Trade Zone, aguardando rompimento.';
+  }
+
+  function showModo3Result(data) {
+    const box = document.getElementById('modo3-result');
+    const pre = document.getElementById('modo3-result-content');
+    pre.style.whiteSpace = 'normal';
+    pre.style.fontFamily = 'inherit';
+    pre.style.margin = '0';
+
+    const tipo    = (document.getElementById('m3-tipo').value || '').toUpperCase();
+    const strike  = parseFloat(document.getElementById('m3-strike').value) || 0;
+    const premio  = parseFloat(document.getElementById('m3-premio').value) || 0;
+    const iv      = parseFloat(document.getElementById('m3-iv').value) || 0;
+    const spot    = parseFloat(document.getElementById('m3-spot').value) || 0;
+    const horario = document.getElementById('m3-dte').value || '';
+
+    const hasPDF  = !!_pdfData;
+    const spy     = hasPDF && _pdfData.spy   || {};
+    const plan    = hasPDF && _pdfData.plan  || {};
+    const sc      = hasPDF && _pdfData.score || {};
+    const score   = sc.value || 0;
+
+    const callWall  = spy.call_wall   || 0;
+    const volTrig   = spy.vol_trigger || 0;
+    const zeroGamma = spy.zero_gamma  || 0;
+    const putWall   = spy.put_wall    || 0;
+
+    const extractSPY = txt => {
+      if (!txt) return null;
+      const m = txt.match(/SPY[\s]*([\d.]+)/i);
+      return m ? parseFloat(m[1]) : null;
+    };
+    const callTrig = extractSPY(plan.call_trigger) || callWall || 0;
+    const putTrig  = extractSPY(plan.put_trigger)  || volTrig  || 0;
+
+    const noTradeText = plan.avoid || '';
+    const ntMatch = noTradeText.match(/SPY[\s]*([\d.]+)[\u2013\-]([\d.]+)/i);
+    const ntLow   = ntMatch ? parseFloat(ntMatch[1]) : Math.min(volTrig, zeroGamma);
+    const ntHigh  = ntMatch ? parseFloat(ntMatch[2]) : callWall;
+    const inNoTrade = spot > 0 && ntLow > 0 && ntHigh > 0 && spot >= ntLow && spot <= ntHigh;
+
+    let verdict, verdictColor, motivo;
+
+    if (!hasPDF) {
+      verdict = 'SEM CONTEXTO'; verdictColor = '#94a3b8';
+      motivo = 'Processar PDF no Modo 1 primeiro para ativar o contexto do dia.';
+    } else if (!premio) {
+      verdict = 'INCOMPLETO'; verdictColor = '#94a3b8';
+      motivo = 'Informe o prêmio da opção para calcular o plano.';
+    } else if (score > 0 && score <= 2) {
+      verdict = 'NO TRADE'; verdictColor = '#dc2626';
+      motivo = `Score ${score}/5 — condições insuficientes. Não operar hoje.`;
+    } else if (inNoTrade) {
+      verdict = 'NO TRADE'; verdictColor = '#dc2626';
+      motivo = `SPY ${spot} dentro da No-Trade Zone (${ntLow}–${ntHigh}). Sem edge direcional.`;
+    } else if (tipo === 'CALL' && spot >= callTrig && score >= 3) {
+      verdict = 'CALL OK'; verdictColor = '#16a34a';
+      motivo = `SPY ${spot} acima do Call Trigger (${callTrig}). Score ${score}/5. Entrada bull confirmada.`;
+    } else if (tipo === 'PUT' && spot <= putTrig && score >= 3) {
+      verdict = 'PUT OK'; verdictColor = '#dc2626';
+      motivo = `SPY ${spot} abaixo do Put Trigger (${putTrig}). Score ${score}/5. Entrada bear confirmada.`;
+    } else if (tipo === 'CALL') {
+      verdict = 'WAIT'; verdictColor = '#d97706';
+      motivo = `SPY ${spot} ainda ${(callTrig-spot).toFixed(2)} pts abaixo do Call Trigger (${callTrig}). Aguarda rompimento.`;
+    } else if (tipo === 'PUT') {
+      verdict = 'WAIT'; verdictColor = '#d97706';
+      motivo = `SPY ${spot} ainda ${(spot-putTrig).toFixed(2)} pts acima do Put Trigger (${putTrig}). Aguarda quebra.`;
+    } else {
+      verdict = 'WAIT'; verdictColor = '#d97706';
+      motivo = 'Selecione CALL ou PUT e confirme os dados.';
+    }
+
+    const target   = premio ? (premio * 1.75).toFixed(2) : '—';
+    const stop     = premio ? (premio * 0.50).toFixed(2) : '—';
+    const trigDist = tipo === 'CALL' && callTrig ? (callTrig - spot).toFixed(2)
+                   : tipo === 'PUT'  && putTrig  ? (spot - putTrig).toFixed(2) : '—';
+
+    let timeRisk = 'não calculado';
+    if (horario) {
+      const parts = horario.match(/(\d{1,2}):(\d{2})/);
+      if (parts) {
+        const h = parseFloat(parts[1]) + parseFloat(parts[2])/60;
+        const left = 16 - h;
+        timeRisk = left < 1.5 ? '🔴 ALTO — <1.5h' : left < 3 ? '🟡 MÉDIO' : '🟢 BAIXO';
+      }
+    }
+
+    const row = (l,v,c) => `<div style="display:flex;align-items:center;border-bottom:1px solid #f8fafc;">
+      <span style="min-width:130px;padding:5px 12px;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;">${l}</span>
+      <span style="padding:5px 12px;font-size:13px;font-weight:700;color:${c};">${v}</span></div>`;
+
+    pre.innerHTML = `
+<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:grid;gap:8px;color:#1e293b;">
+  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:8px 14px;">
+    <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:3px;">Opção em Análise</div>
+    <div style="font-size:14px;font-weight:700;">${tipo||'—'} ${strike||'—'} &nbsp;<span style="font-weight:400;color:#475569;">prêmio $${premio} | IV ${iv}% | spot ${spot} | ${horario}</span></div>
+  </div>
+  <div style="background:#fff;border:2px solid ${verdictColor};border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:16px;">
+    <div style="font-size:28px;font-weight:800;color:${verdictColor};line-height:1;flex-shrink:0;">${verdict}</div>
+    <div style="font-size:12px;color:#475569;line-height:1.5;">${motivo}</div>
+  </div>
+  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
+    <div style="padding:6px 12px;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #f1f5f9;">Plano 0DTE <span style="font-weight:400;color:#94a3b8;">(regra padrão)</span></div>
+    ${row('Entry', tipo==='CALL' ? \`≥ SPY \${callTrig}\` : \`≤ SPY \${putTrig}\`, '#1e293b')}
+    ${row('Target', \`$\${target} (+75%)\`, '#16a34a')}
+    ${row('Stop', \`$\${stop} (-50%)\`, '#dc2626')}
+    ${row('Trigger Dist', trigDist !== '—' ? \`\${trigDist} pts\` : '—', parseFloat(trigDist) > 2 ? '#d97706' : '#1e293b')}
+    ${row('Time Risk', timeRisk, timeRisk.includes('ALTO') ? '#dc2626' : timeRisk.includes('MÉDIO') ? '#d97706' : '#16a34a')}
+    ${row('Score PDF', score ? \`\${score}/5\` : '—', score>=4?'#16a34a':score>=3?'#d97706':'#dc2626')}
+  </div>
+  <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:7px 12px;display:flex;gap:14px;flex-wrap:wrap;font-size:12px;">
+    <span style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;align-self:center;">Níveis SPY</span>
+    ${callWall  ? \`<span><span style="color:#94a3b8;">Call Wall </span><strong style="color:#16a34a;">\${callWall}</strong></span>\` : ''}
+    ${volTrig   ? \`<span><span style="color:#94a3b8;">Vol Trigger </span><strong style="color:#d97706;">\${volTrig}</strong></span>\` : ''}
+    ${zeroGamma ? \`<span><span style="color:#94a3b8;">Zero Gamma </span><strong>\${zeroGamma}</strong></span>\` : ''}
+    ${putWall   ? \`<span><span style="color:#94a3b8;">Put Wall </span><strong style="color:#dc2626;">\${putWall}</strong></span>\` : ''}
+    ${ntLow && ntHigh ? \`<span><span style="color:#94a3b8;">No-Trade </span><strong style="color:#d97706;">\${ntLow}–\${ntHigh}</strong></span>\` : ''}
+  </div>
+</div>`;
+
+    box.classList.add('visible');
   }
 
   // ── Modo 1: SpotGamma string ──
@@ -1066,7 +1220,7 @@
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Erro no Modo 3');
-      showResult('modo3', data);
+      showModo3Result(data);
     } catch (e) {
       showError('modo3', e.message);
     } finally {
