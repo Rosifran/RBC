@@ -1035,15 +1035,17 @@
 
     // Strike recomendado
     let pref_strike, alt_strike, strike_note;
-    const s = Math.round(spot);
+    const s = Math.floor(spot);  // floor = ITM leve para CALL
     if (verdict.includes('CALL')) {
-      pref_strike  = s;
-      alt_strike   = s - 1;
-      strike_note  = 'ATM ou levemente ITM — reduz decay e evita OTM em 0DTE.';
+      pref_strike  = s;          // ex: spot 757.57 → strike 757
+      alt_strike   = s - 1;      // alternativa mais ITM
+      strike_note  = verdict.includes('SMALL') ?
+        'ITM leve recomendado para CALL SMALL — reduz risco de vencer OTM.' :
+        'ATM ou levemente ITM — reduz decay em 0DTE.';
     } else {
-      pref_strike  = s;
-      alt_strike   = s + 1;
-      strike_note  = 'ATM ou levemente ITM — reduz decay e evita OTM em 0DTE.';
+      pref_strike  = Math.ceil(spot);  // ceil = ITM leve para PUT
+      alt_strike   = pref_strike + 1;
+      strike_note  = 'ATM ou levemente ITM — reduz decay em 0DTE.';
     }
 
     // Prêmio
