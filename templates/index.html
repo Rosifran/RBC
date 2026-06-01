@@ -648,7 +648,7 @@
   <div class="error-box" id="modo2-error"></div>
   <div class="result-box" id="modo2-result">
     <div class="result-header">Resultado Modo 2</div>
-    <div class="result-body"><pre id="modo2-result-content"></pre></div>
+    <div class="result-body"><div id="modo2-result-content"></div></div>
   </div>
 </div>
 
@@ -1240,11 +1240,9 @@
 </div>`;
 
     const box = document.getElementById('modo2-result');
-    const pre = document.getElementById('modo2-result-content');
-    pre.style.whiteSpace = 'normal';
-    pre.style.fontFamily = 'inherit';
-    pre.style.margin = '0';
-    pre.innerHTML = html;
+    const el = document.getElementById('modo2-result-content');
+    el.style.padding = '8px';
+    el.innerHTML = html;
     box.classList.add('visible');
   }
 
