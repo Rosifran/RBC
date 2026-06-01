@@ -1091,20 +1091,20 @@
   </div>
   <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
     <div style="padding:6px 12px;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #f1f5f9;">Plano 0DTE <span style="font-weight:400;color:#94a3b8;">(regra padrão)</span></div>
-    ${row('Entry', tipo==='CALL' ? \`≥ SPY \${callTrig}\` : \`≤ SPY \${putTrig}\`, '#1e293b')}
-    ${row('Target', \`$\${target} (+75%)\`, '#16a34a')}
-    ${row('Stop', \`$\${stop} (-50%)\`, '#dc2626')}
-    ${row('Trigger Dist', trigDist !== '—' ? \`\${trigDist} pts\` : '—', parseFloat(trigDist) > 2 ? '#d97706' : '#1e293b')}
+    ${row('Entry', tipo==='CALL' ? `≥ SPY ${callTrig}` : `≤ SPY ${putTrig}`, '#1e293b')}
+    ${row('Target', `$${target} (+75%)`, '#16a34a')}
+    ${row('Stop', `$${stop} (-50%)`, '#dc2626')}
+    ${row('Trigger Dist', trigDist !== '—' ? `${trigDist} pts` : '—', parseFloat(trigDist) > 2 ? '#d97706' : '#1e293b')}
     ${row('Time Risk', timeRisk, timeRisk.includes('ALTO') ? '#dc2626' : timeRisk.includes('MÉDIO') ? '#d97706' : '#16a34a')}
-    ${row('Score PDF', score ? \`\${score}/5\` : '—', score>=4?'#16a34a':score>=3?'#d97706':'#dc2626')}
+    ${row('Score PDF', score ? `${score}/5` : '—', score>=4?'#16a34a':score>=3?'#d97706':'#dc2626')}
   </div>
   <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:7px 12px;display:flex;gap:14px;flex-wrap:wrap;font-size:12px;">
     <span style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;align-self:center;">Níveis SPY</span>
-    ${callWall  ? \`<span><span style="color:#94a3b8;">Call Wall </span><strong style="color:#16a34a;">\${callWall}</strong></span>\` : ''}
-    ${volTrig   ? \`<span><span style="color:#94a3b8;">Vol Trigger </span><strong style="color:#d97706;">\${volTrig}</strong></span>\` : ''}
-    ${zeroGamma ? \`<span><span style="color:#94a3b8;">Zero Gamma </span><strong>\${zeroGamma}</strong></span>\` : ''}
-    ${putWall   ? \`<span><span style="color:#94a3b8;">Put Wall </span><strong style="color:#dc2626;">\${putWall}</strong></span>\` : ''}
-    ${ntLow && ntHigh ? \`<span><span style="color:#94a3b8;">No-Trade </span><strong style="color:#d97706;">\${ntLow}–\${ntHigh}</strong></span>\` : ''}
+    ${callWall  ? `<span><span style="color:#94a3b8;">Call Wall </span><strong style="color:#16a34a;">${callWall}</strong></span>` : ''}
+    ${volTrig   ? `<span><span style="color:#94a3b8;">Vol Trigger </span><strong style="color:#d97706;">${volTrig}</strong></span>` : ''}
+    ${zeroGamma ? `<span><span style="color:#94a3b8;">Zero Gamma </span><strong>${zeroGamma}</strong></span>` : ''}
+    ${putWall   ? `<span><span style="color:#94a3b8;">Put Wall </span><strong style="color:#dc2626;">${putWall}</strong></span>` : ''}
+    ${ntLow && ntHigh ? `<span><span style="color:#94a3b8;">No-Trade </span><strong style="color:#d97706;">${ntLow}–${ntHigh}</strong></span>` : ''}
   </div>
 </div>`;
 
