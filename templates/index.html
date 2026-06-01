@@ -1043,11 +1043,11 @@
     const motivo = m2d.reason || m2d.entry || '';
 
     // Dados do form
-    const tipo   = verdict.includes('CALL') ? 'CALL' : verdict.includes('PUT') ? 'PUT' : (document.getElementById('m3-tipo').value || '').toUpperCase();
+    const tipo   = verdict.includes('CALL') ? 'CALL' : verdict.includes('PUT') ? 'PUT' : window._modo2Tipo || (document.getElementById('m3-tipo').value || '').toUpperCase();
     const strike = parseFloat(document.getElementById('m3-strike').value) || 0;
     const premio = parseFloat(document.getElementById('m3-premio').value) || 0;
     const iv     = parseFloat(document.getElementById('m3-iv').value) || 0;
-    const spot   = parseFloat(document.getElementById('m3-spot').value) || 0;
+    const spot   = window._modo2Spot || parseFloat(document.getElementById('m3-spot').value) || 0;
 
     // Níveis do PDF
     const hasPDF    = !!window._pdfData;
@@ -1289,7 +1289,14 @@
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Erro no Modo 2');
-      if (data.rbc_decision) window._modo2Decision = data.rbc_decision;
+      window._modo2Data     = data;
+      window._modo2Decision = data.rbc_decision || null;
+      window._modo2Spot     = data.spot_now || null;
+      const _dec = (data.rbc_decision && data.rbc_decision.decision) || '';
+      window._modo2Tipo = _dec.includes('CALL') ? 'CALL' : _dec.includes('PUT') ? 'PUT' : '';
+      // Auto-preencher Modo 3
+      const _s = document.getElementById('m3-spot'); if (_s && window._modo2Spot) _s.value = window._modo2Spot;
+      const _t = document.getElementById('m3-tipo'); if (_t && window._modo2Tipo) _t.value = window._modo2Tipo;
       showModo2Result(data);
     } catch (e) {
       showError('modo2', e.message);
