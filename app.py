@@ -479,6 +479,27 @@ def modo3():
     return jsonify(result)
 
 
+@app.route("/api/save-snapshot", methods=["POST"])
+def save_snapshot_route():
+    from journal import save_snapshot, init_db
+    try:
+        init_db()
+        data = request.get_json(silent=True) or {}
+        row = save_snapshot(data)
+        return jsonify({"ok": True, "id": row["id"], "date": str(row["date"])})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/journal", methods=["GET"])
+def get_journal_route():
+    from journal import get_journal
+    try:
+        limit = int(request.args.get("limit", 30))
+        rows = get_journal(limit)
+        return jsonify(rows)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5050))
     app.run(debug=True, port=port)
