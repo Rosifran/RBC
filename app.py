@@ -293,20 +293,32 @@ def modo2():
     """Opening watch (9:30–10:00 ET): VIX + HIRO + spot movement analysis."""
     data = request.get_json(silent=True) or {}
 
-    required = ["sg_raw", "vix_open", "vix_now", "spot_open", "spot_now"]
-    missing = [k for k in required if k not in data]
-    if missing:
-        return jsonify({"error": f"Missing fields: {', '.join(missing)}"}), 400
+    # Accept both old and new field names
+    vix_open  = data.get("vix_open")  or data.get("vix_close_yesterday")
+    vix_now   = data.get("vix_now")   or data.get("vix_open_today")
+    spot_open = data.get("spot_open") or data.get("spy_open_today") or data.get("spy_close_yesterday")
+    spot_now  = data.get("spot_now")  or data.get("spy_open_today") or data.get("spy_close_yesterday")
+    sg_raw    = data.get("sg_raw")    or data.get("sg_string") or ""
+
+    required = []
+    if not vix_open:  required.append("vix_close_yesterday")
+    if not vix_now:   required.append("vix_open_today")
+    if not spot_open: required.append("spy_close_yesterday")
+    if not spot_now:  required.append("spy_open_today")
+    if required:
+        return jsonify({"error": f"Missing fields: {', '.join(required)}"}), 400
 
     try:
-        vix_open  = float(data["vix_open"])
-        vix_now   = float(data["vix_now"])
-        spot_open = float(data["spot_open"])
-        spot_now  = float(data["spot_now"])
+        vix_open  = float(vix_open)
+        vix_now   = float(vix_now)
+        spot_open = float(spot_open)
+        spot_now  = float(spot_now)
         hiro      = data.get("hiro_direction", "neutral")
         capital   = float(data.get("capital", 50000))
     except (ValueError, TypeError) as e:
         return jsonify({"error": f"Invalid numeric value: {e}"}), 400
+
+    data["sg_raw"] = sg_raw
 
     sg = parse_sg_data(data["sg_raw"])
 
