@@ -431,6 +431,10 @@ def modo2():
             "levels":   {"no_trade_lo": no_trade_lo, "no_trade_hi": no_trade_hi, "call_wall": call_wall},
         }
 
+    ow["spot_now"]  = spot_now
+    ow["vix_now"]   = vix_now
+    ow["spot_open"] = spot_open
+    ow["vix_open"]  = vix_open
     return jsonify(ow)
 
 
