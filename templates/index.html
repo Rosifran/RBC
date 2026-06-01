@@ -616,29 +616,29 @@
     <p class="inputs-card-title">Dados de mercado</p>
     <div class="form-grid">
       <div class="form-group">
+        <label class="form-label">VIX — agora <span style="color:#e53e3e">*</span></label>
+        <input class="form-input" id="vix_now" type="number" step="0.01" placeholder="ex: 18.50" oninput="updateModo2Preview()">
+        <span class="form-hint">VIX atual (obrigatório)</span>
+      </div>
+      <div class="form-group">
+        <label class="form-label">SPY — agora <span style="color:#e53e3e">*</span></label>
+        <input class="form-input" id="spot_now" type="number" step="0.01" placeholder="ex: 756.00" oninput="updateModo2Preview()">
+        <span class="form-hint">SPY atual (obrigatório)</span>
+      </div>
+      <div class="form-group">
         <label class="form-label">VIX — fechamento ontem</label>
-        <input class="form-input" id="m2-vix" type="number" step="0.01" placeholder="ex: 18.50" oninput="updateModo2Preview()">
-        <span class="form-hint">VIX do fechamento anterior</span>
+        <input class="form-input" id="m2-vix" type="number" step="0.01" placeholder="ex: 18.50">
+        <span class="form-hint">Opcional</span>
       </div>
       <div class="form-group">
-        <label class="form-label">SPY — fechamento ontem</label>
-        <input class="form-input" id="m2-spy" type="number" step="0.01" placeholder="ex: 522.30" oninput="updateModo2Preview()">
-        <span class="form-hint">Preço de fechamento anterior</span>
-      </div>
-      <div class="form-group">
-        <label class="form-label">VIX — abertura hoje (9:30)</label>
-        <input class="form-input" id="m2-vix-open" type="number" step="0.01" placeholder="ex: 19.10">
-        <span class="form-hint">VIX no momento da abertura</span>
-      </div>
-      <div class="form-group">
-        <label class="form-label">SPY — abertura hoje (9:30)</label>
-        <input class="form-input" id="m2-spy-open" type="number" step="0.01" placeholder="ex: 521.00">
-        <span class="form-hint">SPY no momento da abertura</span>
+        <label class="form-label">SPY — abertura</label>
+        <input class="form-input" id="spot_open" type="number" step="0.01" placeholder="Preenchido pelo PDF">
+        <span class="form-hint">Auto-preenchido pelo Modo 1</span>
       </div>
       <div class="form-group full">
         <label class="form-label">Contexto macro</label>
-        <input class="form-input" id="m2-macro" type="text" placeholder="ex: FOMC amanhã, NFP na sexta">
-        <span class="form-hint">Eventos relevantes do dia</span>
+        <input class="form-input" id="m2-macro" type="text" placeholder="Preenchido pelo PDF">
+        <span class="form-hint">Auto-preenchido pelo Modo 1</span>
       </div>
     </div>
   </div>
@@ -913,6 +913,8 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Erro ao processar PDF');
       _pdfData = data;
+      window._pdfData = data;
+      if (typeof autofillModo2 === 'function') autofillModo2(data);
       showParseResult(data);
       document.getElementById('modo1-form-divider').style.display = 'block';
       document.getElementById('modo1-form').style.display = 'block';
@@ -921,7 +923,22 @@
       if (data.regime && data.regime.bias) document.getElementById('m1-bias').value = data.regime.bias;
       document.getElementById('m1-hora').value = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
       if (data.regime && data.regime.summary) document.getElementById('m1-obs').value = data.regime.summary;
-      // Auto-fill Modo 2 macro context from PDF founder alerts
+      // Auto-fill Modo 2 from PDF
+  function autofillModo2(pdf) {
+    const ref = pdf.spy && pdf.spy.reference_price;
+    if (ref) {
+      const el = document.getElementById('spot_open');
+      if (el && !el.value) el.value = ref;
+    }
+    const alerts = pdf.founder_alerts || [];
+    const summary = (pdf.regime && pdf.regime.summary) || '';
+    const macro = alerts.slice(0,3).join(' | ') || summary;
+    if (macro) {
+      const el = document.getElementById('m2-macro');
+      if (el && !el.value) el.value = macro;
+    }
+  }
+  // Auto-fill Modo 2 macro context from PDF founder alerts
       if (data.founder_alerts && data.founder_alerts.length) {
         const macro = data.founder_alerts.slice(0,3).join(' | ');
         document.getElementById('m2-macro').value = macro;
@@ -1167,17 +1184,25 @@
 
   async function runModo2() {
     const btn = document.getElementById('btn-modo2');
+
+    const vix_now  = document.getElementById('vix_now').value;
+    const spot_now = document.getElementById('spot_now').value;
+
+    if (!vix_now)  { showError('modo2', 'Preencha VIX — agora.'); return; }
+    if (!spot_now) { showError('modo2', 'Preencha SPY — agora.'); return; }
+
     btn.disabled = true;
     setLoading('modo2', true);
     showError('modo2', '');
 
     try {
       const body = {
-        vix: document.getElementById('m2-vix').value,
-        spy: document.getElementById('m2-spy').value,
-        vix_open: document.getElementById('m2-vix-open').value,
-        spy_open: document.getElementById('m2-spy-open').value,
-        macro: document.getElementById('m2-macro').value,
+        sg_raw:    window.sgRaw || localStorage.getItem("sg_raw") || (window._pdfData && window._pdfData.sg_string) || '',
+        vix_now:   vix_now,
+        spot_open: document.getElementById('spot_open').value,
+        spot_now:  spot_now,
+        macro:     document.getElementById('m2-macro').value,
+        vix:       document.getElementById('m2-vix').value,
       };
       const res = await fetch('/api/modo2', {
         method: 'POST',
