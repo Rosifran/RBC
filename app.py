@@ -205,9 +205,6 @@ def normalize_claude_output(parsed):
         parsed["regime"] = regime
 
     parsed["gamma_interpretation"] = limit_sentences(parsed.get("gamma_interpretation"), 2)
-    parsed["plan"]["avoid"]         = limit_sentences(parsed["plan"].get("avoid"), 1)
-    parsed["plan"]["best_setup"]    = limit_sentences(parsed["plan"].get("best_setup"), 2)
-    parsed["score"]["justification"] = limit_sentences(parsed["score"].get("justification"), 1)
 
     return parsed
 
