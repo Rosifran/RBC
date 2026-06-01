@@ -80,10 +80,14 @@ def save_snapshot(data):
         "hit_target_1","hit_target_2","hit_stop",
         "max_favorable_move","max_adverse_move","best_trade_window","notes"
     ]
-    vals = {f: data.get(f) for f in fields}
+    # Só incluir campos que vieram preenchidos — não sobrescrever com null
+    vals = {f: data.get(f) for f in fields if data.get(f) is not None}
+    # date é obrigatório
+    if "date" not in vals:
+        vals["date"] = date.today().isoformat()
     if not vals["date"]:
         vals["date"] = date.today().isoformat()
-    vals["weekday"] = vals["weekday"] or date.fromisoformat(str(vals["date"])).strftime("%A")
+    vals["weekday"] = vals.get("weekday") or date.fromisoformat(str(vals["date"])).strftime("%A")
 
     cols   = ", ".join(vals.keys())
     params = ", ".join(["%("+k+")s" for k in vals.keys()])
