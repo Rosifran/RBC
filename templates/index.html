@@ -1108,6 +1108,19 @@
     box.classList.add('visible');
   }
 
+  window.onFileSelect = function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    window.selectedFile = file;
+    selectedFile = file;
+    const fileNameEl = document.getElementById("fileName");
+    if (fileNameEl) fileNameEl.textContent = file.name;
+    const processBtn = document.getElementById("processPdfBtn");
+    if (processBtn) processBtn.disabled = false;
+    // also trigger original setFile if exists
+    if (typeof setFile === 'function') setFile(file);
+  };
+
   // ── Modo 1: SpotGamma string ──
   async function loadSgString() {
     const sgString = document.getElementById('sg-string').value.trim();
