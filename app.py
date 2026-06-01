@@ -360,6 +360,77 @@ def modo2():
         vix_open, vix_now, hiro, spot_open, spot_now,
         sg_data=sg, capital=capital,
     )
+
+    # ── Lógica determinística RBC ──
+    spy        = sg.get('SPY') or sg.get('$SPY') or {}
+    combos_raw = spy.get('combos') or spy.get('combo_strikes') or []
+    combos     = sorted([c for c in combos_raw if isinstance(c, (int, float))])
+    vol_trig   = spy.get('vol_trigger') or spy.get('zero_gamma')
+    call_wall  = spy.get('call_wall')
+    put_wall   = spy.get('put_wall')
+    put_line   = vol_trig
+
+    above_put   = [c for c in combos if put_line and c > put_line]
+    no_trade_lo = put_line
+    no_trade_hi = above_put[1] if len(above_put) >= 2 else (above_put[0] if above_put else call_wall)
+    c_confirm   = above_put[2] if len(above_put) >= 3 else call_wall
+
+    # m1_score conservador — default 2 se não enviado
+    m1_score = int(data.get("m1_score") or 2)
+    risk_str = "High — Modo 1 score 2/5, extreme call froth." if m1_score <= 2 else "Medium." if m1_score <= 3 else "Normal."
+
+    if no_trade_lo and no_trade_hi and call_wall:
+        if spot_now < no_trade_lo:
+            decision = "PUT CONFIRMED"
+            reason   = f"SPY broke below {no_trade_lo}. Bearish bias confirmed."
+            entry    = f"Put entry confirmed below {no_trade_lo}."
+            stop     = f"Back above {no_trade_lo}."
+            # target_1 = maior spy_level abaixo de no_trade_lo
+            spy_levels = sorted([l for l in (spy.get('spy_levels') or [])
+                                  if isinstance(l, (int, float)) and l < no_trade_lo], reverse=True)
+            t1       = spy_levels[0] if spy_levels else round(no_trade_lo - 4, 2)
+            t2       = put_wall if put_wall else round(no_trade_lo - 14, 2)
+            op_score = min(3, m1_score + 1)
+
+        elif no_trade_lo <= spot_now <= no_trade_hi:
+            decision = "NO TRADE"
+            reason   = f"SPY inside compression zone {no_trade_lo}–{no_trade_hi}. Wait for breakout."
+            entry    = "No entry. Wait for clear break above or below."
+            stop     = None
+            t1       = no_trade_hi
+            t2       = call_wall
+            op_score = 2
+
+        elif spot_now > no_trade_hi and spot_now < c_confirm:
+            decision = "CALL ALLOWED SMALL"
+            reason   = f"SPY reclaimed {no_trade_hi} but still below {c_confirm} confirmation. VIX {'falling' if vix_now < vix_open else 'stable'}."
+            entry    = f"Small call allowed above {no_trade_hi}. Size small."
+            stop     = f"Below {above_put[0] if above_put else no_trade_lo} or back inside compression zone."
+            t1       = c_confirm
+            t2       = call_wall
+            op_score = min(3, m1_score + 1)
+
+        else:
+            decision = "CALL CONFIRMED"
+            reason   = f"SPY above {c_confirm}. Momentum confirmed. VIX {'falling' if vix_now < vix_open else 'stable'}."
+            entry    = f"Call confirmed above {c_confirm}."
+            stop     = f"Below {no_trade_hi}."
+            t1       = call_wall
+            t2       = above_put[3] if len(above_put) >= 4 else round(float(call_wall) + 2, 2) if call_wall else None
+            op_score = min(4, m1_score + 2)
+
+        ow["rbc_decision"] = {
+            "decision": decision,
+            "reason":   reason,
+            "entry":    entry,
+            "stop":     stop,
+            "target_1": str(t1) if t1 else None,
+            "target_2": str(t2) if t2 else None,
+            "op_score": op_score,
+            "risk":     risk_str,
+            "levels":   {"no_trade_lo": no_trade_lo, "no_trade_hi": no_trade_hi, "call_wall": call_wall},
+        }
+
     return jsonify(ow)
 
 
