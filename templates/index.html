@@ -1182,6 +1182,72 @@
     if (spy) document.getElementById('m2-spy-display').textContent = parseFloat(spy).toFixed(2);
   }
 
+  function showModo2Result(data) {
+    const d = data.rbc_decision || {};
+    const ow = data;
+    const decisionColor = {
+      'CALL CONFIRMED':      '#16a34a',
+      'CALL ALLOWED SMALL':  '#d97706',
+      'NO TRADE':            '#64748b',
+      'PUT ALLOWED SMALL':   '#f97316',
+      'PUT CONFIRMED':       '#dc2626',
+      'PUT WATCH':           '#dc2626',
+    }[d.decision] || '#475569';
+
+    const row2 = (color, label, text) => !text ? '' :
+      `<div style="display:flex;align-items:baseline;gap:0;border-left:3px solid ${color};margin-bottom:1px;">
+        <span style="min-width:80px;padding:5px 8px;font-size:10px;font-weight:700;color:${color};text-transform:uppercase;flex-shrink:0;">${label}</span>
+        <span style="padding:5px 8px 5px 6px;font-size:12px;color:#1e293b;line-height:1.4;border-bottom:1px solid #f1f5f9;flex:1;">${text}</span>
+      </div>`;
+
+    const sc = d.op_score || 0;
+    const scoreColor = sc >= 4 ? '#16a34a' : sc >= 3 ? '#d97706' : '#dc2626';
+
+    const html = `
+<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:grid;gap:8px;color:#1e293b;">
+
+  <div style="background:#fff;border:1px solid #e2e8f0;border-top:3px solid ${decisionColor};border-radius:8px;padding:12px 14px;">
+    <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Decisão Operacional</div>
+    <div style="font-size:22px;font-weight:800;color:${decisionColor};">${d.decision || '—'}</div>
+    <div style="font-size:12px;color:#475569;margin-top:4px;line-height:1.5;">${d.reason || ''}</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;text-align:center;">
+      <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;font-weight:600;">Score Operacional</div>
+      <div style="font-size:28px;font-weight:800;color:${scoreColor};line-height:1.2;">${sc}<span style="font-size:14px;color:#94a3b8;">/5</span></div>
+    </div>
+    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;text-align:center;">
+      <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;font-weight:600;">Risco</div>
+      <div style="font-size:12px;font-weight:700;color:#dc2626;margin-top:4px;line-height:1.3;">${d.risk || '—'}</div>
+    </div>
+  </div>
+
+  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
+    <div style="padding:6px 10px;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #f1f5f9;">Plano de Trade</div>
+    ${row2('#16a34a', 'Entrada',  d.entry)}
+    ${row2('#dc2626', 'Stop',     d.stop)}
+    ${row2('#3b82f6', 'Alvo 1',   d.target_1)}
+    ${row2('#8b5cf6', 'Alvo 2',   d.target_2)}
+  </div>
+
+  <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px 12px;">
+    <div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:4px;">Sinais de Abertura</div>
+    ${(ow.signals||[]).map(s=>`
+    <div style="font-size:12px;color:#334155;padding:2px 0;line-height:1.4;">${s[0]} <strong>${s[1]}</strong> — ${s[2]}</div>`).join('')}
+  </div>
+
+</div>`;
+
+    const box = document.getElementById('modo2-result');
+    const pre = document.getElementById('modo2-result-content');
+    pre.style.whiteSpace = 'normal';
+    pre.style.fontFamily = 'inherit';
+    pre.style.margin = '0';
+    pre.innerHTML = html;
+    box.classList.add('visible');
+  }
+
   async function runModo2() {
     const btn = document.getElementById('btn-modo2');
 
@@ -1211,7 +1277,7 @@
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Erro no Modo 2');
-      showResult('modo2', data);
+      showModo2Result(data);
     } catch (e) {
       showError('modo2', e.message);
     } finally {
