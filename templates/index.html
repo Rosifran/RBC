@@ -1420,8 +1420,12 @@
       });
       html += '</tr></thead><tbody>';
       rows.forEach(r => {
-        const parts = (r.date||'').substring(0,10).split('-');
-        const dt = parts.length===3 ? parts[2]+'/'+parts[1]+'/'+parts[0] : r.date;
+        const rawDate = r.date || '';
+        let dt = rawDate;
+        const isoMatch = rawDate.match(/(\d{4})-(\d{2})-(\d{2})/);
+        const gmtMatch = rawDate.match(/(\d{2}) (\w{3}) (\d{4})/);
+        if (isoMatch) { dt = isoMatch[3]+'/'+isoMatch[2]+'/'+isoMatch[1]; }
+        else if (gmtMatch) { const ms={'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06','Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'}; dt = gmtMatch[1]+'/'+ms[gmtMatch[2]]+'/'+gmtMatch[3]; }
         const sc = r.pdf_score;
         const c4 = r.c4_reclaimed ? ('✅ ' + (r.c4||'')) : '❌';
         const c1 = r.c1_hit ? ('✅ ' + (r.c1||'')) : '❌';
