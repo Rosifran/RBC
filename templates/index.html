@@ -1413,10 +1413,10 @@
       if (!rows.length) { el.innerHTML = '<p style="font-size:12px;color:#94a3b8;">Nenhum registro ainda.</p>'; return; }
       const decColor = d => (d||'').includes('CALL') ? '#16a34a' : (d||'').includes('PUT') ? '#dc2626' : (d||'')==='NO TRADE' ? '#64748b' : '#475569';
       const scoreColor = s => !s ? '#f1f5f9' : s<=2 ? '#fee2e2' : s>=4 ? '#dcfce7' : '#fef9c3';
-      let html = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:11px;">';
+      let html = '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;"><table style="width:100%;border-collapse:collapse;font-size:10px;white-space:nowrap;">';
       html += '<thead><tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0;">';
       ['Data','Day','Score','Open','Close','Max','Min','Decisao','Path','C4','C1','CW','VT Lost','Quality'].forEach(h => {
-        html += '<th style="padding:6px 8px;color:#64748b;font-weight:700;text-align:left;">'+h+'</th>';
+        html += '<th style="padding:4px 6px;color:#64748b;font-weight:700;text-align:left;white-space:nowrap;">'+h+'</th>';
       });
       html += '</tr></thead><tbody>';
       rows.forEach(r => {
