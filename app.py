@@ -143,32 +143,56 @@ def normalize_claude_output(parsed):
     elif not isinstance(fa, list):
         parsed["founder_alerts"] = []
 
-    # 4. call_trigger SPY-first and coherent with SPX
+    # 4 & 5. RBC decide — regra fixa, Claude só extrai dados
     spy = parsed.get("spy") or {}
     spx = parsed.get("spx") or {}
+    macro = parsed.get("macro") or {}
 
-    call_text = parsed["plan"].get("call_trigger")
-    spx_call = spx.get("call_wall")
-    spy_call_breakout = round(float(spx_call) / 10, 1) if spx_call else spy.get("call_wall")
+    combos   = spy.get("combos") or []
+    combos_f = sorted([c for c in combos if isinstance(c, (int, float))])
+    vol_trig  = spy.get("vol_trigger")
+    zero_g    = spy.get("zero_gamma")
+    call_wall = spy.get("call_wall")
+    cor1m     = macro.get("cor1m")
+    froth     = macro.get("extreme_call_froth")
+    vol_spasm = macro.get("volatility_spasm_risk")
 
-    if call_text and isinstance(call_text, str):
-        if "SPX 7600" in call_text or "7600" in call_text:
-            parsed["plan"]["call_trigger"] = f"SPY {spy_call_breakout:g} (SPX {spx_call}) — breakout above Call Wall with follow-through."
-        elif not call_text.strip().upper().startswith("SPY"):
-            level = spy.get("call_wall") or spy.get("vol_trigger") or ""
-            parsed["plan"]["call_trigger"] = f"SPY {level} — {call_text}" if level else call_text
+    put_line  = vol_trig or zero_g
+    above_put = [c for c in combos_f if put_line and c > put_line]
 
-    # 5. put_trigger SPY-first and coherent with SPX Risk Pivot
-    put_text = parsed["plan"].get("put_trigger")
-    spx_pivot = spx.get("pivot")
-    spy_put_break = round(float(spx_pivot) / 10, 1) if spx_pivot else (spy.get("vol_trigger") or spy.get("zero_gamma"))
+    # no_trade_hi = segundo combo acima do put_line
+    if len(above_put) >= 2:
+        no_trade_hi = above_put[1]
+    elif above_put:
+        no_trade_hi = above_put[0]
+    else:
+        no_trade_hi = call_wall
 
-    if put_text and isinstance(put_text, str):
-        if "SPX 7490" in put_text or "7490" in put_text:
-            parsed["plan"]["put_trigger"] = f"SPY {spy_put_break:g} (SPX {spx_pivot}) — Risk Pivot break confirms weakness."
-        elif not put_text.strip().upper().startswith("SPY"):
-            level = spy.get("vol_trigger") or spy.get("zero_gamma") or ""
-            parsed["plan"]["put_trigger"] = f"SPY {level} — {put_text}" if level else put_text
+    # CALL escalonado — começa acima de no_trade_hi
+    if len(above_put) >= 3 and call_wall:
+        parsed["plan"]["call_trigger"] = f"SPY above {above_put[1]}, better above {above_put[2]}, strongest above {call_wall}."
+    elif len(above_put) >= 2 and call_wall:
+        parsed["plan"]["call_trigger"] = f"SPY above {above_put[1]}, strongest above {call_wall}."
+    elif call_wall:
+        parsed["plan"]["call_trigger"] = f"SPY above {call_wall}."
+
+    # PUT linha dura
+    if put_line:
+        parsed["plan"]["put_trigger"] = f"SPY below {put_line}."
+
+    # NO TRADE zona de compressão
+    if put_line and no_trade_hi:
+        parsed["plan"]["avoid"] = f"SPY between {put_line} and {no_trade_hi}."
+
+    # BEST operacional
+    if put_line and no_trade_hi:
+        parsed["plan"]["best_setup"] = f"Wait for breakout; do not trade inside {put_line}–{no_trade_hi} compression zone."
+
+    # SCORE baseado em sinais de risco
+    if froth and vol_spasm:
+        parsed["score"]["value"] = 2
+        cor_str = f" and COR1M {cor1m}" if cor1m else ""
+        parsed["score"]["justification"] = f"Positive gamma supports stocks, but extreme call froth{cor_str} create volatility-spasm risk."
 
     # 6. Normalize bias to single word
     regime = parsed.get("regime") or {}
