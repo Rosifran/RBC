@@ -1067,21 +1067,21 @@
 
     const row = (color, label, text) => !text ? '' :
       `<div style="display:flex;align-items:baseline;border-left:3px solid ${color};margin-bottom:1px;">
-        <span style="min-width:100px;padding:4px 8px;font-size:10px;font-weight:700;color:${color};text-transform:uppercase;flex-shrink:0;">${label}</span>
-        <span style="padding:4px 8px;font-size:12px;color:#1e293b;line-height:1.4;flex:1;">${text}</span>
+        <span style="min-width:100px;padding:3px 6px;font-size:10px;font-weight:700;color:${color};text-transform:uppercase;flex-shrink:0;">${label}</span>
+        <span style="padding:3px 6px;font-size:11px;color:#1e293b;line-height:1.4;flex:1;">${text}</span>
       </div>`;
 
     el.innerHTML = `
-<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:grid;gap:6px;color:#1e293b;">
+<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:grid;gap:4px;color:#1e293b;">
 
-  <div style="background:#fff;border:1px solid #e2e8f0;border-top:3px solid ${verdictColor};border-radius:8px;padding:10px 14px;">
+  <div style="background:#fff;border:1px solid #e2e8f0;border-top:3px solid ${verdictColor};border-radius:8px;padding:7px 10px;">
     <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;font-weight:600;margin-bottom:2px;">Decisão Modo 2</div>
-    <div style="font-size:20px;font-weight:800;color:${verdictColor};">${verdict}</div>
+    <div style="font-size:18px;font-weight:800;color:${verdictColor};">${verdict}</div>
     <div style="font-size:12px;color:#475569;margin-top:2px;line-height:1.4;">${m2d.reason || m2d.entry || ''}</div>
   </div>
 
   <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
-    <div style="padding:5px 10px;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #f1f5f9;">Contrato Sugerido</div>
+    <div style="padding:4px 8px;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #f1f5f9;">Contrato Sugerido</div>
     ${row(verdictColor, 'Tipo',     tipo)}
     ${row('#16a34a',    'Strike rec', `${tipo} ${pref_strike}`)}
     ${row('#94a3b8',    'Alternativa', `${tipo} ${alt_strike}`)}
@@ -1093,7 +1093,7 @@
   </div>
 
   <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
-    <div style="padding:5px 10px;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #f1f5f9;">Plano</div>
+    <div style="padding:4px 8px;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #f1f5f9;">Plano</div>
     ${row('#16a34a', 'Entrada',  m2d.entry)}
     ${row('#dc2626', 'Stop',     m2d.stop)}
     ${row('#3b82f6', 'Target 1', m2d.target_1)}
@@ -1103,7 +1103,7 @@
   </div>
 
   <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
-    <div style="padding:5px 10px;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #f1f5f9;">Prêmio</div>
+    <div style="padding:4px 8px;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #f1f5f9;">Prêmio</div>
     ${premio ? `
     ${row('#16a34a', 'Target opção', target_opt)}
     ${row('#dc2626', 'Stop opção',   stop_opt)}` : `
@@ -1111,18 +1111,18 @@
   </div>
 
   ${(entry_price || exec_result) ? `
-  <div style="background:#fff;border:1px solid #e2e8f0;border-top:3px solid ${rc};border-radius:8px;padding:10px 14px;">
+  <div style="background:#fff;border:1px solid #e2e8f0;border-top:3px solid ${rc};border-radius:8px;padding:7px 10px;">
     <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;font-weight:600;margin-bottom:2px;">Registro</div>
-    <div style="font-size:20px;font-weight:800;color:${rc};">${result_label || '—'}</div>
+    <div style="font-size:18px;font-weight:800;color:${rc};">${result_label || '—'}</div>
     ${pnl_pct != null ? `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;">
       <div style="text-align:center;padding:6px;background:#f8fafc;border-radius:6px;">
         <div style="font-size:9px;color:#94a3b8;text-transform:uppercase;font-weight:600;">P&L %</div>
-        <div style="font-size:20px;font-weight:800;color:${rc};">${parseFloat(pnl_pct)>0?'+':''}${pnl_pct}%</div>
+        <div style="font-size:18px;font-weight:800;color:${rc};">${parseFloat(pnl_pct)>0?'+':''}${pnl_pct}%</div>
       </div>
       <div style="text-align:center;padding:6px;background:#f8fafc;border-radius:6px;">
         <div style="font-size:9px;color:#94a3b8;text-transform:uppercase;font-weight:600;">P&L $</div>
-        <div style="font-size:20px;font-weight:800;color:${rc};">${parseFloat(pnl_dollars)>0?'+':''}$${pnl_dollars}</div>
+        <div style="font-size:18px;font-weight:800;color:${rc};">${parseFloat(pnl_dollars)>0?'+':''}$${pnl_dollars}</div>
       </div>
     </div>` : ''}
     ${notes_val ? `<div style="font-size:12px;color:#475569;margin-top:4px;border-top:1px solid #f1f5f9;padding-top:4px;">${notes_val}</div>` : ''}
