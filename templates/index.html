@@ -1009,123 +1009,137 @@
 
   function showModo3Result(data) {
     const box = document.getElementById('modo3-result');
-    const pre = document.getElementById('modo3-result-content');
-    pre.style.whiteSpace = 'normal';
-    pre.style.fontFamily = 'inherit';
-    pre.style.margin = '0';
+    const el  = document.getElementById('modo3-result-content');
+    el.style.padding = '8px';
 
-    const tipo    = (document.getElementById('m3-tipo').value || '').toUpperCase();
-    const strike  = parseFloat(document.getElementById('m3-strike').value) || 0;
-    const premio  = parseFloat(document.getElementById('m3-premio').value) || 0;
-    const iv      = parseFloat(document.getElementById('m3-iv').value) || 13.0;
-    const spot    = parseFloat(document.getElementById('m3-spot').value) || 0;
-    const horario = document.getElementById('m3-dte').value || '';
+    // Bloquear se Modo 2 não foi rodado
+    const m2d = window._modo2Decision || null;
+    if (!m2d || !m2d.decision) {
+      el.innerHTML = `
+<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;border:1px solid #e2e8f0;border-top:3px solid #64748b;border-radius:8px;padding:16px;">
+  <div style="font-size:22px;font-weight:800;color:#64748b;">RUN MODO 2 FIRST</div>
+  <div style="font-size:12px;color:#475569;margin-top:6px;">Modo 3 depends on the latest Modo 2 decision.</div>
+</div>`;
+      box.classList.add('visible');
+      return;
+    }
 
-    const hasPDF  = !!_pdfData;
-    const spy     = hasPDF && _pdfData.spy   || {};
-    const plan    = hasPDF && _pdfData.plan  || {};
-    const sc      = hasPDF && _pdfData.score || {};
-    const score   = sc.value || 0;
+    // Bloquear se Modo 2 = NO TRADE
+    if (m2d.decision === 'NO TRADE') {
+      el.innerHTML = `
+<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;border:1px solid #e2e8f0;border-top:3px solid #64748b;border-radius:8px;padding:16px;">
+  <div style="font-size:22px;font-weight:800;color:#64748b;">NO TRADE</div>
+  <div style="font-size:12px;color:#475569;margin-top:6px;">Entrada bloqueada pelo Modo 2. Aguarde rompimento da zona ${m2d.levels ? m2d.levels.no_trade_lo+'–'+m2d.levels.no_trade_hi : ''}.</div>
+</div>`;
+      box.classList.add('visible');
+      return;
+    }
 
+    // Decisão vem do Modo 2 — Modo 3 não decide
+    const verdict = m2d.decision;
+    const verdictColor =
+      verdict.includes('CALL') ? '#16a34a' :
+      verdict.includes('PUT')  ? '#dc2626' : '#64748b';
+    const motivo = m2d.reason || m2d.entry || '';
+
+    // Dados do form
+    const tipo   = verdict.includes('CALL') ? 'CALL' : verdict.includes('PUT') ? 'PUT' : (document.getElementById('m3-tipo').value || '').toUpperCase();
+    const strike = parseFloat(document.getElementById('m3-strike').value) || 0;
+    const premio = parseFloat(document.getElementById('m3-premio').value) || 0;
+    const iv     = parseFloat(document.getElementById('m3-iv').value) || 0;
+    const spot   = parseFloat(document.getElementById('m3-spot').value) || 0;
+
+    // Níveis do PDF
+    const hasPDF    = !!window._pdfData;
+    const spy       = hasPDF && window._pdfData.spy   || {};
+    const sc        = hasPDF && window._pdfData.score || {};
+    const score     = sc.value || 0;
     const callWall  = spy.call_wall   || 0;
     const volTrig   = spy.vol_trigger || 0;
-    const zeroGamma = spy.zero_gamma  || 0;
     const putWall   = spy.put_wall    || 0;
 
-    const extractSPY = txt => {
-      if (!txt) return null;
-      const m = txt.match(/SPY[\s]*([\d.]+)/i);
-      return m ? parseFloat(m[1]) : null;
-    };
-    const callTrig = extractSPY(plan.call_trigger) || callWall || 0;
-    const putTrig  = extractSPY(plan.put_trigger)  || volTrig  || 0;
+    const target_opt = premio ? `$${(premio * 1.75).toFixed(2)} (+75%)` : 'Defina após entrada real na IBKR';
+    const stop_opt   = premio ? `$${(premio * 0.50).toFixed(2)} (-50%)` : 'Defina após entrada real na IBKR';
 
-    const noTradeText = plan.avoid || '';
-    const ntMatch = noTradeText.match(/SPY[\s]*([\d.]+)[\u2013\-]([\d.]+)/i);
-    const ntLow   = ntMatch ? parseFloat(ntMatch[1]) : Math.min(volTrig, zeroGamma);
-    const ntHigh  = ntMatch ? parseFloat(ntMatch[2]) : callWall;
-    const inNoTrade = spot > 0 && ntLow > 0 && ntHigh > 0 && spot >= ntLow && spot <= ntHigh;
-
-    let verdict, verdictColor, motivo;
-
-    if (!hasPDF) {
-      verdict = 'SEM CONTEXTO'; verdictColor = '#94a3b8';
-      motivo = 'Processar PDF no Modo 1 primeiro para ativar o contexto do dia.';
-    } else if (score > 0 && score <= 2) {
-      verdict = 'NO TRADE'; verdictColor = '#dc2626';
-      motivo = `Score ${score}/5 — condições insuficientes. Não operar hoje.`;
-    } else if (inNoTrade) {
-      verdict = 'NO TRADE'; verdictColor = '#dc2626';
-      motivo = `SPY ${spot} dentro da No-Trade Zone (${ntLow}–${ntHigh}). Sem edge direcional.`;
-    } else if (tipo === 'CALL' && spot >= callTrig && score >= 3) {
-      verdict = 'CALL OK'; verdictColor = '#16a34a';
-      motivo = `SPY ${spot} acima do Call Trigger (${callTrig}). Score ${score}/5. Entrada bull confirmada.`;
-    } else if (tipo === 'PUT' && spot <= putTrig && score >= 3) {
-      verdict = 'PUT OK'; verdictColor = '#dc2626';
-      motivo = `SPY ${spot} abaixo do Put Trigger (${putTrig}). Score ${score}/5. Entrada bear confirmada.`;
-    } else if (tipo === 'CALL') {
-      verdict = 'WAIT'; verdictColor = '#d97706';
-      motivo = `SPY ${spot} ainda ${(callTrig-spot).toFixed(2)} pts abaixo do Call Trigger (${callTrig}). Aguarda rompimento.`;
-    } else if (tipo === 'PUT') {
-      verdict = 'WAIT'; verdictColor = '#d97706';
-      motivo = `SPY ${spot} ainda ${(spot-putTrig).toFixed(2)} pts acima do Put Trigger (${putTrig}). Aguarda quebra.`;
-    } else {
-      verdict = 'WAIT'; verdictColor = '#d97706';
-      motivo = 'Selecione CALL ou PUT e confirme os dados.';
-    }
-
-    const target   = premio ? `$${(premio * 1.75).toFixed(2)} (+75%)` : 'Defina após entrada real na IBKR';
-    const stop     = premio ? `$${(premio * 0.50).toFixed(2)} (-50%)` : 'Defina após entrada real na IBKR';
-    const trigDist = tipo === 'CALL' && callTrig ? (callTrig - spot).toFixed(2)
-                   : tipo === 'PUT'  && putTrig  ? (spot - putTrig).toFixed(2) : '—';
-
-    let timeRisk = 'não calculado';
-    if (horario) {
-      const parts = horario.match(/(\d{1,2}):(\d{2})/);
-      if (parts) {
-        const h = parseFloat(parts[1]) + parseFloat(parts[2])/60;
-        const left = 16 - h;
-        timeRisk = left < 1.5 ? '🔴 ALTO — <1.5h' : left < 3 ? '🟡 MÉDIO' : '🟢 BAIXO';
-      }
-    }
-
-    const row = (l,v,c) => `<div style="display:flex;align-items:center;border-bottom:1px solid #f8fafc;">
-      <span style="min-width:130px;padding:5px 12px;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;">${l}</span>
+    const row = (l,v,c) => !v ? '' : `<div style="display:flex;align-items:center;border-bottom:1px solid #f8fafc;">
+      <span style="min-width:120px;padding:5px 12px;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;">${l}</span>
       <span style="padding:5px 12px;font-size:13px;font-weight:700;color:${c};">${v}</span></div>`;
 
-    pre.innerHTML = `
+    // P&L execução — entry/exit são preço da OPÇÃO
+    const entry_price = parseFloat(document.getElementById('m3-entry-price') ? document.getElementById('m3-entry-price').value : '') || null;
+    const exit_price  = parseFloat(document.getElementById('m3-exit-price')  ? document.getElementById('m3-exit-price').value  : '') || null;
+    const exec_result = document.getElementById('m3-exec-result') ? document.getElementById('m3-exec-result').value : '';
+    const notes_val   = document.getElementById('m3-notes') ? document.getElementById('m3-notes').value : '';
+
+    let pnlHtml = '';
+    if (entry_price || exec_result) {
+      let pnl_pct = null, pnl_dollars = null;
+      let result_label = exec_result || null;
+      if (entry_price && exit_price) {
+        pnl_pct     = ((exit_price - entry_price) / entry_price * 100).toFixed(1);
+        pnl_dollars = ((exit_price - entry_price) * 100).toFixed(2);
+        if (!result_label) result_label = exit_price > entry_price ? 'Gain' : exit_price < entry_price ? 'Loss' : 'Breakeven';
+      }
+      const rc = result_label === 'Gain' ? '#16a34a' : result_label === 'Loss' ? '#dc2626' : '#d97706';
+      pnlHtml = `
+  <div style="background:#fff;border:1px solid #e2e8f0;border-top:3px solid ${rc};border-radius:8px;padding:12px 14px;">
+    <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Registro de Execução</div>
+    <div style="font-size:22px;font-weight:800;color:${rc};">${result_label || '—'}</div>
+    ${pnl_pct != null ? `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+      <div style="text-align:center;padding:8px;background:#f8fafc;border-radius:6px;">
+        <div style="font-size:9px;color:#94a3b8;text-transform:uppercase;font-weight:600;">P&L %</div>
+        <div style="font-size:22px;font-weight:800;color:${rc};">${parseFloat(pnl_pct)>0?'+':''}${pnl_pct}%</div>
+      </div>
+      <div style="text-align:center;padding:8px;background:#f8fafc;border-radius:6px;">
+        <div style="font-size:9px;color:#94a3b8;text-transform:uppercase;font-weight:600;">P&L $</div>
+        <div style="font-size:22px;font-weight:800;color:${rc};">${parseFloat(pnl_dollars)>0?'+':''}$${pnl_dollars}</div>
+      </div>
+    </div>` : ''}
+    ${notes_val ? `<div style="font-size:12px;color:#475569;margin-top:6px;border-top:1px solid #f1f5f9;padding-top:6px;">${notes_val}</div>` : ''}
+  </div>`;
+    }
+
+    el.innerHTML = `
 <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:grid;gap:8px;color:#1e293b;">
+
+  <div style="background:#fff;border:2px solid ${verdictColor};border-radius:8px;padding:12px 14px;">
+    <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Decisão Modo 2</div>
+    <div style="font-size:24px;font-weight:800;color:${verdictColor};">${verdict}</div>
+    <div style="font-size:12px;color:#475569;margin-top:4px;line-height:1.5;">${motivo}</div>
+  </div>
+
   <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:8px 14px;">
-    <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:3px;">Opção em Análise</div>
-    <div style="font-size:14px;font-weight:700;">${tipo||'—'} ${strike||'—'} &nbsp;<span style="font-weight:400;color:#475569;">prêmio $${premio} | IV ${iv}% | spot ${spot} | ${horario}</span></div>
+    <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:3px;">Opção</div>
+    <div style="font-size:14px;font-weight:700;">${tipo||'—'} ${strike||'—'} &nbsp;<span style="font-weight:400;color:#475569;">IV ${iv}% | prêmio ${premio ? '$'+premio : '—'} | spot ${spot||'—'}</span></div>
   </div>
-  <div style="background:#fff;border:2px solid ${verdictColor};border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:16px;">
-    <div style="font-size:28px;font-weight:800;color:${verdictColor};line-height:1;flex-shrink:0;">${verdict}</div>
-    <div style="font-size:12px;color:#475569;line-height:1.5;">${motivo}</div>
-  </div>
+
   <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
-    <div style="padding:6px 12px;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #f1f5f9;">Plano 0DTE <span style="font-weight:400;color:#94a3b8;">(regra padrão)</span></div>
-    ${row('Entry', tipo==='CALL' ? `≥ SPY ${callTrig}` : `≤ SPY ${putTrig}`, '#1e293b')}
-    ${row('Target', target, premio ? '#16a34a' : '#94a3b8')}
-    ${row('Stop', stop, premio ? '#dc2626' : '#94a3b8')}
-    ${row('Trigger Dist', trigDist !== '—' ? `${trigDist} pts` : '—', parseFloat(trigDist) > 2 ? '#d97706' : '#1e293b')}
-    ${row('Time Risk', timeRisk, timeRisk.includes('ALTO') ? '#dc2626' : timeRisk.includes('MÉDIO') ? '#d97706' : '#16a34a')}
-    ${row('Score PDF', score ? `${score}/5` : '—', score>=4?'#16a34a':score>=3?'#d97706':'#dc2626')}
+    <div style="padding:6px 12px;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #f1f5f9;">Plano</div>
+    ${row('Stop Modo 2',  m2d.stop,     '#dc2626')}
+    ${row('Target 1',     m2d.target_1, '#16a34a')}
+    ${row('Target 2',     m2d.target_2, '#8b5cf6')}
+    ${row('Target opção', target_opt,   premio ? '#16a34a' : '#94a3b8')}
+    ${row('Stop opção',   stop_opt,     premio ? '#dc2626' : '#94a3b8')}
+    ${row('Score PDF',    score ? score+'/5' : '—', score>=4?'#16a34a':score>=3?'#d97706':'#dc2626')}
   </div>
+
   <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:7px 12px;display:flex;gap:14px;flex-wrap:wrap;font-size:12px;">
     <span style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;align-self:center;">Níveis SPY</span>
-    ${callWall  ? `<span><span style="color:#94a3b8;">Call Wall </span><strong style="color:#16a34a;">${callWall}</strong></span>` : ''}
-    ${volTrig   ? `<span><span style="color:#94a3b8;">Vol Trigger </span><strong style="color:#d97706;">${volTrig}</strong></span>` : ''}
-    ${zeroGamma ? `<span><span style="color:#94a3b8;">Zero Gamma </span><strong>${zeroGamma}</strong></span>` : ''}
-    ${putWall   ? `<span><span style="color:#94a3b8;">Put Wall </span><strong style="color:#dc2626;">${putWall}</strong></span>` : ''}
-    ${ntLow && ntHigh ? `<span><span style="color:#94a3b8;">No-Trade </span><strong style="color:#d97706;">${ntLow}–${ntHigh}</strong></span>` : ''}
+    ${callWall ? `<span><span style="color:#94a3b8;">Call Wall </span><strong style="color:#16a34a;">${callWall}</strong></span>` : ''}
+    ${volTrig  ? `<span><span style="color:#94a3b8;">Vol Trigger </span><strong style="color:#d97706;">${volTrig}</strong></span>` : ''}
+    ${putWall  ? `<span><span style="color:#94a3b8;">Put Wall </span><strong style="color:#dc2626;">${putWall}</strong></span>` : ''}
+    ${m2d.levels && m2d.levels.no_trade_lo ? `<span><span style="color:#94a3b8;">No-Trade </span><strong style="color:#d97706;">${m2d.levels.no_trade_lo}–${m2d.levels.no_trade_hi}</strong></span>` : ''}
   </div>
+
+  ${pnlHtml}
+
 </div>`;
 
     box.classList.add('visible');
   }
 
-  window.onFileSelect = function(event) {
+    window.onFileSelect = function(event) {
     const file = event.target.files[0];
     if (!file) return;
     window.selectedFile = file;
@@ -1275,6 +1289,7 @@
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Erro no Modo 2');
+      if (data.rbc_decision) window._modo2Decision = data.rbc_decision;
       showModo2Result(data);
     } catch (e) {
       showError('modo2', e.message);
