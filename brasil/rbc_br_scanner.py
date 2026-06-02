@@ -36,8 +36,7 @@ ATIVOS   = ["PETR4", "VALE3", "BOVA11"]
 def autenticar():
     r = requests.post(
         f"{BASE_URL}/domain/users/authenticate",
-        json={"email": EMAIL, "password": SENHA},
-        headers={"Content-Type": "application/json"}
+        data={"email": EMAIL, "password": SENHA}
     )
     if r.status_code == 200:
         return r.json().get("access-token")

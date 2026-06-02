@@ -6,7 +6,11 @@ import io
 import json
 import os
 
+from dotenv import load_dotenv
+
 import anthropic
+
+load_dotenv()
 import pdfplumber
 from flask import Flask, jsonify, render_template, request
 
