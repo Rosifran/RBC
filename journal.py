@@ -49,7 +49,16 @@ CREATE TABLE IF NOT EXISTS trade_journal (
     trade_path          VARCHAR(100),
     trade_quality       VARCHAR(50),
     vol_trigger_lost      BOOLEAN,
-    vol_trigger_lost_time VARCHAR(10)
+    vol_trigger_lost_time VARCHAR(10),
+    pm_note_summary       TEXT,
+    pm_hiro               VARCHAR(50),
+    pm_vix_close          NUMERIC(6,2),
+    pm_cor1m_close        NUMERIC(6,2),
+    pm_market_comment     TEXT,
+    pm_flow_comment       TEXT,
+    pm_vol_comment        TEXT,
+    next_events           TEXT,
+    pm_levels_raw         TEXT
 );
 """
 
@@ -76,6 +85,15 @@ def init_db():
                 ("trade_quality",         "VARCHAR(50)"),
                 ("vol_trigger_lost",      "BOOLEAN"),
                 ("vol_trigger_lost_time", "VARCHAR(10)"),
+                ("pm_note_summary",       "TEXT"),
+                ("pm_hiro",               "VARCHAR(50)"),
+                ("pm_vix_close",          "NUMERIC(6,2)"),
+                ("pm_cor1m_close",        "NUMERIC(6,2)"),
+                ("pm_market_comment",     "TEXT"),
+                ("pm_flow_comment",       "TEXT"),
+                ("pm_vol_comment",        "TEXT"),
+                ("next_events",           "TEXT"),
+                ("pm_levels_raw",         "TEXT"),
             ]
             for col, typ in new_cols:
                 cur.execute("ALTER TABLE trade_journal ADD COLUMN IF NOT EXISTS %s %s;" % (col, typ))
@@ -93,7 +111,9 @@ def save_snapshot(data):
         "c4_reclaimed","c4_reclaimed_time","c1_hit","c1_hit_time",
         "call_wall_hit","call_wall_hit_time","near_call_wall",
         "max_spy","min_spy","trade_path","trade_quality",
-        "vol_trigger_lost","vol_trigger_lost_time"
+        "vol_trigger_lost","vol_trigger_lost_time",
+        "pm_note_summary","pm_hiro","pm_vix_close","pm_cor1m_close",
+        "pm_market_comment","pm_flow_comment","pm_vol_comment","next_events","pm_levels_raw"
     ]
     vals = {f: data.get(f) for f in fields if data.get(f) is not None}
     if "date" not in vals:
