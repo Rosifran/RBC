@@ -478,7 +478,7 @@
   <button class="tab-btn active" onclick="switchTab('modo1', this)">Modo 1 · Pré-mercado</button>
   <button class="tab-btn" onclick="switchTab('modo2', this)">Modo 2 · Abertura</button>
   <button class="tab-btn" onclick="switchTab('modo3', this)">Modo 3 · Operacional</button>
-  <button class="tab-btn" onclick="switchTab('modo4', this); loadJournal(); loadPMNote();">Modo 4 · Journal</button>
+  <button class="tab-btn" onclick="switchTab('modo4', this); loadJournal();">Modo 4 · Journal</button>
 </div>
 
 <!-- ── MODO 1: PRÉ-MERCADO ── -->
@@ -1365,16 +1365,59 @@
   <h2 class="section-title">Trade Journal</h2>
   <p class="section-sub">Histórico automático — dados vêm do PDF e TradingView.</p>
 
-  <div style="margin-bottom:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-    <button onclick="loadJournal(); loadPMNote();" class="btn-primary" style="font-size:12px;padding:8px 16px;">↻ Atualizar</button>
-    <input type="file" id="pm-pdf-input" accept=".pdf" style="display:none" onchange="uploadPMNote(this)">
-    <button onclick="document.getElementById('pm-pdf-input').click()" class="btn-primary" id="btn-pm-upload" style="font-size:12px;padding:8px 16px;background:var(--ink-2);">⬆ Upload PM Note</button>
-    <span id="pm-upload-status" style="font-size:11px;color:var(--ink-3);"></span>
+  <div style="margin-bottom:16px;">
+    <button onclick="loadJournal()" class="btn-primary" style="font-size:12px;padding:8px 16px;">↻ Atualizar</button>
   </div>
 
   <div id="journal-table"><p style="font-size:12px;color:#94a3b8;">Carregando...</p></div>
 
-  <div id="pm-note-panel" style="display:none;margin-top:20px;"></div>
+  <!-- PM Note panel -->
+  <div class="inputs-card" style="margin-top:24px;">
+    <p class="inputs-card-title">PM Note</p>
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+      <input type="date" id="pm-note-date" class="form-input" style="width:160px;font-size:12px;" oninput="loadPmNote()">
+      <label class="btn-primary" style="font-size:12px;padding:8px 14px;cursor:pointer;display:inline-block;">
+        ↑ Upload PDF
+        <input type="file" id="pm-pdf-input" accept=".pdf" style="display:none;" onchange="uploadPmPdf()">
+      </label>
+      <span id="pm-upload-status" style="font-size:12px;color:#64748b;"></span>
+    </div>
+    <div id="pm-note-panel" style="display:none;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:12px;">
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px;">
+          <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:4px;">HIRO</div>
+          <div id="pm-hiro" style="font-size:13px;font-weight:600;color:#1e293b;">—</div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px;">
+          <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:4px;">VIX Close</div>
+          <div id="pm-vix-close" style="font-size:13px;font-weight:600;color:#1e293b;">—</div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px;">
+          <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:4px;">COR1M Close</div>
+          <div id="pm-cor1m-close" style="font-size:13px;font-weight:600;color:#1e293b;">—</div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px;">
+          <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:4px;">Next Events</div>
+          <div id="pm-next-events" style="font-size:11px;color:#475569;line-height:1.4;">—</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr;gap:8px;">
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px;" id="pm-market-block">
+          <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:4px;">Market Comment</div>
+          <div id="pm-market-comment" style="font-size:12px;color:#334155;line-height:1.5;">—</div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px;" id="pm-flow-block">
+          <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:4px;">Flow Comment</div>
+          <div id="pm-flow-comment" style="font-size:12px;color:#334155;line-height:1.5;">—</div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px;" id="pm-vol-block">
+          <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:4px;">Vol Comment</div>
+          <div id="pm-vol-comment" style="font-size:12px;color:#334155;line-height:1.5;">—</div>
+        </div>
+      </div>
+    </div>
+    <div id="pm-note-empty" style="font-size:12px;color:#94a3b8;display:none;">Nenhum PM note para esta data.</div>
+  </div>
 
   <div class="inputs-card" style="margin-top:24px;">
     <p class="inputs-card-title">Completar registro de hoje</p>
@@ -1460,73 +1503,60 @@
     }
   }
 
-  async function uploadPMNote(input) {
-    const file = input.files[0];
-    if (!file) return;
-    const status = document.getElementById('pm-upload-status');
-    const btn = document.getElementById('btn-pm-upload');
-    status.style.color = 'var(--ink-3)';
-    status.textContent = 'Enviando...';
-    btn.disabled = true;
-    const fd = new FormData();
-    fd.append('file', file);
+  // Pre-fill PM note date picker with today
+  (function() {
+    const d = document.getElementById('pm-note-date');
+    if (d) { d.value = new Date().toISOString().split('T')[0]; loadPmNote(); }
+  })();
+
+  async function loadPmNote() {
+    const date = document.getElementById('pm-note-date').value;
+    const panel = document.getElementById('pm-note-panel');
+    const empty = document.getElementById('pm-note-empty');
+    if (!date) return;
     try {
-      const res  = await fetch('/api/parse-pm-pdf', { method: 'POST', body: fd });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      status.style.color = 'var(--green)';
-      status.textContent = 'PM Note salva ✅';
-      renderPMNote({ date: new Date().toISOString().split('T')[0], ...data });
-      document.getElementById('pm-note-panel').style.display = '';
+      const res = await fetch('/api/journal/' + date);
+      const r = await res.json();
+      const hasPm = r.pm_hiro || r.pm_vix_close || r.pm_cor1m_close ||
+                    r.pm_market_comment || r.pm_flow_comment || r.pm_vol_comment || r.next_events;
+      if (!hasPm) { panel.style.display='none'; empty.style.display='block'; return; }
+      panel.style.display='block'; empty.style.display='none';
+      const set = (id, val) => { document.getElementById(id).textContent = (val != null && val !== '') ? val : '—'; };
+      set('pm-hiro', r.pm_hiro);
+      set('pm-vix-close', r.pm_vix_close);
+      set('pm-cor1m-close', r.pm_cor1m_close);
+      set('pm-next-events', r.next_events);
+      set('pm-market-comment', r.pm_market_comment);
+      set('pm-flow-comment', r.pm_flow_comment);
+      set('pm-vol-comment', r.pm_vol_comment);
     } catch(e) {
-      status.style.color = '#dc2626';
-      status.textContent = 'Erro: ' + e.message;
-    } finally {
-      btn.disabled = false;
-      input.value = '';
+      panel.style.display='none'; empty.style.display='block';
+      empty.textContent = 'Erro ao carregar PM note.';
     }
   }
 
-  async function loadPMNote() {
+  async function uploadPmPdf() {
+    const input = document.getElementById('pm-pdf-input');
+    const status = document.getElementById('pm-upload-status');
+    if (!input.files.length) return;
+    status.textContent = 'Enviando…';
+    const formData = new FormData();
+    formData.append('file', input.files[0]);
     try {
-      const res  = await fetch('/api/journal?limit=1');
-      const rows = await res.json();
-      if (!rows.length) return;
-      const r = rows[0];
-      if (!r.pm_hiro && !r.pm_vix_close && !r.pm_market_comment) return;
-      renderPMNote(r);
-      document.getElementById('pm-note-panel').style.display = '';
-    } catch(e) { /* silent */ }
-  }
-
-  function renderPMNote(d) {
-    const panel = document.getElementById('pm-note-panel');
-    const fmt   = v => (v != null && v !== '') ? v : '—';
-    const rawDate = d.date || '';
-    let dt = rawDate;
-    const isoMatch = rawDate.match(/(\d{4})-(\d{2})-(\d{2})/);
-    if (isoMatch) dt = isoMatch[3]+'/'+isoMatch[2]+'/'+isoMatch[1];
-    const hiColor = v => {
-      if (!v) return 'var(--ink)';
-      const l = String(v).toLowerCase();
-      return l.includes('bull') ? '#16a34a' : l.includes('bear') ? '#dc2626' : 'var(--ink)';
-    };
-    let html = `<div style="background:#fff;border:1px solid var(--border-md);border-radius:var(--r-lg);padding:16px 20px;">`;
-    html += `<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:12px;">`;
-    html += `<span style="font-size:11px;font-weight:700;letter-spacing:0.06em;color:var(--ink-3);text-transform:uppercase;">PM Note</span>`;
-    html += `<span style="font-size:11px;color:var(--ink-4);">${dt}</span>`;
-    html += `</div>`;
-    html += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">`;
-    html += `<div style="background:var(--paper-2);border-radius:var(--r);padding:8px 12px;"><div style="font-size:10px;color:var(--ink-3);font-weight:600;margin-bottom:3px;">HIRO</div><div style="font-size:13px;font-weight:700;color:${hiColor(d.pm_hiro)};">${fmt(d.pm_hiro)}</div></div>`;
-    html += `<div style="background:var(--paper-2);border-radius:var(--r);padding:8px 12px;"><div style="font-size:10px;color:var(--ink-3);font-weight:600;margin-bottom:3px;">VIX Close</div><div style="font-size:13px;font-weight:700;color:var(--ink);">${fmt(d.pm_vix_close)}</div></div>`;
-    html += `<div style="background:var(--paper-2);border-radius:var(--r);padding:8px 12px;"><div style="font-size:10px;color:var(--ink-3);font-weight:600;margin-bottom:3px;">COR1M Close</div><div style="font-size:13px;font-weight:700;color:var(--ink);">${fmt(d.pm_cor1m_close)}</div></div>`;
-    html += `</div>`;
-    if (d.pm_market_comment) html += `<div style="margin-bottom:8px;font-size:12px;color:var(--ink-2);"><span style="font-size:10px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.05em;margin-right:4px;">Market</span>${d.pm_market_comment}</div>`;
-    if (d.pm_flow_comment)   html += `<div style="margin-bottom:8px;font-size:12px;color:var(--ink-2);"><span style="font-size:10px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.05em;margin-right:4px;">Flow</span>${d.pm_flow_comment}</div>`;
-    if (d.pm_vol_comment)    html += `<div style="margin-bottom:8px;font-size:12px;color:var(--ink-2);"><span style="font-size:10px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.05em;margin-right:4px;">Vol</span>${d.pm_vol_comment}</div>`;
-    if (d.next_events)       html += `<div style="margin-top:6px;padding:8px 12px;background:var(--green-light);border-radius:var(--r);font-size:11px;color:var(--ink-2);"><span style="font-weight:700;color:var(--green);margin-right:4px;">Next Events</span>${d.next_events}</div>`;
-    html += `</div>`;
-    panel.innerHTML = html;
+      const res = await fetch('/api/parse-pm-pdf', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erro no upload');
+      status.textContent = '✅ Salvo para ' + (data.date || '—');
+      // Sync date picker to the parsed date and reload PM note
+      if (data.date) {
+        document.getElementById('pm-note-date').value = data.date;
+      }
+      loadPmNote();
+      loadJournal();
+    } catch(e) {
+      status.textContent = '❌ ' + e.message;
+    }
+    input.value = '';
   }
 
   async function saveJournalNotes() {

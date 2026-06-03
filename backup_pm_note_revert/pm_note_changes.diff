@@ -1,0 +1,258 @@
+diff --git a/app.py b/app.py
+index d7a50f9..fc58240 100644
+--- a/app.py
++++ b/app.py
+@@ -5,6 +5,7 @@ RBC — Risk Bridge Capital | Flask API
+ import io
+ import json
+ import os
++import re
+ 
+ from dotenv import load_dotenv
+ 
+@@ -14,7 +15,8 @@ load_dotenv()
+ import pdfplumber
+ from flask import Flask, jsonify, render_template, request
+ 
+-_anthropic = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from env
++load_dotenv()
++_anthropic = anthropic.Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY'))
+ 
+ _PDF_PROMPT = """You are a quantitative trading assistant. Extract structured data from this SpotGamma PDF report.
+ 
+@@ -328,11 +330,12 @@ def parse_pdf():
+     })
+ 
+ 
+-_PM_PDF_PROMPT = """You are a quantitative trading assistant. Extract structured pre-market data from this PDF report.
++_PM_PDF_PROMPT = """You are a quantitative trading assistant. Extract structured pre-market data from this PM Note PDF.
+ 
+ Return ONLY a valid JSON object with exactly these fields. No markdown, no explanation.
+ 
+ {{
++  "pm_note_summary": null,
+   "pm_hiro": null,
+   "pm_vix_close": null,
+   "pm_cor1m_close": null,
+@@ -344,15 +347,16 @@ Return ONLY a valid JSON object with exactly these fields. No markdown, no expla
+ }}
+ 
+ Rules:
+-- pm_hiro: HIRO indicator direction as a short string ("bullish", "bearish", "neutral", or the raw value found)
+-- pm_vix_close: yesterday's or most recent VIX close as a decimal number (e.g. 18.5)
+-- pm_cor1m_close: COR1M indicator close value as a decimal number
+-- pm_market_comment: 1-2 sentence summary of overall market tone/context from the report
+-- pm_flow_comment: 1-2 sentence summary of options flow or dealer positioning commentary
+-- pm_vol_comment: 1-2 sentence summary of volatility commentary
+-- next_events: comma-separated list of upcoming key events/dates mentioned (e.g. "FOMC 2026-06-12, CPI 2026-06-11")
+-- pm_levels_raw: raw text block with key price levels mentioned (paste verbatim if present, else summarize)
+-- Use null for any field not found in the text
++- pm_note_summary: 1-2 sentence overall summary of the PM Note tone and key takeaway
++- pm_hiro: extract HIRO value from phrase like "SPX HIRO finished the day at approximately +2 billion" → "+2 billion bullish"; or direction ("bullish"/"bearish"/"neutral")
++- pm_vix_close: VIX close as decimal number from phrase like "VIX closed at 15.8" → 15.8
++- pm_cor1m_close: COR1M close as decimal number from phrase like "COR1M closed at 5.9" → 5.9
++- pm_market_comment: 1-2 sentences from the paragraph discussing SPX/Nasdaq/VIX/close price action
++- pm_flow_comment: 1-2 sentences from the paragraph discussing HIRO, put selling, call selling, or 0DTE flow
++- pm_vol_comment: 1-2 sentences from the paragraph discussing Volatility Dashboard or implied volatility
++- next_events: verbatim text or comma-separated list from the "Key dates ahead" block
++- pm_levels_raw: verbatim text of the SPX/SPY levels table mentioning Call Wall, Put Wall, Vol Trigger, Zero Gamma, Combos
++- Use null for any field not found
+ - Return raw JSON only, no markdown
+ 
+ PDF TEXT:
+@@ -360,6 +364,19 @@ PDF TEXT:
+ """
+ 
+ 
++def _extract_pm_date(text):
++    """Extract date from 'PM Note: Tue, June 02, 2026 at 5:32 PM ET' → '2026-06-02'."""
++    m = re.search(r'PM Note:\s*\w+,\s*(\w+)\s+(\d{1,2}),\s*(\d{4})', text)
++    if m:
++        from datetime import datetime as _dt
++        try:
++            dt = _dt.strptime(f"{m.group(1)} {int(m.group(2)):02d} {m.group(3)}", "%B %d %Y")
++            return dt.strftime("%Y-%m-%d")
++        except ValueError:
++            pass
++    return None
++
++
+ @app.route("/api/parse-pm-pdf", methods=["POST"])
+ def parse_pm_pdf():
+     if "file" not in request.files:
+@@ -376,6 +393,10 @@ def parse_pm_pdf():
+     except Exception as e:
+         return jsonify({"error": f"PDF extraction failed: {e}"}), 500
+ 
++    date_str = _extract_pm_date(text)
++    if not date_str:
++        return jsonify({"error": "date not found in PDF — expected line like 'PM Note: Tue, June 02, 2026 at 5:32 PM ET'"}), 400
++
+     try:
+         msg = _anthropic.messages.create(
+             model="claude-sonnet-4-5",
+@@ -399,11 +420,15 @@ def parse_pm_pdf():
+     except Exception as e:
+         return jsonify({"error": f"Claude API error: {e}"}), 500
+ 
+-    import datetime
+     try:
++        # Evita JSON/campo gigante vindo do Claude
++        if isinstance(parsed.get("pm_levels_raw"), str):
++            parsed["pm_levels_raw"] = parsed["pm_levels_raw"][:800]
++
+         from journal import save_snapshot
+         save_snapshot({
+-            "date":               str(datetime.date.today()),
++            "date":               date_str,
++            "pm_note_summary":    parsed.get("pm_note_summary"),
+             "pm_hiro":            parsed.get("pm_hiro"),
+             "pm_vix_close":       parsed.get("pm_vix_close"),
+             "pm_cor1m_close":     parsed.get("pm_cor1m_close"),
+@@ -416,7 +441,7 @@ def parse_pm_pdf():
+     except Exception as je:
+         print(f"Journal auto-save warning (parse-pm-pdf): {je}")
+ 
+-    return jsonify({"ok": True, **parsed})
++    return jsonify({"ok": True, "date": date_str, **parsed})
+ 
+ 
+ @app.route("/api/modo1", methods=["POST"])
+@@ -705,6 +730,15 @@ def get_journal_route():
+     except Exception as e:
+         return jsonify({"error": str(e)}), 500
+ 
++@app.route("/api/journal/<date>", methods=["GET"])
++def get_journal_by_date_route(date):
++    from journal import get_snapshot_by_date
++    try:
++        row = get_snapshot_by_date(date)
++        return jsonify(row)
++    except Exception as e:
++        return jsonify({"error": str(e)}), 500
++
+ if __name__ == "__main__":
+     port = int(os.environ.get("PORT", 5050))
+     app.run(debug=True, port=port)
+diff --git a/templates/index.html b/templates/index.html
+index 772e673..011f8dd 100644
+--- a/templates/index.html
++++ b/templates/index.html
+@@ -1371,6 +1371,54 @@
+ 
+   <div id="journal-table"><p style="font-size:12px;color:#94a3b8;">Carregando...</p></div>
+ 
++  <!-- PM Note panel -->
++  <div class="inputs-card" style="margin-top:24px;">
++    <p class="inputs-card-title">PM Note</p>
++    <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
++      <input type="date" id="pm-note-date" class="form-input" style="width:160px;font-size:12px;" oninput="loadPmNote()">
++      <label class="btn-primary" style="font-size:12px;padding:8px 14px;cursor:pointer;display:inline-block;">
++        ↑ Upload PDF
++        <input type="file" id="pm-pdf-input" accept=".pdf" style="display:none;" onchange="uploadPmPdf()">
++      </label>
++      <span id="pm-upload-status" style="font-size:12px;color:#64748b;"></span>
++    </div>
++    <div id="pm-note-panel" style="display:none;">
++      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:12px;">
++        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px;">
++          <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:4px;">HIRO</div>
++          <div id="pm-hiro" style="font-size:13px;font-weight:600;color:#1e293b;">—</div>
++        </div>
++        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px;">
++          <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:4px;">VIX Close</div>
++          <div id="pm-vix-close" style="font-size:13px;font-weight:600;color:#1e293b;">—</div>
++        </div>
++        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px;">
++          <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:4px;">COR1M Close</div>
++          <div id="pm-cor1m-close" style="font-size:13px;font-weight:600;color:#1e293b;">—</div>
++        </div>
++        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px;">
++          <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:4px;">Next Events</div>
++          <div id="pm-next-events" style="font-size:11px;color:#475569;line-height:1.4;">—</div>
++        </div>
++      </div>
++      <div style="display:grid;grid-template-columns:1fr;gap:8px;">
++        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px;" id="pm-market-block">
++          <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:4px;">Market Comment</div>
++          <div id="pm-market-comment" style="font-size:12px;color:#334155;line-height:1.5;">—</div>
++        </div>
++        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px;" id="pm-flow-block">
++          <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:4px;">Flow Comment</div>
++          <div id="pm-flow-comment" style="font-size:12px;color:#334155;line-height:1.5;">—</div>
++        </div>
++        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px;" id="pm-vol-block">
++          <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:4px;">Vol Comment</div>
++          <div id="pm-vol-comment" style="font-size:12px;color:#334155;line-height:1.5;">—</div>
++        </div>
++      </div>
++    </div>
++    <div id="pm-note-empty" style="font-size:12px;color:#94a3b8;display:none;">Nenhum PM note para esta data.</div>
++  </div>
++
+   <div class="inputs-card" style="margin-top:24px;">
+     <p class="inputs-card-title">Completar registro de hoje</p>
+     <div class="form-grid">
+@@ -1455,6 +1503,62 @@
+     }
+   }
+ 
++  // Pre-fill PM note date picker with today
++  (function() {
++    const d = document.getElementById('pm-note-date');
++    if (d) { d.value = new Date().toISOString().split('T')[0]; loadPmNote(); }
++  })();
++
++  async function loadPmNote() {
++    const date = document.getElementById('pm-note-date').value;
++    const panel = document.getElementById('pm-note-panel');
++    const empty = document.getElementById('pm-note-empty');
++    if (!date) return;
++    try {
++      const res = await fetch('/api/journal/' + date);
++      const r = await res.json();
++      const hasPm = r.pm_hiro || r.pm_vix_close || r.pm_cor1m_close ||
++                    r.pm_market_comment || r.pm_flow_comment || r.pm_vol_comment || r.next_events;
++      if (!hasPm) { panel.style.display='none'; empty.style.display='block'; return; }
++      panel.style.display='block'; empty.style.display='none';
++      const set = (id, val) => { document.getElementById(id).textContent = (val != null && val !== '') ? val : '—'; };
++      set('pm-hiro', r.pm_hiro);
++      set('pm-vix-close', r.pm_vix_close);
++      set('pm-cor1m-close', r.pm_cor1m_close);
++      set('pm-next-events', r.next_events);
++      set('pm-market-comment', r.pm_market_comment);
++      set('pm-flow-comment', r.pm_flow_comment);
++      set('pm-vol-comment', r.pm_vol_comment);
++    } catch(e) {
++      panel.style.display='none'; empty.style.display='block';
++      empty.textContent = 'Erro ao carregar PM note.';
++    }
++  }
++
++  async function uploadPmPdf() {
++    const input = document.getElementById('pm-pdf-input');
++    const status = document.getElementById('pm-upload-status');
++    if (!input.files.length) return;
++    status.textContent = 'Enviando…';
++    const formData = new FormData();
++    formData.append('file', input.files[0]);
++    try {
++      const res = await fetch('/api/parse-pm-pdf', { method: 'POST', body: formData });
++      const data = await res.json();
++      if (!res.ok) throw new Error(data.error || 'Erro no upload');
++      status.textContent = '✅ Salvo para ' + (data.date || '—');
++      // Sync date picker to the parsed date and reload PM note
++      if (data.date) {
++        document.getElementById('pm-note-date').value = data.date;
++      }
++      loadPmNote();
++      loadJournal();
++    } catch(e) {
++      status.textContent = '❌ ' + e.message;
++    }
++    input.value = '';
++  }
++
+   async function saveJournalNotes() {
+     const today = new Date().toISOString().split('T')[0];
+     const body = {
