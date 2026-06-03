@@ -487,75 +487,215 @@ def modo2():
         sg_data=sg, capital=capital,
     )
 
-    # ── Lógica determinística RBC ──
+    # ── Regime de Gamma + Lógica RBC 0DTE v2.0 ──────────────────────────
+    # Compra simples CALL ou PUT / 1 contrato / sem spread / sem overnight
+    # Vol Trigger = interruptor de regime
+    # Compatível com Modo 3: decision, entry, stop, target_1, target_2, risk, levels
+
+    def _all_levels(s):
+        raw = []
+        for k in ['spy_levels', 'combos', 'combo_strikes']:
+            raw += [v for v in (s.get(k) or []) if isinstance(v, (int, float))]
+        for k in ['call_wall', 'put_wall', 'vol_trigger', 'zero_gamma',
+                  'move_1d_high', 'move_1d_low']:
+            v = s.get(k)
+            if v and isinstance(v, (int, float)):
+                raw.append(v)
+        return sorted(set(raw))
+
+    def _above(levels, ref, n=2):
+        return [l for l in levels if l > float(ref)][:n]
+
+    def _below(levels, ref, n=2):
+        return sorted([l for l in levels if l < float(ref)], reverse=True)[:n]
+
+    def _safe_t2_call(t1, candidates):
+        # t2 CALL: next level above t1. Fallback: t1 + 2
+        opts = [l for l in candidates if float(l) > float(t1)]
+        return opts[0] if opts else round(float(t1) + 2, 2)
+
+    def _safe_t2_put(t1, candidates):
+        # t2 PUT: next level below t1. Fallback: t1 - 2
+        opts = sorted([l for l in candidates if float(l) < float(t1)], reverse=True)
+        return opts[0] if opts else round(float(t1) - 2, 2)
+
     spy        = sg.get('SPY') or sg.get('$SPY') or {}
     combos_raw = spy.get('combos') or spy.get('combo_strikes') or []
     combos     = sorted([c for c in combos_raw if isinstance(c, (int, float))])
     vol_trig   = spy.get('vol_trigger') or spy.get('zero_gamma')
     call_wall  = spy.get('call_wall')
     put_wall   = spy.get('put_wall')
-    put_line   = vol_trig
+    all_lvls   = _all_levels(spy)
 
-    above_put   = [c for c in combos if put_line and c > put_line]
-    no_trade_lo = put_line
-    no_trade_hi = above_put[1] if len(above_put) >= 2 else (above_put[0] if above_put else call_wall)
-    c_confirm   = above_put[2] if len(above_put) >= 3 else call_wall
+    # 1D Expected Move
+    move_1d_high = spy.get('move_1d_high')
+    move_1d_low  = spy.get('move_1d_low')
+    if not move_1d_high and spy.get('imp_1d') and spot_now:
+        try:
+            move_1d_high = round(float(spot_now) * (1 + float(spy['imp_1d'])), 2)
+            move_1d_low  = round(float(spot_now) * (1 - float(spy['imp_1d'])), 2)
+        except Exception:
+            pass
 
-    # m1_score conservador — default 2 se não enviado
+    # C4 = segundo combo acima do Vol Trigger
+    above_vt = [c for c in combos if vol_trig and c > float(vol_trig)]
+    c4_level = above_vt[1] if len(above_vt) >= 2 else (above_vt[0] if above_vt else call_wall)
+
+    # m1_score e risk
     m1_score = int(data.get("m1_score") or 2)
-    risk_str = "High — Modo 1 score 2/5, extreme call froth." if m1_score <= 2 else "Medium." if m1_score <= 3 else "Normal."
+    risk_str = "High" if m1_score <= 2 else "Medium" if m1_score <= 3 else "Normal"
 
-    if no_trade_lo and no_trade_hi and call_wall:
-        if spot_now < no_trade_lo:
-            decision = "PUT CONFIRMED"
-            reason   = f"SPY broke below {no_trade_lo}. Bearish bias confirmed."
-            entry    = f"Put entry confirmed below {no_trade_lo}."
-            stop     = f"Back above {no_trade_lo}."
-            # target_1 = maior spy_level abaixo de no_trade_lo
-            spy_levels = sorted([l for l in (spy.get('spy_levels') or [])
-                                  if isinstance(l, (int, float)) and l < no_trade_lo], reverse=True)
-            t1       = spy_levels[0] if spy_levels else round(no_trade_lo - 4, 2)
-            t2       = put_wall if put_wall else round(no_trade_lo - 14, 2)
+    # Proximidade de nível: min(1.50 pts, 0.2% do spot)
+    near_level = min(1.50, float(spot_now) * 0.002) if spot_now else 1.50
+
+    # ── Regime ──
+    gamma_regime = (
+        "POSITIVE_GAMMA"
+        if (vol_trig and float(spot_now) >= float(vol_trig))
+        else "NEGATIVE_GAMMA"
+    )
+
+    # ── Alertas 1D Move ──
+    at_move_high = bool(move_1d_high and abs(float(spot_now) - float(move_1d_high)) <= near_level)
+    at_move_low  = bool(move_1d_low  and abs(float(spot_now) - float(move_1d_low))  <= near_level)
+
+    # HIRO: não disponível — não bloqueia decisão
+    hiro_state = "not_available"
+
+    decision = "NO TRADE"
+    reason   = ""
+    entry    = ""
+    stop     = ""
+    t1 = t2  = None
+    op_score = 2
+    hard_rules = []
+
+    if gamma_regime == "POSITIVE_GAMMA" and vol_trig and call_wall:
+        near_vt  = abs(float(spot_now) - float(vol_trig))  <= near_level
+        near_cw  = abs(float(spot_now) - float(call_wall)) <= near_level
+        above_c4 = bool(
+            c4_level
+            and float(spot_now) > float(c4_level)
+            and float(spot_now) < float(call_wall)
+        )
+
+        if near_vt or at_move_low:
+            # Extremo inferior → CALL REVERSAL
+            decision = "CALL REVERSAL"
+            reason   = (f"SPY near Vol Trigger {vol_trig}"
+                        f"{' / at 1D Move Low' if at_move_low else ''}."
+                        " Dealers provide support here.")
+            entry    = f"Buy call ATM/OTM near {vol_trig}. Enter 9:45 ET."
+            stop     = f"SPY closes below {vol_trig} — regime flips negative."
+            ups      = _above(all_lvls, spot_now, 2)
+            t1       = ups[0] if ups else round(float(vol_trig) + 2, 2)
+            t2       = _safe_t2_call(t1, all_lvls)
+            op_score = min(4, m1_score + 2)
+            hard_rules.append(f"EXIT CALL immediately if SPY closes below {vol_trig}.")
+
+        elif near_cw or at_move_high:
+            # Extremo superior → PUT REVERSAL
+            decision = "PUT REVERSAL"
+            reason   = (f"SPY near Call Wall {call_wall}"
+                        f"{' / at 1D Move High' if at_move_high else ''}."
+                        " Dealer selling pressure here.")
+            entry    = f"Buy put ATM/OTM near {call_wall}. Enter 9:45 ET."
+            stop     = f"SPY closes above {call_wall} — call wall flips to support."
+            dns      = _below(all_lvls, spot_now, 2)
+            t1       = dns[0] if dns else round(float(call_wall) - 2, 2)
+            t2       = _safe_t2_put(t1, all_lvls)
+            op_score = min(4, m1_score + 2)
+            hard_rules.append(f"EXIT PUT immediately if SPY closes above {call_wall}.")
+
+        elif above_c4:
+            # Acima do C4, abaixo da Call Wall → CALL BREAKOUT SMALL
+            decision = "CALL BREAKOUT SMALL"
+            reason   = (f"SPY above {c4_level}, below Call Wall {call_wall}."
+                        " Breakout in progress — small size only.")
+            entry    = f"Small call above {c4_level}. Target Call Wall {call_wall}."
+            stop     = f"Back below {c4_level}."
+            t1       = float(call_wall)
+            t2       = _safe_t2_call(t1, all_lvls)
             op_score = min(3, m1_score + 1)
-
-        elif no_trade_lo <= spot_now <= no_trade_hi:
-            decision = "NO TRADE"
-            reason   = f"SPY inside compression zone {no_trade_lo}–{no_trade_hi}. Wait for breakout."
-            entry    = "No entry. Wait for clear break above or below."
-            stop     = None
-            t1       = no_trade_hi
-            t2       = call_wall
-            op_score = 2
-
-        elif spot_now > no_trade_hi and spot_now < c_confirm:
-            decision = "CALL ALLOWED SMALL"
-            reason   = f"SPY reclaimed {no_trade_hi} but still below {c_confirm} confirmation. VIX {'falling' if vix_now < vix_open else 'stable'}."
-            entry    = f"Small call allowed above {no_trade_hi}. Size small."
-            stop     = f"Below {above_put[0] if above_put else no_trade_lo} or back inside compression zone."
-            t1       = c_confirm
-            t2       = call_wall
-            op_score = min(3, m1_score + 1)
+            hard_rules.append("SMALL size only — breakout can fail at Call Wall.")
 
         else:
-            decision = "CALL CONFIRMED"
-            reason   = f"SPY above {c_confirm}. Momentum confirmed. VIX {'falling' if vix_now < vix_open else 'stable'}."
-            entry    = f"Call confirmed above {c_confirm}."
-            stop     = f"Below {no_trade_hi}."
-            t1       = call_wall
-            t2       = above_put[3] if len(above_put) >= 4 else round(float(call_wall) + 2, 2) if call_wall else None
-            op_score = min(4, m1_score + 2)
+            # Meio da faixa → NO TRADE
+            decision = "NO TRADE"
+            reason   = (f"SPY in middle of range {vol_trig}–{call_wall}."
+                        " Not near any extreme. No structural edge.")
+            entry    = "Wait for SPY to approach Vol Trigger or Call Wall."
+            t1       = c4_level
+            t2       = call_wall
 
-        ow["rbc_decision"] = {
-            "decision": decision,
-            "reason":   reason,
-            "entry":    entry,
-            "stop":     stop,
-            "target_1": str(t1) if t1 else None,
-            "target_2": str(t2) if t2 else None,
-            "op_score": op_score,
-            "risk":     risk_str,
-            "levels":   {"no_trade_lo": no_trade_lo, "no_trade_hi": no_trade_hi, "call_wall": call_wall},
-        }
+    elif gamma_regime == "NEGATIVE_GAMMA" and vol_trig:
+        # Abaixo do Vol Trigger → PUT TREND
+        decision = "PUT TREND"
+        reason   = (f"SPY below Vol Trigger {vol_trig}."
+                    " Negative gamma — dealers amplify the move downward.")
+        entry    = f"Buy put OTM. SPY accepted below {vol_trig}."
+        stop     = f"SPY closes back above {vol_trig}."
+        dns      = _below(all_lvls, spot_now, 2)
+        t1       = dns[0] if dns else round(float(vol_trig) - 3, 2)
+        t2       = _safe_t2_put(t1, all_lvls)
+        op_score = min(3, m1_score + 1)
+        hard_rules.append(f"EXIT PUT immediately if SPY recovers {vol_trig}.")
+        if at_move_low:
+            hard_rules.append(
+                f"⚠ SPY at 1D Move Low {move_1d_low} — bounce possible. Monitor closely.")
+
+    else:
+        decision = "NO TRADE"
+        reason   = "Insufficient level data to determine setup."
+        entry    = "No entry."
+
+    # Hard rules obrigatórias
+    hard_rules.append("Saida obrigatoria 12:30 ET se nao houver follow-through.")
+    if at_move_high:
+        hard_rules.append(
+            f"⚠ SPY at 1D Move High {move_1d_high} — PUT reversal possible.")
+    if at_move_low and decision not in ("PUT TREND",):
+        hard_rules.append(
+            f"⚠ SPY at 1D Move Low {move_1d_low} — CALL reversal possible.")
+
+    # Garantia final: targets nunca invertidos
+    if t1 and t2:
+        is_call = decision in ("CALL REVERSAL", "CALL BREAKOUT SMALL")
+        is_put  = decision in ("PUT REVERSAL", "PUT TREND")
+        if is_call and float(t2) <= float(t1):
+            t2 = round(float(t1) + 2, 2)
+        if is_put and float(t2) >= float(t1):
+            t2 = round(float(t1) - 2, 2)
+
+    # Resumo em uma frase
+    one_sentence = (f"{gamma_regime.replace('_', ' ')}, SPY {spot_now}"
+                    f" vs VT {vol_trig} — {decision}. {entry}")
+
+    # Output: compatível com Modo 3
+    ow["rbc_decision"] = {
+        "gamma_regime": gamma_regime,
+        "decision":     decision,
+        "reason":       reason,
+        "entry":        entry,
+        "stop":         stop,
+        "target_1":     str(t1) if t1 else None,
+        "target_2":     str(t2) if t2 else None,
+        "op_score":     op_score,
+        "risk":         risk_str,
+        "hard_rules":   hard_rules,
+        "one_sentence": one_sentence,
+        "hiro":         None,
+        "hiro_state":   hiro_state,
+        "levels": {
+            "vol_trigger":  vol_trig,
+            "call_wall":    call_wall,
+            "put_wall":     put_wall,
+            "c4":           c4_level,
+            "move_1d_high": move_1d_high,
+            "move_1d_low":  move_1d_low,
+            "near_level":   round(near_level, 2),
+        },
+    }
 
     ow["spot_now"]  = spot_now
     ow["vix_now"]   = vix_now
