@@ -328,6 +328,97 @@ def parse_pdf():
     })
 
 
+_PM_PDF_PROMPT = """You are a quantitative trading assistant. Extract structured pre-market data from this PDF report.
+
+Return ONLY a valid JSON object with exactly these fields. No markdown, no explanation.
+
+{{
+  "pm_hiro": null,
+  "pm_vix_close": null,
+  "pm_cor1m_close": null,
+  "pm_market_comment": null,
+  "pm_flow_comment": null,
+  "pm_vol_comment": null,
+  "next_events": null,
+  "pm_levels_raw": null
+}}
+
+Rules:
+- pm_hiro: HIRO indicator direction as a short string ("bullish", "bearish", "neutral", or the raw value found)
+- pm_vix_close: yesterday's or most recent VIX close as a decimal number (e.g. 18.5)
+- pm_cor1m_close: COR1M indicator close value as a decimal number
+- pm_market_comment: 1-2 sentence summary of overall market tone/context from the report
+- pm_flow_comment: 1-2 sentence summary of options flow or dealer positioning commentary
+- pm_vol_comment: 1-2 sentence summary of volatility commentary
+- next_events: comma-separated list of upcoming key events/dates mentioned (e.g. "FOMC 2026-06-12, CPI 2026-06-11")
+- pm_levels_raw: raw text block with key price levels mentioned (paste verbatim if present, else summarize)
+- Use null for any field not found in the text
+- Return raw JSON only, no markdown
+
+PDF TEXT:
+{text}
+"""
+
+
+@app.route("/api/parse-pm-pdf", methods=["POST"])
+def parse_pm_pdf():
+    if "file" not in request.files:
+        return jsonify({"error": "No file uploaded"}), 400
+
+    f = request.files["file"]
+    if not f.filename.lower().endswith(".pdf"):
+        return jsonify({"error": "File must be a PDF"}), 400
+
+    try:
+        with pdfplumber.open(io.BytesIO(f.read())) as pdf:
+            pages = [page.extract_text() or "" for page in pdf.pages]
+        text = "\n".join(pages).strip()
+    except Exception as e:
+        return jsonify({"error": f"PDF extraction failed: {e}"}), 500
+
+    try:
+        msg = _anthropic.messages.create(
+            model="claude-sonnet-4-5",
+            max_tokens=1024,
+            timeout=30,
+            messages=[{"role": "user", "content": _PM_PDF_PROMPT.format(text=text[:12000])}],
+        )
+        raw = msg.content[0].text.strip()
+        cleaned = raw
+        if "```" in cleaned:
+            for part in cleaned.split("```"):
+                part = part.strip()
+                if part.startswith("json"):
+                    part = part[4:].strip()
+                if part.startswith("{"):
+                    cleaned = part
+                    break
+        parsed = json.loads(cleaned.strip())
+    except json.JSONDecodeError as e:
+        return jsonify({"error": f"Claude returned invalid JSON: {e}", "raw": raw}), 200
+    except Exception as e:
+        return jsonify({"error": f"Claude API error: {e}"}), 500
+
+    import datetime
+    try:
+        from journal import save_snapshot
+        save_snapshot({
+            "date":               str(datetime.date.today()),
+            "pm_hiro":            parsed.get("pm_hiro"),
+            "pm_vix_close":       parsed.get("pm_vix_close"),
+            "pm_cor1m_close":     parsed.get("pm_cor1m_close"),
+            "pm_market_comment":  parsed.get("pm_market_comment"),
+            "pm_flow_comment":    parsed.get("pm_flow_comment"),
+            "pm_vol_comment":     parsed.get("pm_vol_comment"),
+            "next_events":        parsed.get("next_events"),
+            "pm_levels_raw":      parsed.get("pm_levels_raw"),
+        })
+    except Exception as je:
+        print(f"Journal auto-save warning (parse-pm-pdf): {je}")
+
+    return jsonify({"ok": True, **parsed})
+
+
 @app.route("/api/modo1", methods=["POST"])
 def modo1():
     """Pre-market: parse SpotGamma data and return SPY key levels."""
