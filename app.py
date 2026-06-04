@@ -886,6 +886,25 @@ def modo2():
     return jsonify(ow)
 
 
+@app.route("/api/modo5/latest", methods=["GET"])
+def modo5_latest():
+    """Retorna o resultado mais recente do scanner Modo 5."""
+    import glob, json, os
+    results_dir = os.path.join(os.path.dirname(__file__), "modo5_results")
+    if not os.path.exists(results_dir):
+        return jsonify({"error": "Nenhum resultado encontrado. Rode o scanner primeiro."}), 404
+    files = sorted(glob.glob(os.path.join(results_dir, "swing_scan_*.json")), reverse=True)
+    if not files:
+        return jsonify({"error": "Nenhum resultado encontrado. Rode o scanner primeiro."}), 404
+    try:
+        with open(files[0]) as f:
+            data = json.load(f)
+        ts = os.path.basename(files[0]).replace("swing_scan_", "").replace(".json", "")
+        return jsonify({"ok": True, "timestamp": ts, "results": data, "file": files[0]})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route("/api/modo3", methods=["POST"])
 def modo3():
     """Operational scanner (after 10:00 ET): recommends 0DTE strike."""
