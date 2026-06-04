@@ -750,6 +750,90 @@ def modo2():
         context_bias    = "neutral_context"
         context_warning = f"PM Note nao disponivel: {ctx_err}"
 
+    # ── Gap & Timing Filter ─────────────────────────────────────────────
+    # Alerta de timing — nao muda a decisao principal
+    gap_points     = None
+    gap_pct        = None
+    gap_type       = "none"
+    gap_fill_level = None
+    gap_warning    = ""
+    timing_quality = "OK"
+    early_entry_ok = True
+    chase_warning  = False
+
+    try:
+        # yesterday_close via journal
+        yc = None
+        try:
+            from journal import get_journal
+            rows = get_journal(limit=5)
+            for row in rows:
+                if row.get("close") and float(row["close"]) > 0:
+                    yc = float(row["close"])
+                    break
+        except Exception:
+            yc = None
+
+        # gap analysis
+        if yc and spot_open:
+            to = float(spot_open)
+            gap_points     = round(to - yc, 2)
+            gap_pct        = round(gap_points / yc * 100, 3)
+            gap_fill_level = round(yc, 2)
+
+            if abs(gap_pct) < 0.15:
+                gap_type = "none"
+            elif -0.50 <= gap_pct < -0.15:
+                gap_type = "small_down"
+                gap_warning = ("Gap down pequeno ainda aberto — cuidado com PUT cedo; "
+                               "aguardar rejeicao do fechamento anterior "
+                               "ou perda clara do Zero Gamma.")
+            elif 0.15 < gap_pct <= 0.50:
+                gap_type = "small_up"
+                gap_warning = ("Gap up pequeno ainda aberto — cuidado com CALL cedo; "
+                               "aguardar rejeicao do fechamento anterior "
+                               "ou rompimento limpo.")
+            elif gap_pct < -0.50:
+                gap_type = "large_down"
+                gap_warning = "Gap down grande — fill menos provavel; exigir confirmacao."
+            elif gap_pct > 0.50:
+                gap_type = "large_up"
+                gap_warning = "Gap up grande — fill menos provavel; exigir confirmacao."
+
+        # timing quality — horario ET
+        try:
+            from zoneinfo import ZoneInfo
+        except ImportError:
+            from backports.zoneinfo import ZoneInfo
+        import datetime as _dt
+        now_et = _dt.datetime.now(ZoneInfo("America/New_York"))
+        hhmm   = now_et.hour * 100 + now_et.minute
+
+        if hhmm < 945:
+            timing_quality = "TOO_EARLY"
+            early_entry_ok = False
+        elif hhmm <= 1015:
+            timing_quality = "OK"
+            early_entry_ok = True
+        elif hhmm <= 1045:
+            timing_quality = "CAUTION"
+            early_entry_ok = True
+        else:
+            timing_quality = "LATE"
+            early_entry_ok = False
+
+        # chase warning
+        if decision and "CALL" in decision and vol_trig and spot_now:
+            if float(spot_now) > float(vol_trig) + near_level:
+                chase_warning = True
+        if decision and "PUT" in decision and zero_gamma and spot_now:
+            zg_val = spy.get("zero_gamma")
+            if zg_val and float(spot_now) < float(zg_val) - near_level:
+                chase_warning = True
+
+    except Exception as gap_err:
+        gap_warning = f"Gap analysis indisponivel: {gap_err}"
+
     # Resumo em uma frase
     one_sentence = (f"{gamma_regime.replace('_', ' ')}, SPY {spot_now}"
                     f" vs VT {vol_trig} — {decision}. {entry}")
@@ -775,6 +859,14 @@ def modo2():
         "pm_hiro":          pm_hiro_ctx,
         "pm_vix_close":     pm_vix_ctx,
         "pm_cor1m_close":   pm_cor1m_ctx,
+        "gap_points":       gap_points,
+        "gap_pct":          gap_pct,
+        "gap_type":         gap_type,
+        "gap_fill_level":   gap_fill_level,
+        "gap_warning":      gap_warning,
+        "timing_quality":   timing_quality,
+        "early_entry_ok":   early_entry_ok,
+        "chase_warning":    chase_warning,
         "levels": {
             "vol_trigger":  vol_trig,
             "call_wall":    call_wall,
