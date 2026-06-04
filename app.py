@@ -779,6 +779,7 @@ def modo2():
             "vol_trigger":  vol_trig,
             "call_wall":    call_wall,
             "put_wall":     put_wall,
+            "zero_gamma":   spy.get("zero_gamma"),
             "c4":           c4_level,
             "move_1d_high": move_1d_high,
             "move_1d_low":  move_1d_low,
