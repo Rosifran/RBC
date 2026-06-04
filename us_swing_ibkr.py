@@ -167,12 +167,29 @@ def edge_summary(gex: dict, vrp: dict, skew: dict, pc: dict, direction: str) -> 
     """
     Resume o edge em um veredicto.
     APROVO se 3 de 4 fatores favoraveis para a direcao escolhida.
+    INCOMPLETO se GEX zerado ou VRP/Skew/PC sem dados reais.
     """
-    scores = [gex['score'], vrp['score'], skew['score'], pc['score']]
-    aprovados = sum(1 for s in scores if s >= 1)
-    max_score = sum(scores)
+    # Detecta dados incompletos
+    gex_zerado   = gex.get('net_gex') is None or gex.get('net_gex') == 0
+    vrp_sem_dado = vrp.get('vrp') is None
+    skew_sem_dado = skew.get('skew_pct') is None
+    pc_sem_dado  = pc.get('pc_ratio') is None
 
-    # Ajuste de direcao: skew alto = desfavoravel para CALL, favoravel para PUT
+    incompletos = sum([gex_zerado, vrp_sem_dado, skew_sem_dado, pc_sem_dado])
+
+    if incompletos >= 2:
+        return {
+            "verdict":    "EDGE INCOMPLETO",
+            "note":       f"{incompletos}/4 fatores sem dados reais — rodar apos 9:45 ET com mercado aberto",
+            "aprovados":  0,
+            "incompletos": incompletos,
+            "fatores": {"gex": gex, "vrp": vrp, "skew": skew, "pc_ratio": pc},
+        }
+
+    scores    = [gex['score'], vrp['score'], skew['score'], pc['score']]
+    aprovados = sum(1 for s in scores if s >= 1)
+
+    # Ajuste de direcao
     skew_val = skew.get('skew_pct') or 0
     if direction == 'CALL' and skew_val > 5:
         aprovados -= 1
@@ -190,15 +207,11 @@ def edge_summary(gex: dict, vrp: dict, skew: dict, pc: dict, direction: str) -> 
         note    = f"Apenas {aprovados}/4 fatores alinham — evitar entrada"
 
     return {
-        "verdict":   verdict,
-        "note":      note,
-        "aprovados": aprovados,
-        "fatores": {
-            "gex": gex,
-            "vrp": vrp,
-            "skew": skew,
-            "pc_ratio": pc,
-        }
+        "verdict":    verdict,
+        "note":       note,
+        "aprovados":  aprovados,
+        "incompletos": incompletos,
+        "fatores": {"gex": gex, "vrp": vrp, "skew": skew, "pc_ratio": pc},
     }
 
 
@@ -368,9 +381,15 @@ def fetch_full_chain(ib: IB, ticker: str, spot: float) -> tuple:
     expiration = expirations[0]
     dte = (datetime.strptime(expiration, '%Y%m%d').date() - hoje).days
 
-    # Strikes ±12% do spot (evita deep ITM/OTM)
-    strikes = sorted([s for s in chain.strikes
-                      if spot * 0.88 <= s <= spot * 1.12])
+    # Strikes proximos do ATM — evita deep ITM caro
+    # CALL: ATM ate levemente OTM (97% a 108%)
+    # PUT:  ATM ate levemente OTM (92% a 103%)
+    if direction == 'CALL':
+        strikes = sorted([s for s in chain.strikes
+                          if spot * 0.97 <= s <= spot * 1.08])
+    else:
+        strikes = sorted([s for s in chain.strikes
+                          if spot * 0.92 <= s <= spot * 1.03])
     if not strikes:
         return [], []
 
@@ -406,6 +425,9 @@ def fetch_full_chain(ib: IB, ticker: str, spot: float) -> tuple:
 
             price_ref = ask if ask > 0 else (close if close > 0 else last)
             if price_ref == 0 and not greeks:
+                continue
+            # Descarta contratos sem gregas validas (mercado fechado ou sem dados)
+            if delta == 0 and iv == 0 and bid == 0 and ask == 0:
                 continue
 
             mid = round((bid + ask) / 2, 2) if (bid + ask) > 0 else round(price_ref, 2)
