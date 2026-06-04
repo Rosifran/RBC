@@ -1017,30 +1017,72 @@ def tradingview_webhook():
             if not (c4_level and c1_level and cw_level and vt_level):
                 return jsonify({"error": "Niveis nao encontrados para %s. Processe o PDF no Modo 1 primeiro." % date}), 400
 
-            c4_rec  = high >= c4_level
-            c1_hit  = high >= c1_level
-            cw_hit  = high >= cw_level
-            near_cw = high >= (cw_level - 0.25)
-            vt_lost = low  <= vt_level
+            # ── calculate_trade_path_from_levels ────────────────────
+            # Cruza OHLC do TradingView com níveis do SpotGamma
+            # Nao depende de eventos webhook para reclaim
+
+            zg_level = float(row0.get("zero_gamma") or 0)
+            pw_level = float(row0.get("put_wall")   or 0)
+
+            c4_rec   = high >= c4_level  if c4_level else False
+            c1_hit   = high >= c1_level  if c1_level else False
+            cw_hit   = high >= cw_level  if cw_level else False
+            near_cw  = high >= (cw_level - 0.25) if cw_level else False
+
+            # Vol Trigger — lost e reclaim via OHLC
+            vt_lost    = (open_ < vt_level or low < vt_level) if vt_level else False
+            vt_reclaim = vt_lost and close > vt_level if vt_level else False
+
+            # Regime no fechamento
+            if vt_level:
+                regime_close = "POSITIVE_GAMMA" if close > vt_level else "NEGATIVE_GAMMA"
+            else:
+                regime_close = None
 
             update.update({
-                "c4_reclaimed":       c4_rec,
-                "c1_hit":             c1_hit,
-                "call_wall_hit":      cw_hit,
-                "near_call_wall":     near_cw,
-                "vol_trigger_lost":   vt_lost,
+                "c4_reclaimed":     c4_rec,
+                "c1_hit":           c1_hit,
+                "call_wall_hit":    cw_hit,
+                "near_call_wall":   near_cw,
+                "vol_trigger_lost": vt_lost,
             })
 
+            # ── Monta path em ordem cronológica ──────────────────────
             path_parts = []
+
+            # 1. Compressão — abriu entre VT e C4
             if open_ and vt_level and c4_level and vt_level <= open_ <= c4_level:
                 path_parts.append("compression")
-            if c4_rec:   path_parts.append("c4")
-            if c1_hit:   path_parts.append("c1")
-            if cw_hit:   path_parts.append("call_wall")
-            elif near_cw: path_parts.append("near_call_wall")
-            if vt_lost:  path_parts.append("vol_trigger_lost")
+
+            # 2. Vol Trigger perdido na abertura ou no low
+            if vt_lost:
+                path_parts.append("vol_trigger_lost")
+
+            # 3. C4 reclaim
+            if c4_rec:
+                path_parts.append("c4")
+
+            # 4. C1 hit
+            if c1_hit:
+                path_parts.append("c1")
+
+            # 5. Call Wall
+            if cw_hit:
+                path_parts.append("call_wall")
+                if close < cw_level:
+                    path_parts.append("call_wall_rejection")
+            elif near_cw:
+                path_parts.append("near_call_wall")
+
+            # 6. Reclaim do Vol Trigger no fechamento
+            if vt_reclaim:
+                path_parts.append("reclaim")
+
             if path_parts:
                 update["trade_path"] = " -> ".join(path_parts)
+            if regime_close:
+                update["notes"] = (update.get("notes") or "") + f" | regime_close: {regime_close}"
+            # ─────────────────────────────────────────────────────────
 
         row = save_snapshot(update)
         return jsonify({"ok": True, "event": event, "date": str(row["date"]), "update": {k:v for k,v in update.items() if k != "date"}})
