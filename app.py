@@ -888,19 +888,43 @@ def modo2():
 
 @app.route("/api/modo5/latest", methods=["GET"])
 def modo5_latest():
-    """Retorna o resultado mais recente do scanner Modo 5."""
-    import glob, json, os
-    results_dir = os.path.join(os.path.dirname(__file__), "modo5_results")
-    if not os.path.exists(results_dir):
-        return jsonify({"error": "Nenhum resultado encontrado. Rode o scanner primeiro."}), 404
-    files = sorted(glob.glob(os.path.join(results_dir, "swing_scan_*.json")), reverse=True)
-    if not files:
-        return jsonify({"error": "Nenhum resultado encontrado. Rode o scanner primeiro."}), 404
+    """Retorna o resultado mais recente do scanner Modo 5 via PostgreSQL."""
     try:
-        with open(files[0]) as f:
-            data = json.load(f)
-        ts = os.path.basename(files[0]).replace("swing_scan_", "").replace(".json", "")
-        return jsonify({"ok": True, "timestamp": ts, "results": data, "file": files[0]})
+        from journal import get_swing_latest_scan
+        rows = get_swing_latest_scan()
+        if not rows:
+            return jsonify({"error": "Nenhum resultado encontrado. Rode o scanner primeiro."}), 404
+
+        # Reconstroi formato original do scanner
+        results = []
+        for r in rows:
+            raw = r.get("raw") or {}
+            if isinstance(raw, dict) and raw:
+                results.append(raw)
+            else:
+                # Reconstroi do banco
+                edge_fatores = {}
+                for k in ['gex', 'vrp', 'skew', 'pc_ratio']:
+                    field = 'edge_' + ('pc' if k == 'pc_ratio' else k)
+                    if r.get(field):
+                        edge_fatores[k] = r[field]
+                results.append({
+                    "ticker":           r.get("ticker"),
+                    "direction":        r.get("direction"),
+                    "spot":             float(r.get("spot") or 0),
+                    "scanned":          r.get("scanned", 0),
+                    "overall_verdict":  r.get("verdict"),
+                    "timestamp":        r.get("scan_time"),
+                    "edge": {
+                        "verdict":    r.get("edge_verdict"),
+                        "aprovados":  r.get("edge_aprovados", 0),
+                        "fatores":    edge_fatores,
+                    },
+                    "top_contracts": r.get("contracts") or [],
+                })
+
+        ts = rows[0].get("scan_time", "") if rows else ""
+        return jsonify({"ok": True, "timestamp": ts, "results": results})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

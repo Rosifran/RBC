@@ -692,6 +692,22 @@ def main():
     ib.disconnect()
     save_results(results)
 
+    # Salvar no PostgreSQL
+    try:
+        import sys as _sys
+        _sys.path.insert(0, str(Path(__file__).parent))
+        from journal import save_swing_scan
+        saved = 0
+        for r in results:
+            if "error" not in r:
+                save_swing_scan(r)
+                saved += 1
+        if saved:
+            print(f"  {saved} resultados salvos no PostgreSQL.")
+    except Exception as db_err:
+        print(f"  Aviso: nao foi possivel salvar no banco — {db_err}")
+        print("  Resultado disponivel apenas no JSON local.")
+
     print("  Confirme no TWS antes de operar.")
     print("  Stop: -35% | Alvo 1: +40% | Alvo 2: +80%\n")
 

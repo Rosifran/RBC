@@ -148,3 +148,128 @@ def get_snapshot_by_date(date_str):
             cur.execute("SELECT * FROM trade_journal WHERE date = %s LIMIT 1", (date_str,))
             row = cur.fetchone()
     return dict(row) if row else {}
+
+
+# ── Swing Scans (Modo 5) ──────────────────────────────────────────────
+
+CREATE_SWING = """
+CREATE TABLE IF NOT EXISTS swing_scans (
+    id          SERIAL PRIMARY KEY,
+    created_at  TIMESTAMP DEFAULT NOW(),
+    scan_date   DATE NOT NULL,
+    scan_time   VARCHAR(20),
+    ticker      VARCHAR(10) NOT NULL,
+    direction   VARCHAR(5) NOT NULL,
+    spot        NUMERIC(10,2),
+    scanned     INTEGER,
+    verdict     VARCHAR(20),
+    edge_verdict VARCHAR(30),
+    edge_aprovados INTEGER,
+    edge_gex    TEXT,
+    edge_vrp    TEXT,
+    edge_skew   TEXT,
+    edge_pc     TEXT,
+    contracts   JSONB,
+    raw         JSONB
+);
+"""
+
+def init_swing_db():
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(CREATE_SWING)
+        conn.commit()
+
+def save_swing_scan(scan: dict):
+    """Salva um resultado do scanner Modo 5 no PostgreSQL."""
+    import json as _json
+    init_swing_db()
+    edge = scan.get("edge") or {}
+    fatores = edge.get("fatores") or {}
+
+    vals = {
+        "scan_date":      datetime.now().date().isoformat(),
+        "scan_time":      scan.get("timestamp", ""),
+        "ticker":         scan.get("ticker", ""),
+        "direction":      scan.get("direction", ""),
+        "spot":           scan.get("spot"),
+        "scanned":        scan.get("scanned", 0),
+        "verdict":        scan.get("overall_verdict", ""),
+        "edge_verdict":   edge.get("verdict", ""),
+        "edge_aprovados": edge.get("aprovados", 0),
+        "edge_gex":       _json.dumps(fatores.get("gex")) if fatores.get("gex") else None,
+        "edge_vrp":       _json.dumps(fatores.get("vrp")) if fatores.get("vrp") else None,
+        "edge_skew":      _json.dumps(fatores.get("skew")) if fatores.get("skew") else None,
+        "edge_pc":        _json.dumps(fatores.get("pc_ratio")) if fatores.get("pc_ratio") else None,
+        "contracts":      _json.dumps(scan.get("top_contracts", [])),
+        "raw":            _json.dumps(scan),
+    }
+
+    cols   = ", ".join(vals.keys())
+    params = ", ".join(["%("+k+")s" for k in vals.keys()])
+    sql = f"INSERT INTO swing_scans ({cols}) VALUES ({params}) RETURNING id;"
+
+    with get_conn() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute(sql, vals)
+            row = cur.fetchone()
+        conn.commit()
+    return dict(row)
+
+def get_swing_latest(limit=20):
+    """Retorna os scans mais recentes agrupados por data/hora."""
+    import json as _json
+    init_swing_db()
+    with get_conn() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute("""
+                SELECT * FROM swing_scans
+                ORDER BY created_at DESC
+                LIMIT %s
+            """, (limit,))
+            rows = cur.fetchall()
+    result = []
+    for r in rows:
+        d = dict(r)
+        for f in ['contracts', 'raw', 'edge_gex', 'edge_vrp', 'edge_skew', 'edge_pc']:
+            if d.get(f) and isinstance(d[f], str):
+                try: d[f] = _json.loads(d[f])
+                except: pass
+        result.append(d)
+    return result
+
+def get_swing_latest_scan():
+    """Retorna o scan mais recente completo (todos os tickers do ultimo run)."""
+    import json as _json
+    init_swing_db()
+    with get_conn() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            # Pega o timestamp do scan mais recente
+            cur.execute("SELECT scan_time FROM swing_scans ORDER BY created_at DESC LIMIT 1")
+            row = cur.fetchone()
+            if not row:
+                return []
+            latest_time = row['scan_time']
+            # Busca todos os registros desse scan
+            cur.execute("""
+                SELECT * FROM swing_scans
+                WHERE scan_time = %s
+                ORDER BY ticker, direction
+            """, (latest_time,))
+            rows = cur.fetchall()
+    result = []
+    for r in rows:
+        d = dict(r)
+        for f in ['contracts', 'raw', 'edge_gex', 'edge_vrp', 'edge_skew', 'edge_pc']:
+            if d.get(f) and isinstance(d[f], str):
+                try: d[f] = _json.loads(d[f])
+                except: pass
+        result.append(d)
+    return result
+
+    init_db()
+    with get_conn() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute("SELECT * FROM trade_journal WHERE date = %s LIMIT 1", (date_str,))
+            row = cur.fetchone()
+    return dict(row) if row else {}
