@@ -254,9 +254,9 @@ def get_swing_latest_scan():
             # Busca todos os registros desse scan
             cur.execute("""
                 SELECT * FROM swing_scans
-                WHERE scan_time = %s
+                WHERE scan_date = (SELECT scan_date FROM swing_scans ORDER BY created_at DESC LIMIT 1)
                 ORDER BY ticker, direction
-            """, (latest_time,))
+            """)
             rows = cur.fetchall()
     result = []
     for r in rows:
