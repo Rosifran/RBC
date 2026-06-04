@@ -151,6 +151,7 @@ def get_snapshot_by_date(date_str):
 
 
 # ── Swing Scans (Modo 5) ──────────────────────────────────────────────
+from datetime import datetime as _dt_swing
 
 CREATE_SWING = """
 CREATE TABLE IF NOT EXISTS swing_scans (
@@ -188,7 +189,7 @@ def save_swing_scan(scan: dict):
     fatores = edge.get("fatores") or {}
 
     vals = {
-        "scan_date":      datetime.now().date().isoformat(),
+        "scan_date":      _dt_swing.now().date().isoformat(),
         "scan_time":      scan.get("timestamp", ""),
         "ticker":         scan.get("ticker", ""),
         "direction":      scan.get("direction", ""),
