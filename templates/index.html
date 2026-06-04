@@ -1264,52 +1264,52 @@
       if (isPut && sp < vtN) {
         const atm = Math.round(sp); const ideal = Math.round(sp - 1); const otm = Math.round(sp - 2);
         strikesHtml = `
-      <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:10px 14px;">
-        <div style="font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Strikes sugeridos · PUT</div>
+      <div style="background:#ffffff;border:0.5px solid #e2e8f0;border-radius:12px;padding:10px 14px;">
+        <div style="font-size:11px;font-weight:500;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Strikes sugeridos · PUT</div>
         <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
-          <div style="border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px;text-align:center;">
-            <div style="font-size:10px;color:var(--color-text-secondary);">ATM</div>
-            <div style="font-size:18px;font-weight:500;color:var(--color-text-danger);">${atm}</div>
-            <div style="font-size:10px;color:var(--color-text-secondary);">mais caro</div>
+          <div style="border:0.5px solid #e2e8f0;border-radius:8px;padding:8px;text-align:center;">
+            <div style="font-size:10px;color:#64748b;">ATM</div>
+            <div style="font-size:18px;font-weight:500;color:#dc2626;">${atm}</div>
+            <div style="font-size:10px;color:#64748b;">mais caro</div>
           </div>
-          <div style="border:2px solid var(--color-border-danger);border-radius:var(--border-radius-md);padding:8px;text-align:center;">
-            <div style="font-size:10px;color:var(--color-text-danger);font-weight:500;">ideal</div>
-            <div style="font-size:18px;font-weight:500;color:var(--color-text-danger);">${ideal}</div>
-            <div style="font-size:10px;color:var(--color-text-secondary);">delta ~0.40</div>
+          <div style="border:2px solid #fecaca;border-radius:8px;padding:8px;text-align:center;">
+            <div style="font-size:10px;color:#dc2626;font-weight:500;">ideal</div>
+            <div style="font-size:18px;font-weight:500;color:#dc2626;">${ideal}</div>
+            <div style="font-size:10px;color:#64748b;">delta ~0.40</div>
           </div>
-          <div style="border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px;text-align:center;">
-            <div style="font-size:10px;color:var(--color-text-secondary);">OTM</div>
-            <div style="font-size:18px;font-weight:500;color:var(--color-text-danger);">${otm}</div>
-            <div style="font-size:10px;color:var(--color-text-secondary);">mais barato</div>
+          <div style="border:0.5px solid #e2e8f0;border-radius:8px;padding:8px;text-align:center;">
+            <div style="font-size:10px;color:#64748b;">OTM</div>
+            <div style="font-size:18px;font-weight:500;color:#dc2626;">${otm}</div>
+            <div style="font-size:10px;color:#64748b;">mais barato</div>
           </div>
         </div>
-        <div style="margin-top:8px;font-size:10px;color:var(--color-text-secondary);">
+        <div style="margin-top:8px;font-size:10px;color:#64748b;">
           Entrada: 9:45 ET apos confirmar abaixo de ${lv.vol_trigger} | Alvo: +75% | Stop: -50% | Saida: 12:30 ET
         </div>
       </div>`;
       } else if (isCall && sp >= vtN) {
         const atm = Math.round(sp); const ideal = Math.round(sp + 1); const otm = Math.round(sp + 2);
         strikesHtml = `
-      <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:10px 14px;">
-        <div style="font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Strikes sugeridos · CALL</div>
+      <div style="background:#ffffff;border:0.5px solid #e2e8f0;border-radius:12px;padding:10px 14px;">
+        <div style="font-size:11px;font-weight:500;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Strikes sugeridos · CALL</div>
         <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
-          <div style="border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px;text-align:center;">
-            <div style="font-size:10px;color:var(--color-text-secondary);">ATM</div>
-            <div style="font-size:18px;font-weight:500;color:var(--color-text-success);">${atm}</div>
-            <div style="font-size:10px;color:var(--color-text-secondary);">mais caro</div>
+          <div style="border:0.5px solid #e2e8f0;border-radius:8px;padding:8px;text-align:center;">
+            <div style="font-size:10px;color:#64748b;">ATM</div>
+            <div style="font-size:18px;font-weight:500;color:#16a34a;">${atm}</div>
+            <div style="font-size:10px;color:#64748b;">mais caro</div>
           </div>
-          <div style="border:2px solid var(--color-border-success);border-radius:var(--border-radius-md);padding:8px;text-align:center;">
-            <div style="font-size:10px;color:var(--color-text-success);font-weight:500;">ideal</div>
-            <div style="font-size:18px;font-weight:500;color:var(--color-text-success);">${ideal}</div>
-            <div style="font-size:10px;color:var(--color-text-secondary);">delta ~0.40</div>
+          <div style="border:2px solid #bbf7d0;border-radius:8px;padding:8px;text-align:center;">
+            <div style="font-size:10px;color:#16a34a;font-weight:500;">ideal</div>
+            <div style="font-size:18px;font-weight:500;color:#16a34a;">${ideal}</div>
+            <div style="font-size:10px;color:#64748b;">delta ~0.40</div>
           </div>
-          <div style="border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px;text-align:center;">
-            <div style="font-size:10px;color:var(--color-text-secondary);">OTM</div>
-            <div style="font-size:18px;font-weight:500;color:var(--color-text-success);">${otm}</div>
-            <div style="font-size:10px;color:var(--color-text-secondary);">mais barato</div>
+          <div style="border:0.5px solid #e2e8f0;border-radius:8px;padding:8px;text-align:center;">
+            <div style="font-size:10px;color:#64748b;">OTM</div>
+            <div style="font-size:18px;font-weight:500;color:#16a34a;">${otm}</div>
+            <div style="font-size:10px;color:#64748b;">mais barato</div>
           </div>
         </div>
-        <div style="margin-top:8px;font-size:10px;color:var(--color-text-secondary);">
+        <div style="margin-top:8px;font-size:10px;color:#64748b;">
           Entrada: 9:45 ET apos confirmar acima de ${lv.vol_trigger} | Alvo: +75% | Stop: -50% | Saida: 12:30 ET
         </div>
       </div>`;
@@ -1319,107 +1319,107 @@
     // PM Context
     let pmHtml = '';
     if (d.pm_hiro || d.pm_vix_close || d.pm_cor1m_close) {
-      const biasColor = cb === 'bearish_context' ? 'var(--color-text-danger)' : cb === 'bullish_context' ? 'var(--color-text-success)' : 'var(--color-text-secondary)';
-      const biasBg    = cb === 'bearish_context' ? 'var(--color-background-danger)' : cb === 'bullish_context' ? 'var(--color-background-success)' : 'var(--color-background-secondary)';
+      const biasColor = cb === 'bearish_context' ? '#dc2626' : cb === 'bullish_context' ? '#16a34a' : '#64748b';
+      const biasBg    = cb === 'bearish_context' ? '#fef2f2' : cb === 'bullish_context' ? '#f0fdf4' : '#f8fafc';
       const biasLabel = cb === 'bearish_context' ? 'bearish' : cb === 'bullish_context' ? 'bullish' : 'neutro';
       const cor       = d.pm_cor1m_close ? parseFloat(d.pm_cor1m_close) : 0;
-      const corColor  = cor >= 6 ? 'var(--color-text-warning)' : 'var(--color-text-primary)';
+      const corColor  = cor >= 6 ? '#d97706' : '#1e293b';
       const warns     = (d.context_warning || '').split(' | ').filter(Boolean);
       pmHtml = `
-      <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:10px 14px;">
-        <div style="font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Contexto PM Note</div>
+      <div style="background:#ffffff;border:0.5px solid #e2e8f0;border-radius:12px;padding:10px 14px;">
+        <div style="font-size:11px;font-weight:500;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Contexto PM Note</div>
         <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
-          ${d.pm_hiro ? `<span style="font-size:11px;background:${biasBg};color:${biasColor};padding:3px 10px;border-radius:var(--border-radius-md);font-weight:500;">${biasLabel}</span>` : ''}
-          ${d.pm_vix_close ? `<span style="font-size:11px;background:var(--color-background-secondary);color:var(--color-text-secondary);padding:3px 10px;border-radius:var(--border-radius-md);">VIX ${d.pm_vix_close}</span>` : ''}
-          ${d.pm_cor1m_close ? `<span style="font-size:11px;background:var(--color-background-secondary);color:${corColor};padding:3px 10px;border-radius:var(--border-radius-md);font-weight:${cor>=6?'500':'400'};">COR1M ${d.pm_cor1m_close}</span>` : ''}
+          ${d.pm_hiro ? `<span style="font-size:11px;background:${biasBg};color:${biasColor};padding:3px 10px;border-radius:8px;font-weight:500;">${biasLabel}</span>` : ''}
+          ${d.pm_vix_close ? `<span style="font-size:11px;background:#f8fafc;color:#64748b;padding:3px 10px;border-radius:8px;">VIX ${d.pm_vix_close}</span>` : ''}
+          ${d.pm_cor1m_close ? `<span style="font-size:11px;background:#f8fafc;color:${corColor};padding:3px 10px;border-radius:8px;font-weight:${cor>=6?'500':'400'};">COR1M ${d.pm_cor1m_close}</span>` : ''}
         </div>
-        ${warns.map(w=>`<div style="font-size:11px;color:var(--color-text-secondary);padding:2px 0;line-height:1.4;">• ${w}</div>`).join('')}
+        ${warns.map(w=>`<div style="font-size:11px;color:#64748b;padding:2px 0;line-height:1.4;">• ${w}</div>`).join('')}
       </div>`;
     }
 
     // Gap & Timing
     let gapHtml = '';
     if (d.gap_type && d.gap_type !== 'none' || tq !== 'OK') {
-      const tqColor = tq === 'OK' ? 'var(--color-text-success)' : tq === 'CAUTION' ? 'var(--color-text-warning)' : 'var(--color-text-danger)';
-      const tqBg    = tq === 'OK' ? 'var(--color-background-success)' : tq === 'CAUTION' ? 'var(--color-background-warning)' : 'var(--color-background-danger)';
+      const tqColor = tq === 'OK' ? '#16a34a' : tq === 'CAUTION' ? '#d97706' : '#dc2626';
+      const tqBg    = tq === 'OK' ? '#f0fdf4' : tq === 'CAUTION' ? '#fffbeb' : '#fef2f2';
       gapHtml = `
-      <div style="background:var(--color-background-primary);border:0.5px solid ${tq!=='OK'?'var(--color-border-warning)':'var(--color-border-tertiary)'};border-radius:var(--border-radius-lg);padding:10px 14px;">
+      <div style="background:#ffffff;border:0.5px solid ${tq!=='OK'?'#fde68a':'#e2e8f0'};border-radius:12px;padding:10px 14px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-          <div style="font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;">Timing</div>
-          <span style="font-size:11px;background:${tqBg};color:${tqColor};padding:2px 8px;border-radius:var(--border-radius-md);font-weight:500;">${tq}</span>
+          <div style="font-size:11px;font-weight:500;color:#64748b;text-transform:uppercase;letter-spacing:.05em;">Timing</div>
+          <span style="font-size:11px;background:${tqBg};color:${tqColor};padding:2px 8px;border-radius:8px;font-weight:500;">${tq}</span>
         </div>
         ${d.gap_type && d.gap_type !== 'none' ? `
         <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:8px;">
-          <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 10px;">
-            <div style="font-size:10px;color:var(--color-text-secondary);">Gap</div>
-            <div style="font-size:15px;font-weight:500;color:var(--color-text-warning);">${d.gap_pct !== null && d.gap_pct !== undefined ? (d.gap_pct > 0 ? '+' : '') + d.gap_pct.toFixed(2) + '%' : '—'}</div>
+          <div style="background:#f8fafc;border-radius:8px;padding:8px 10px;">
+            <div style="font-size:10px;color:#64748b;">Gap</div>
+            <div style="font-size:15px;font-weight:500;color:#d97706;">${d.gap_pct !== null && d.gap_pct !== undefined ? (d.gap_pct > 0 ? '+' : '') + d.gap_pct.toFixed(2) + '%' : '—'}</div>
           </div>
-          <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 10px;">
-            <div style="font-size:10px;color:var(--color-text-secondary);">Fill level</div>
-            <div style="font-size:15px;font-weight:500;color:var(--color-text-primary);">${d.gap_fill_level || '—'}</div>
+          <div style="background:#f8fafc;border-radius:8px;padding:8px 10px;">
+            <div style="font-size:10px;color:#64748b;">Fill level</div>
+            <div style="font-size:15px;font-weight:500;color:#1e293b;">${d.gap_fill_level || '—'}</div>
           </div>
         </div>` : ''}
-        ${d.gap_warning ? `<div style="font-size:11px;color:var(--color-text-warning);padding:6px 8px;background:var(--color-background-warning);border-radius:var(--border-radius-md);">${d.gap_warning}</div>` : ''}
-        ${d.chase_warning ? `<div style="font-size:11px;color:var(--color-text-danger);padding:6px 8px;background:var(--color-background-danger);border-radius:var(--border-radius-md);margin-top:6px;">Movimento ja aconteceu — nao perseguir entrada.</div>` : ''}
+        ${d.gap_warning ? `<div style="font-size:11px;color:#d97706;padding:6px 8px;background:#fffbeb;border-radius:8px;">${d.gap_warning}</div>` : ''}
+        ${d.chase_warning ? `<div style="font-size:11px;color:#dc2626;padding:6px 8px;background:#fef2f2;border-radius:8px;margin-top:6px;">Movimento ja aconteceu — nao perseguir entrada.</div>` : ''}
       </div>`;
     }
 
     // Hard rules
     const rules = (d.hard_rules || []).filter(r => !r.includes('Saida obrigatoria'));
     const hardHtml = rules.length ? `
-      <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 10px;margin-top:8px;">
-        ${rules.map(r=>`<div style="font-size:11px;color:var(--color-text-secondary);padding:2px 0;">• ${r}</div>`).join('')}
-        <div style="font-size:11px;color:var(--color-text-secondary);padding:2px 0;">• Saida obrigatoria 12:30 ET</div>
+      <div style="background:#f8fafc;border-radius:8px;padding:8px 10px;margin-top:8px;">
+        ${rules.map(r=>`<div style="font-size:11px;color:#64748b;padding:2px 0;">• ${r}</div>`).join('')}
+        <div style="font-size:11px;color:#64748b;padding:2px 0;">• Saida obrigatoria 12:30 ET</div>
       </div>` : '';
 
     // Regime line
     const vtN = lv.vol_trigger ? parseFloat(lv.vol_trigger) : null;
     const regimeLabel = d.gamma_regime ? d.gamma_regime.replace('_', ' ') : '—';
-    const regimeColor = d.gamma_regime === 'POSITIVE_GAMMA' ? 'var(--color-text-success)' : d.gamma_regime === 'NEGATIVE_GAMMA' ? 'var(--color-text-danger)' : 'var(--color-text-secondary)';
+    const regimeColor = d.gamma_regime === 'POSITIVE_GAMMA' ? '#16a34a' : d.gamma_regime === 'NEGATIVE_GAMMA' ? '#dc2626' : '#64748b';
 
     const html = `
-<div style="font-family:var(--font-sans);display:grid;gap:8px;">
+<div style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;display:grid;gap:8px;">
 
-  <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-top:3px solid ${decColor};border-radius:var(--border-radius-lg);padding:12px 14px;">
+  <div style="background:#ffffff;border:0.5px solid #e2e8f0;border-top:3px solid ${decColor};border-radius:12px;padding:12px 14px;">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;">
       <div>
-        <div style="font-size:10px;color:var(--color-text-secondary);text-transform:uppercase;font-weight:500;letter-spacing:.05em;margin-bottom:4px;">Decisao</div>
+        <div style="font-size:10px;color:#64748b;text-transform:uppercase;font-weight:500;letter-spacing:.05em;margin-bottom:4px;">Decisao</div>
         <div style="font-size:20px;font-weight:500;color:${decColor};">${dec || 'NO TRADE'}</div>
       </div>
       <div style="text-align:right;">
-        <span style="font-size:11px;background:${statusBg};color:${statusColor};padding:3px 10px;border-radius:var(--border-radius-md);font-weight:500;">${status}</span>
-        <div style="font-size:10px;color:var(--color-text-secondary);margin-top:4px;">Score ${sc}/5 · Risco ${d.risk || '—'}</div>
+        <span style="font-size:11px;background:${statusBg};color:${statusColor};padding:3px 10px;border-radius:8px;font-weight:500;">${status}</span>
+        <div style="font-size:10px;color:#64748b;margin-top:4px;">Score ${sc}/5 · Risco ${d.risk || '—'}</div>
       </div>
     </div>
-    ${d.one_sentence ? `<div style="font-size:12px;color:var(--color-text-secondary);margin-top:8px;padding-top:8px;border-top:0.5px solid var(--color-border-tertiary);line-height:1.5;">${d.one_sentence}</div>` : ''}
+    ${d.one_sentence ? `<div style="font-size:12px;color:#64748b;margin-top:8px;padding-top:8px;border-top:0.5px solid #e2e8f0;line-height:1.5;">${d.one_sentence}</div>` : ''}
   </div>
 
-  <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:10px 14px;">
-    <div style="font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Regime</div>
+  <div style="background:#ffffff;border:0.5px solid #e2e8f0;border-radius:12px;padding:10px 14px;">
+    <div style="font-size:11px;font-weight:500;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Regime</div>
     <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:8px;">
-      <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 10px;">
-        <div style="font-size:10px;color:var(--color-text-secondary);">SPY</div>
-        <div style="font-size:16px;font-weight:500;color:var(--color-text-primary);">${sp ? sp.toFixed(2) : '—'}</div>
+      <div style="background:#f8fafc;border-radius:8px;padding:8px 10px;">
+        <div style="font-size:10px;color:#64748b;">SPY</div>
+        <div style="font-size:16px;font-weight:500;color:#1e293b;">${sp ? sp.toFixed(2) : '—'}</div>
       </div>
-      <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 10px;">
-        <div style="font-size:10px;color:var(--color-text-secondary);">Regime</div>
+      <div style="background:#f8fafc;border-radius:8px;padding:8px 10px;">
+        <div style="font-size:10px;color:#64748b;">Regime</div>
         <div style="font-size:13px;font-weight:500;color:${regimeColor};">${regimeLabel}</div>
       </div>
-      ${lv.vol_trigger ? `<div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 10px;">
-        <div style="font-size:10px;color:var(--color-text-secondary);">Vol Trigger</div>
-        <div style="font-size:16px;font-weight:500;color:var(--color-text-warning);">${parseFloat(lv.vol_trigger).toFixed(2)}</div>
+      ${lv.vol_trigger ? `<div style="background:#f8fafc;border-radius:8px;padding:8px 10px;">
+        <div style="font-size:10px;color:#64748b;">Vol Trigger</div>
+        <div style="font-size:16px;font-weight:500;color:#d97706;">${parseFloat(lv.vol_trigger).toFixed(2)}</div>
       </div>` : ''}
-      ${lv.zero_gamma ? `<div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 10px;">
-        <div style="font-size:10px;color:var(--color-text-secondary);">Zero Gamma</div>
-        <div style="font-size:16px;font-weight:500;color:var(--color-text-primary);">${parseFloat(lv.zero_gamma).toFixed(2)}</div>
+      ${lv.zero_gamma ? `<div style="background:#f8fafc;border-radius:8px;padding:8px 10px;">
+        <div style="font-size:10px;color:#64748b;">Zero Gamma</div>
+        <div style="font-size:16px;font-weight:500;color:#1e293b;">${parseFloat(lv.zero_gamma).toFixed(2)}</div>
       </div>` : ''}
-      ${lv.call_wall ? `<div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 10px;">
-        <div style="font-size:10px;color:var(--color-text-secondary);">Call Wall</div>
-        <div style="font-size:16px;font-weight:500;color:var(--color-text-success);">${parseFloat(lv.call_wall).toFixed(2)}</div>
+      ${lv.call_wall ? `<div style="background:#f8fafc;border-radius:8px;padding:8px 10px;">
+        <div style="font-size:10px;color:#64748b;">Call Wall</div>
+        <div style="font-size:16px;font-weight:500;color:#16a34a;">${parseFloat(lv.call_wall).toFixed(2)}</div>
       </div>` : ''}
-      ${lv.put_wall ? `<div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 10px;">
-        <div style="font-size:10px;color:var(--color-text-secondary);">Put Wall</div>
-        <div style="font-size:16px;font-weight:500;color:var(--color-text-danger);">${parseFloat(lv.put_wall).toFixed(2)}</div>
+      ${lv.put_wall ? `<div style="background:#f8fafc;border-radius:8px;padding:8px 10px;">
+        <div style="font-size:10px;color:#64748b;">Put Wall</div>
+        <div style="font-size:16px;font-weight:500;color:#dc2626;">${parseFloat(lv.put_wall).toFixed(2)}</div>
       </div>` : ''}
     </div>
   </div>
@@ -1427,28 +1427,28 @@
   ${gapHtml}
 
   ${!isNo ? `
-  <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;">
-    <div style="padding:8px 12px;font-size:10px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;border-bottom:0.5px solid var(--color-border-tertiary);">Plano de trade</div>
-    ${d.entry ? `<div style="display:flex;gap:0;border-left:3px solid var(--color-border-success);margin-bottom:1px;"><span style="min-width:72px;padding:5px 8px;font-size:10px;font-weight:500;color:var(--color-text-success);text-transform:uppercase;flex-shrink:0;">Entrada</span><span style="padding:5px 8px;font-size:12px;color:var(--color-text-primary);line-height:1.4;flex:1;">${d.entry}</span></div>` : ''}
-    ${d.stop  ? `<div style="display:flex;gap:0;border-left:3px solid var(--color-border-danger);margin-bottom:1px;"><span style="min-width:72px;padding:5px 8px;font-size:10px;font-weight:500;color:var(--color-text-danger);text-transform:uppercase;flex-shrink:0;">Stop</span><span style="padding:5px 8px;font-size:12px;color:var(--color-text-primary);line-height:1.4;flex:1;">${d.stop}</span></div>` : ''}
-    ${d.target_1 ? `<div style="display:flex;gap:0;border-left:3px solid var(--color-border-info);margin-bottom:1px;"><span style="min-width:72px;padding:5px 8px;font-size:10px;font-weight:500;color:var(--color-text-info);text-transform:uppercase;flex-shrink:0;">Alvo 1</span><span style="padding:5px 8px;font-size:12px;color:var(--color-text-primary);line-height:1.4;flex:1;">${d.target_1}</span></div>` : ''}
-    ${d.target_2 ? `<div style="display:flex;gap:0;border-left:3px solid #8b5cf6;"><span style="min-width:72px;padding:5px 8px;font-size:10px;font-weight:500;color:#8b5cf6;text-transform:uppercase;flex-shrink:0;">Alvo 2</span><span style="padding:5px 8px;font-size:12px;color:var(--color-text-primary);line-height:1.4;flex:1;">${d.target_2}</span></div>` : ''}
+  <div style="background:#ffffff;border:0.5px solid #e2e8f0;border-radius:12px;overflow:hidden;">
+    <div style="padding:8px 12px;font-size:10px;font-weight:500;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:0.5px solid #e2e8f0;">Plano de trade</div>
+    ${d.entry ? `<div style="display:flex;gap:0;border-left:3px solid #bbf7d0;margin-bottom:1px;"><span style="min-width:72px;padding:5px 8px;font-size:10px;font-weight:500;color:#16a34a;text-transform:uppercase;flex-shrink:0;">Entrada</span><span style="padding:5px 8px;font-size:12px;color:#1e293b;line-height:1.4;flex:1;">${d.entry}</span></div>` : ''}
+    ${d.stop  ? `<div style="display:flex;gap:0;border-left:3px solid #fecaca;margin-bottom:1px;"><span style="min-width:72px;padding:5px 8px;font-size:10px;font-weight:500;color:#dc2626;text-transform:uppercase;flex-shrink:0;">Stop</span><span style="padding:5px 8px;font-size:12px;color:#1e293b;line-height:1.4;flex:1;">${d.stop}</span></div>` : ''}
+    ${d.target_1 ? `<div style="display:flex;gap:0;border-left:3px solid #bfdbfe;margin-bottom:1px;"><span style="min-width:72px;padding:5px 8px;font-size:10px;font-weight:500;color:#2563eb;text-transform:uppercase;flex-shrink:0;">Alvo 1</span><span style="padding:5px 8px;font-size:12px;color:#1e293b;line-height:1.4;flex:1;">${d.target_1}</span></div>` : ''}
+    ${d.target_2 ? `<div style="display:flex;gap:0;border-left:3px solid #8b5cf6;"><span style="min-width:72px;padding:5px 8px;font-size:10px;font-weight:500;color:#8b5cf6;text-transform:uppercase;flex-shrink:0;">Alvo 2</span><span style="padding:5px 8px;font-size:12px;color:#1e293b;line-height:1.4;flex:1;">${d.target_2}</span></div>` : ''}
     ${hardHtml}
   </div>` : `
-  <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:10px 14px;">
-    <div style="font-size:12px;color:var(--color-text-secondary);line-height:1.6;">${d.reason || 'SPY no meio da faixa, sem edge estrutural.'}</div>
-    ${d.target_1 ? `<div style="font-size:11px;color:var(--color-text-secondary);margin-top:6px;">Proximo extremo superior: ${d.target_1}</div>` : ''}
-    ${d.target_2 ? `<div style="font-size:11px;color:var(--color-text-secondary);">Proximo extremo inferior: ${d.target_2}</div>` : ''}
+  <div style="background:#f8fafc;border-radius:12px;padding:10px 14px;">
+    <div style="font-size:12px;color:#64748b;line-height:1.6;">${d.reason || 'SPY no meio da faixa, sem edge estrutural.'}</div>
+    ${d.target_1 ? `<div style="font-size:11px;color:#64748b;margin-top:6px;">Proximo extremo superior: ${d.target_1}</div>` : ''}
+    ${d.target_2 ? `<div style="font-size:11px;color:#64748b;">Proximo extremo inferior: ${d.target_2}</div>` : ''}
   </div>`}
 
   ${strikesHtml}
 
   ${pmHtml}
 
-  <div style="background:${status==='APROVO'?'var(--color-background-success)':status==='NAO ENTRAR'||status==='NAO PERSEGUIR'?'var(--color-background-secondary)':'var(--color-background-warning)'};border:0.5px solid ${status==='APROVO'?'var(--color-border-success)':status==='NAO ENTRAR'||status==='NAO PERSEGUIR'?'var(--color-border-tertiary)':'var(--color-border-warning)'};border-radius:var(--border-radius-lg);padding:12px 14px;">
-    <div style="font-size:10px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Acao agora</div>
-    <div style="font-size:15px;font-weight:500;color:${status==='APROVO'?'var(--color-text-success)':status==='AGUARDAR'?'var(--color-text-warning)':'var(--color-text-secondary)'};">${acaoAgora}</div>
-    ${acaoDesc ? `<div style="font-size:11px;color:var(--color-text-secondary);margin-top:4px;line-height:1.4;">${acaoDesc}</div>` : ''}
+  <div style="background:${status==='APROVO'?'#f0fdf4':status==='NAO ENTRAR'||status==='NAO PERSEGUIR'?'#f8fafc':'#fffbeb'};border:0.5px solid ${status==='APROVO'?'#bbf7d0':status==='NAO ENTRAR'||status==='NAO PERSEGUIR'?'#e2e8f0':'#fde68a'};border-radius:12px;padding:12px 14px;">
+    <div style="font-size:10px;font-weight:500;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Acao agora</div>
+    <div style="font-size:15px;font-weight:500;color:${status==='APROVO'?'#16a34a':status==='AGUARDAR'?'#d97706':'#64748b'};">${acaoAgora}</div>
+    ${acaoDesc ? `<div style="font-size:11px;color:#64748b;margin-top:4px;line-height:1.4;">${acaoDesc}</div>` : ''}
   </div>
 
 </div>`;
