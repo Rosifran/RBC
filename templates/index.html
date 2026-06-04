@@ -1643,6 +1643,7 @@
 <script>
   let _modo5Data = [];
   let _modo5Ticker = 'TODOS';
+  let _modo5Dir    = 'TODOS';
 
   function modo5IsMarketOpen(scanTime) {
     // scanTime formato YYYYMMDD_HHMM — verifica se estava dentro do horario de mercado
@@ -1661,21 +1662,41 @@
     return c.verdict || 'AGUARDAR';
   }
 
-  function renderModo5(ticker) {
-    _modo5Ticker = ticker;
+  function renderModo5(ticker, dir) {
+    if (ticker !== undefined) _modo5Ticker = ticker;
+    if (dir     !== undefined) _modo5Dir    = dir;
     const el = document.getElementById('modo5-content');
     if (!el || !_modo5Data.length) return;
 
-    // Pills
+    // Pills grupo 1 — Ticker
     const pillsEl = document.getElementById('modo5-pills');
     if (pillsEl) {
-      const tickers = ['TODOS', ...[...new Set(_modo5Data.map(r => r.ticker))]];
-      pillsEl.innerHTML = tickers.map(t => `
-        <button onclick="renderModo5('${t}')"
-          style="font-size:11px;padding:4px 14px;border-radius:20px;border:0.5px solid #e2e8f0;cursor:pointer;
-          background:${t===_modo5Ticker?'#1e293b':'#fff'};color:${t===_modo5Ticker?'#fff':'#64748b'};">
-          ${t}
-        </button>`).join('');
+      const tickers = ['TODOS', ...[...new Set(_modo5Data.map(r => r.ticker))].sort()];
+      const dirs    = ['TODOS', 'CALL', 'PUT'];
+
+      let html = '<div style="margin-bottom:6px;">';
+      html += '<div style="font-size:9px;color:#94a3b8;text-transform:uppercase;margin-bottom:4px;">Ticker</div>';
+      html += tickers.map(t => `
+        <button onclick="renderModo5('${t}', undefined)"
+          style="font-size:11px;padding:3px 12px;border-radius:20px;border:0.5px solid #e2e8f0;cursor:pointer;margin-right:4px;margin-bottom:4px;
+          background:${t===_modo5Ticker?'#1e293b':'#fff'};color:${t===_modo5Ticker?'#fff':'#64748b'};">${t}</button>`).join('');
+      html += '</div>';
+
+      html += '<div style="margin-bottom:4px;">';
+      html += '<div style="font-size:9px;color:#94a3b8;text-transform:uppercase;margin-bottom:4px;">Direcao</div>';
+      html += dirs.map(d => {
+        const dc = d === 'CALL' ? '#16a34a' : d === 'PUT' ? '#dc2626' : '#1e293b';
+        const active = d === _modo5Dir;
+        return `<button onclick="renderModo5(undefined, '${d}')"
+          style="font-size:11px;padding:3px 12px;border-radius:20px;border:0.5px solid #e2e8f0;cursor:pointer;margin-right:4px;
+          background:${active?dc:'#fff'};color:${active?'#fff':dc};">${d}</button>`;
+      }).join('');
+      html += '</div>';
+
+      const filterLabel = `Ticker = ${_modo5Ticker} | Direcao = ${_modo5Dir}`;
+      html += `<div style="font-size:10px;color:#94a3b8;margin-top:2px;margin-bottom:2px;">Filtro ativo: ${filterLabel}</div>`;
+
+      pillsEl.innerHTML = html;
     }
 
     const scanTime = _modo5Data[0]?.timestamp || '';
@@ -1687,7 +1708,9 @@
       msEl.style.color = marketOpen ? '#16a34a' : '#94a3b8';
     }
 
-    const filtered = ticker === 'TODOS' ? _modo5Data : _modo5Data.filter(r => r.ticker === ticker);
+    let filtered = _modo5Data;
+    if (_modo5Ticker !== 'TODOS') filtered = filtered.filter(r => r.ticker === _modo5Ticker);
+    if (_modo5Dir    !== 'TODOS') filtered = filtered.filter(r => r.direction === _modo5Dir);
     const byTicker = {};
     filtered.forEach(r => {
       if (!byTicker[r.ticker]) byTicker[r.ticker] = [];
