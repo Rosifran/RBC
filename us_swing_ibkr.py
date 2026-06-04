@@ -25,8 +25,17 @@ from __future__ import annotations
 import json
 import argparse
 import logging
+import os
 from datetime import datetime
 from pathlib import Path
+
+# Carrega .env local se existir
+_env_path = Path(__file__).parent / '.env'
+if _env_path.exists():
+    for _line in _env_path.read_text().splitlines():
+        if '=' in _line and not _line.startswith('#'):
+            _k, _v = _line.split('=', 1)
+            os.environ.setdefault(_k.strip(), _v.strip())
 
 from ib_insync import IB, Stock, Option, util
 
