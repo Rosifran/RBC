@@ -24,10 +24,17 @@ Nao altera nenhum arquivo existente do RBC.
 from __future__ import annotations
 import json
 import argparse
+import logging
 from datetime import datetime
 from pathlib import Path
 
-from ib_insync import IB, Stock, Option
+from ib_insync import IB, Stock, Option, util
+
+# Suprimir logs de erro do ib_insync no output normal
+# Erros 200 (Unknown contract) sao esperados e tratados
+logging.getLogger('ib_insync').setLevel(logging.CRITICAL)
+
+VERBOSE = False  # Ativado via --verbose
 
 
 # ── Configuracao ──────────────────────────────────────────────────────
@@ -180,7 +187,7 @@ def edge_summary(gex: dict, vrp: dict, skew: dict, pc: dict, direction: str) -> 
     if incompletos >= 2:
         return {
             "verdict":    "EDGE INCOMPLETO",
-            "note":       f"{incompletos}/4 fatores sem dados reais — rodar apos 9:45 ET com mercado aberto",
+            "note":       "dados incompletos — rodar apos 9:45 ET com mercado aberto",
             "aprovados":  0,
             "incompletos": incompletos,
             "fatores": {"gex": gex, "vrp": vrp, "skew": skew, "pc_ratio": pc},
@@ -383,12 +390,23 @@ def fetch_full_chain(ib: IB, ticker: str, spot: float) -> tuple:
 
     # Strikes separados por direcao — evita deep ITM caro
     # CALL: 97%-108% | PUT: 92%-103%
-    tc = chain.tradingClass  # necessario para evitar Error 200 em strikes fracionados
+    # tradingClass: usar o simbolo do ticker quando chain retorna classe incorreta (ex: 2AMZN)
+    tc = ticker if chain.tradingClass.endswith(ticker) or chain.tradingClass == ticker else chain.tradingClass
+    # Fallback: se tradingClass tem prefixo numerico (ex: 2AMZN), usar ticker direto
+    if tc and tc[0].isdigit():
+        tc = ticker
 
-    strikes_call = sorted([s for s in chain.strikes
-                           if spot * 0.97 <= s <= spot * 1.08])
-    strikes_put  = sorted([s for s in chain.strikes
-                           if spot * 0.92 <= s <= spot * 1.03])
+    # Prioriza strikes inteiros — menos erros 200 no IBKR
+    def _int_first(strikes_list):
+        inteiros   = [s for s in strikes_list if float(s).is_integer()]
+        fracionados = [s for s in strikes_list if not float(s).is_integer()]
+        return inteiros if inteiros else fracionados  # fallback para fracionados se nao houver inteiros
+
+    strikes_call_raw = [s for s in chain.strikes if spot * 0.97 <= s <= spot * 1.08]
+    strikes_put_raw  = [s for s in chain.strikes if spot * 0.92 <= s <= spot * 1.03]
+
+    strikes_call = sorted(_int_first(strikes_call_raw))
+    strikes_put  = sorted(_int_first(strikes_put_raw))
 
     if not strikes_call and not strikes_put:
         print(f"  Sem strikes validos para {ticker}")
@@ -400,12 +418,26 @@ def fetch_full_chain(ib: IB, ticker: str, spot: float) -> tuple:
     put_contracts  = [Option(ticker, expiration, s, 'P', 'SMART', tradingClass=tc)
                       for s in strikes_put]
 
-    # qualifyContracts retorna so os validos — nao derruba a lista inteira
-    valid_calls = ib.qualifyContracts(*call_contracts) if call_contracts else []
-    valid_puts  = ib.qualifyContracts(*put_contracts)  if put_contracts  else []
+    # qualifyContracts retorna so os validos silenciosamente
+    import io, contextlib
+    def _qualify_silent(contracts):
+        if not contracts:
+            return []
+        buf = io.StringIO()
+        try:
+            with contextlib.redirect_stderr(buf):
+                result = ib.qualifyContracts(*contracts)
+        except Exception:
+            result = []
+        if VERBOSE and buf.getvalue():
+            print(buf.getvalue(), end='')
+        return result
+
+    valid_calls = _qualify_silent(call_contracts)
+    valid_puts  = _qualify_silent(put_contracts)
 
     if not valid_calls and not valid_puts:
-        print(f"  Sem contratos validos qualificados — verificar tradingClass/expiration/strikes no TWS")
+        print(f"  {ticker}: Sem contratos validos — verificar strikes/expiration no TWS")
         return [], []
 
     all_valid = valid_calls + valid_puts
@@ -605,7 +637,15 @@ def main():
     parser = argparse.ArgumentParser(description='RBC Modo 5 - US Swing Scanner')
     parser.add_argument('--tickers',   nargs='+', default=DEFAULT_TICKERS)
     parser.add_argument('--direction', choices=['CALL', 'PUT', 'BOTH'], default='BOTH')
+    parser.add_argument('--verbose',   action='store_true', help='Mostrar erros detalhados do TWS')
     args = parser.parse_args()
+
+    global VERBOSE
+    VERBOSE = args.verbose
+    if not VERBOSE:
+        # Suprimir warnings do ib_insync completamente no modo normal
+        logging.getLogger('ib_insync.wrapper').setLevel(logging.CRITICAL)
+        logging.getLogger('ib_insync.client').setLevel(logging.CRITICAL)
 
     directions = ['CALL', 'PUT'] if args.direction == 'BOTH' else [args.direction]
 
