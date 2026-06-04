@@ -51,8 +51,8 @@ VERBOSE = False  # Ativado via --verbose
 TWS_HOST    = '127.0.0.1'
 TWS_PORT    = 7497
 CLIENT_ID   = 10
-DTE_MIN     = 14
-DTE_MAX     = 35
+DTE_MIN     = 21
+DTE_MAX     = 45
 DELTA_RANGE = {
     'CALL': (0.30, 0.65),
     'PUT':  (-0.65, -0.30),
