@@ -310,12 +310,27 @@ def get_full_snapshot(ib: IB, ticker: str) -> dict:
     stk = Stock(ticker, 'SMART', 'USD')
     ib.qualifyContracts(stk)
 
-    t = ib.reqMktData(stk)
+    # 104=HV | 106=OI | 162=IV rank | 411=realtime greeks
+    t = ib.reqMktData(stk, genericTickList='104,106,411')
     ib.sleep(3)
 
-    spot     = float(t.last or t.close or t.bid or 0)
-    iv_ann   = float(t.impliedVolatility or 0)
-    hv30     = float(t.histVolatility or 0)
+    spot   = float(t.last or t.close or t.bid or 0)
+    iv_ann = 0.0
+    hv30   = 0.0
+
+    # IV anual via modelGreeks do subjacente
+    if t.modelGreeks and t.modelGreeks.impliedVol:
+        iv_ann = float(t.modelGreeks.impliedVol)
+
+    # HV30 via campo historico
+    if hasattr(t, 'histVolatility') and t.histVolatility:
+        try:
+            hv30 = float(t.histVolatility)
+        except Exception:
+            hv30 = 0.0
+
+    # Fallback: usa IV da cadeia se HV nao chegar
+    # Sera preenchido depois com media da cadeia
     call_vol = 0
     put_vol  = 0
 
@@ -353,9 +368,9 @@ def fetch_full_chain(ib: IB, ticker: str, spot: float) -> tuple:
     expiration = expirations[0]
     dte = (datetime.strptime(expiration, '%Y%m%d').date() - hoje).days
 
-    # Strikes ±15% do spot
+    # Strikes ±12% do spot (evita deep ITM/OTM)
     strikes = sorted([s for s in chain.strikes
-                      if spot * 0.85 <= s <= spot * 1.15])
+                      if spot * 0.88 <= s <= spot * 1.12])
     if not strikes:
         return [], []
 
@@ -454,6 +469,11 @@ def scan_ticker(ib: IB, ticker: str, direction: str) -> dict:
     if not chain_dir:
         return {"ticker": ticker, "direction": direction, "spot": spot,
                 "error": "Sem contratos validos"}
+
+    # ── Fallback IV via media da cadeia ──
+    if snap['iv_ann'] == 0 and chain_dir:
+        valid_ivs = [c['iv_pct']/100 for c in chain_dir if c['iv_pct'] > 0]
+        snap['iv_ann'] = round(sum(valid_ivs)/len(valid_ivs), 4) if valid_ivs else 0
 
     # ── Edge RBC ──
     gex_data = calc_net_gex(calls + puts, spot)
