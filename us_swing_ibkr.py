@@ -381,15 +381,10 @@ def fetch_full_chain(ib: IB, ticker: str, spot: float) -> tuple:
     expiration = expirations[0]
     dte = (datetime.strptime(expiration, '%Y%m%d').date() - hoje).days
 
-    # Strikes proximos do ATM — evita deep ITM caro
-    # CALL: ATM ate levemente OTM (97% a 108%)
-    # PUT:  ATM ate levemente OTM (92% a 103%)
-    if direction == 'CALL':
-        strikes = sorted([s for s in chain.strikes
-                          if spot * 0.97 <= s <= spot * 1.08])
-    else:
-        strikes = sorted([s for s in chain.strikes
-                          if spot * 0.92 <= s <= spot * 1.03])
+    # Strikes proximos do ATM — busca faixa que cobre CALL e PUT
+    # CALL ideal: 97%-108% | PUT ideal: 92%-103% | uniao: 92%-108%
+    strikes = sorted([s for s in chain.strikes
+                      if spot * 0.92 <= s <= spot * 1.08])
     if not strikes:
         return [], []
 
@@ -486,7 +481,14 @@ def scan_ticker(ib: IB, ticker: str, direction: str) -> dict:
 
     # Cadeia completa CALL + PUT
     calls, puts = fetch_full_chain(ib, ticker, spot)
-    chain_dir = calls if direction == 'CALL' else puts
+
+    # Filtra strikes por direcao APOS buscar a cadeia completa
+    if direction == 'CALL':
+        calls = [c for c in calls if c['strike'] >= spot * 0.97]
+        chain_dir = calls
+    else:
+        puts = [p for p in puts if p['strike'] <= spot * 1.03]
+        chain_dir = puts
 
     if not chain_dir:
         return {"ticker": ticker, "direction": direction, "spot": spot,
