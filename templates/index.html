@@ -1245,6 +1245,123 @@
     ${row2('#8b5cf6', 'Alvo 2',   d.target_2)}
   </div>
 
+  ${(()=>{
+    const lv = d.levels || {};
+    const vt  = lv.vol_trigger;
+    const cw  = lv.call_wall;
+    const pw  = lv.put_wall;
+    const zg  = lv.zero_gamma;
+    const c4  = lv.c4;
+    const mh  = lv.move_1d_high;
+    const ml  = lv.move_1d_low;
+    const sp  = data.spot_now || ow.spot_now;
+    if (!vt && !cw) return '';
+
+    const isPut  = (d.decision||'').includes('PUT');
+    const isCall = (d.decision||'').includes('CALL');
+
+    // Monta linhas da tabela de niveis
+    const niveis = [
+      { label: 'Call Wall',    val: cw,  cor: '#16a34a', desc: isPut ? 'Teto — nao chega hoje' : 'Alvo final CALL' },
+      { label: '1D Move High', val: mh,  cor: '#16a34a', desc: 'Extremo superior do dia' },
+      { label: 'C4',           val: c4,  cor: '#3b82f6', desc: 'Resistencia intermediaria' },
+      { label: 'Vol Trigger',  val: vt,  cor: '#f59e0b', desc: 'Interruptor de regime ⚡' },
+      { label: 'Zero Gamma',   val: zg,  cor: '#94a3b8', desc: isPut ? 'Alvo 1 PUT' : 'Suporte' },
+      { label: '1D Move Low',  val: ml,  cor: '#dc2626', desc: 'Extremo inferior do dia' },
+      { label: 'Put Wall',     val: pw,  cor: '#dc2626', desc: isPut ? 'Alvo final PUT' : 'Suporte forte' },
+    ].filter(n => n.val);
+
+    // Strike sugerido
+    let strikeHtml = '';
+    if (sp && vt) {
+      const spot = parseFloat(sp);
+      const vtN  = parseFloat(vt);
+      const zwN  = zg ? parseFloat(zg) : vtN - 2;
+      const pwN  = pw ? parseFloat(pw) : vtN - 14;
+      const cwN  = cw ? parseFloat(cw) : vtN + 6;
+
+      if (isPut && spot < vtN) {
+        const s1 = Math.round(spot - 1);
+        const s2 = Math.round(spot - 2);
+        const s3 = Math.round(zwN);
+        strikeHtml = `
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid #f1f5f9;">
+          <div style="font-size:10px;font-weight:700;color:#dc2626;text-transform:uppercase;margin-bottom:6px;">🎯 Strikes PUT sugeridos</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
+            <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:6px;text-align:center;">
+              <div style="font-size:10px;color:#dc2626;font-weight:700;">ATM</div>
+              <div style="font-size:16px;font-weight:800;color:#dc2626;">${s1}</div>
+              <div style="font-size:9px;color:#94a3b8;">mais caro</div>
+            </div>
+            <div style="background:#fef2f2;border:2px solid #dc2626;border-radius:6px;padding:6px;text-align:center;">
+              <div style="font-size:10px;color:#dc2626;font-weight:700;">⭐ IDEAL</div>
+              <div style="font-size:16px;font-weight:800;color:#dc2626;">${s2}</div>
+              <div style="font-size:9px;color:#94a3b8;">delta ~0.40</div>
+            </div>
+            <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:6px;text-align:center;">
+              <div style="font-size:10px;color:#dc2626;font-weight:700;">OTM</div>
+              <div style="font-size:16px;font-weight:800;color:#dc2626;">${s3}</div>
+              <div style="font-size:9px;color:#94a3b8;">mais barato</div>
+            </div>
+          </div>
+          <div style="margin-top:6px;font-size:10px;color:#64748b;">
+            ⏰ Entrada: 9:45 ET após confirmar abaixo de ${vt} | Alvo: +75% | Stop: -50% | Saída: 12:30 ET
+          </div>
+        </div>`;
+      } else if (isCall && spot >= vtN) {
+        const s1 = Math.round(spot);
+        const s2 = Math.round(spot + 1);
+        const s3 = Math.round(vtN + 3);
+        strikeHtml = `
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid #f1f5f9;">
+          <div style="font-size:10px;font-weight:700;color:#16a34a;text-transform:uppercase;margin-bottom:6px;">🎯 Strikes CALL sugeridos</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:6px;text-align:center;">
+              <div style="font-size:10px;color:#16a34a;font-weight:700;">ATM</div>
+              <div style="font-size:16px;font-weight:800;color:#16a34a;">${s1}</div>
+              <div style="font-size:9px;color:#94a3b8;">mais caro</div>
+            </div>
+            <div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:6px;padding:6px;text-align:center;">
+              <div style="font-size:10px;color:#16a34a;font-weight:700;">⭐ IDEAL</div>
+              <div style="font-size:16px;font-weight:800;color:#16a34a;">${s2}</div>
+              <div style="font-size:9px;color:#94a3b8;">delta ~0.40</div>
+            </div>
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:6px;text-align:center;">
+              <div style="font-size:10px;color:#16a34a;font-weight:700;">OTM</div>
+              <div style="font-size:16px;font-weight:800;color:#16a34a;">${s3}</div>
+              <div style="font-size:9px;color:#94a3b8;">mais barato</div>
+            </div>
+          </div>
+          <div style="margin-top:6px;font-size:10px;color:#64748b;">
+            ⏰ Entrada: 9:45 ET após confirmar acima de ${vt} | Alvo: +75% | Stop: -50% | Saída: 12:30 ET
+          </div>
+        </div>`;
+      }
+    }
+
+    const nivelRows = niveis.map(n => {
+      const isSpot = sp && Math.abs(parseFloat(n.val) - parseFloat(sp)) < 1.5;
+      const bg = isSpot ? '#fffbeb' : '#fff';
+      const border = isSpot ? '1px solid #fde68a' : '1px solid #f1f5f9';
+      return `<div style="display:flex;align-items:center;padding:5px 10px;background:${bg};border-bottom:${border};">
+        <div style="width:8px;height:8px;border-radius:50%;background:${n.cor};margin-right:8px;flex-shrink:0;"></div>
+        <div style="flex:1;font-size:11px;font-weight:600;color:#334155;">${n.label}</div>
+        <div style="font-size:13px;font-weight:800;color:${n.cor};width:52px;text-align:right;">${parseFloat(n.val).toFixed(2)}</div>
+        <div style="font-size:10px;color:#94a3b8;margin-left:10px;flex:1;text-align:right;">${n.desc}</div>
+      </div>`;
+    }).join('');
+
+    return `
+  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
+    <div style="padding:6px 10px;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;">
+      <span>Mapa de Níveis</span>
+      ${sp ? `<span style="font-size:11px;color:#475569;">SPY <strong>${parseFloat(sp).toFixed(2)}</strong></span>` : ''}
+    </div>
+    ${nivelRows}
+    ${strikeHtml}
+  </div>`;
+  })()}
+
   <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px 12px;">
     <div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:4px;">Sinais de Abertura</div>
     ${(ow.signals||[]).map(s=>`
