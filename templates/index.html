@@ -1195,12 +1195,17 @@
     const d = data.rbc_decision || {};
     const ow = data;
     const decisionColor = {
-      'CALL CONFIRMED':      '#16a34a',
-      'CALL ALLOWED SMALL':  '#d97706',
-      'NO TRADE':            '#64748b',
-      'PUT ALLOWED SMALL':   '#f97316',
-      'PUT CONFIRMED':       '#dc2626',
-      'PUT WATCH':           '#dc2626',
+      'CALL REVERSAL':        '#16a34a',
+      'CALL BREAKOUT SMALL':  '#d97706',
+      'CALL RECOVERY SMALL':  '#d97706',
+      'NO TRADE':             '#64748b',
+      'PUT REVERSAL':         '#dc2626',
+      'PUT TREND':            '#dc2626',
+      'CALL CONFIRMED':       '#16a34a',
+      'CALL ALLOWED SMALL':   '#d97706',
+      'PUT ALLOWED SMALL':    '#f97316',
+      'PUT CONFIRMED':        '#dc2626',
+      'PUT WATCH':            '#dc2626',
     }[d.decision] || '#475569';
 
     const row2 = (color, label, text) => !text ? '' :
@@ -1245,6 +1250,32 @@
     ${(ow.signals||[]).map(s=>`
     <div style="font-size:12px;color:#334155;padding:2px 0;line-height:1.4;">${s[0]} <strong>${s[1]}</strong> — ${s[2]}</div>`).join('')}
   </div>
+
+  ${(()=>{
+    const cb  = d.context_bias || '';
+    const cw  = d.context_warning || '';
+    const hiro = d.pm_hiro || '';
+    const vix  = d.pm_vix_close;
+    const cor  = d.pm_cor1m_close;
+    const dt   = d.pm_context_date || '';
+    if (!cb || cb === 'neutral_context') return '';
+    const biasColor = cb === 'bearish_context' ? '#dc2626' : cb === 'bullish_context' ? '#16a34a' : '#d97706';
+    const biasLabel = cb === 'bearish_context' ? '🔴 BEARISH CONTEXT' : cb === 'bullish_context' ? '🟢 BULLISH CONTEXT' : '🟡 MIXED CONTEXT';
+    const warns = cw.split(' | ').filter(Boolean);
+    return `
+  <div style="background:#fff;border:1px solid ${biasColor};border-left:4px solid ${biasColor};border-radius:6px;padding:10px 12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <div style="font-size:11px;font-weight:800;color:${biasColor};">${biasLabel}</div>
+      <div style="font-size:10px;color:#94a3b8;">PM Note ${dt}</div>
+    </div>
+    <div style="display:flex;gap:12px;margin-bottom:6px;flex-wrap:wrap;">
+      ${hiro ? `<div style="font-size:11px;background:#f1f5f9;padding:2px 8px;border-radius:4px;"><span style="color:#94a3b8;">HIRO</span> <strong style="color:${biasColor};">${hiro}</strong></div>` : ''}
+      ${vix  ? `<div style="font-size:11px;background:#f1f5f9;padding:2px 8px;border-radius:4px;"><span style="color:#94a3b8;">VIX</span> <strong>${vix}</strong></div>` : ''}
+      ${cor  ? `<div style="font-size:11px;background:#f1f5f9;padding:2px 8px;border-radius:4px;"><span style="color:#94a3b8;">COR1M</span> <strong style="color:${parseFloat(cor)>=6?'#dc2626':'#334155'};">${cor}</strong></div>` : ''}
+    </div>
+    ${warns.map(w=>`<div style="font-size:11px;color:#475569;padding:2px 0;line-height:1.4;">• ${w}</div>`).join('')}
+  </div>`;
+  })()}
 
 </div>`;
 
