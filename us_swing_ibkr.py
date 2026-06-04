@@ -381,23 +381,34 @@ def fetch_full_chain(ib: IB, ticker: str, spot: float) -> tuple:
     expiration = expirations[0]
     dte = (datetime.strptime(expiration, '%Y%m%d').date() - hoje).days
 
-    # Strikes proximos do ATM — busca faixa que cobre CALL e PUT
-    # CALL ideal: 97%-108% | PUT ideal: 92%-103% | uniao: 92%-108%
-    strikes = sorted([s for s in chain.strikes
-                      if spot * 0.92 <= s <= spot * 1.08])
-    if not strikes:
+    # Strikes separados por direcao — evita deep ITM caro
+    # CALL: 97%-108% | PUT: 92%-103%
+    tc = chain.tradingClass  # necessario para evitar Error 200 em strikes fracionados
+
+    strikes_call = sorted([s for s in chain.strikes
+                           if spot * 0.97 <= s <= spot * 1.08])
+    strikes_put  = sorted([s for s in chain.strikes
+                           if spot * 0.92 <= s <= spot * 1.03])
+
+    if not strikes_call and not strikes_put:
+        print(f"  Sem strikes validos para {ticker}")
         return [], []
 
-    # Monta contratos CALL e PUT
-    call_contracts = [Option(ticker, expiration, s, 'C', 'SMART') for s in strikes]
-    put_contracts  = [Option(ticker, expiration, s, 'P', 'SMART') for s in strikes]
+    # Monta contratos com tradingClass — evita Error 200 em strikes fracionados
+    call_contracts = [Option(ticker, expiration, s, 'C', 'SMART', tradingClass=tc)
+                      for s in strikes_call]
+    put_contracts  = [Option(ticker, expiration, s, 'P', 'SMART', tradingClass=tc)
+                      for s in strikes_put]
 
-    valid_calls = ib.qualifyContracts(*call_contracts)
-    valid_puts  = ib.qualifyContracts(*put_contracts)
+    # qualifyContracts retorna so os validos — nao derruba a lista inteira
+    valid_calls = ib.qualifyContracts(*call_contracts) if call_contracts else []
+    valid_puts  = ib.qualifyContracts(*put_contracts)  if put_contracts  else []
+
+    if not valid_calls and not valid_puts:
+        print(f"  Sem contratos validos qualificados — verificar tradingClass/expiration/strikes no TWS")
+        return [], []
 
     all_valid = valid_calls + valid_puts
-    if not all_valid:
-        return [], []
 
     tickers_data = [ib.reqMktData(c) for c in all_valid]
     ib.sleep(4)
@@ -421,9 +432,8 @@ def fetch_full_chain(ib: IB, ticker: str, spot: float) -> tuple:
             price_ref = ask if ask > 0 else (close if close > 0 else last)
             if price_ref == 0 and not greeks:
                 continue
-            # Descarta contratos sem gregas validas (mercado fechado ou sem dados)
-            if delta == 0 and iv == 0 and bid == 0 and ask == 0:
-                continue
+            # Nao descarta contratos sem gregas — mercado pode estar fechado
+            # O scoring vai penalizar spread 100% e liquidez zero
 
             mid = round((bid + ask) / 2, 2) if (bid + ask) > 0 else round(price_ref, 2)
             oi  = int(t.openInterest) if hasattr(t, 'openInterest') and t.openInterest and t.openInterest > 0 else 0
@@ -482,13 +492,8 @@ def scan_ticker(ib: IB, ticker: str, direction: str) -> dict:
     # Cadeia completa CALL + PUT
     calls, puts = fetch_full_chain(ib, ticker, spot)
 
-    # Filtra strikes por direcao APOS buscar a cadeia completa
-    if direction == 'CALL':
-        calls = [c for c in calls if c['strike'] >= spot * 0.97]
-        chain_dir = calls
-    else:
-        puts = [p for p in puts if p['strike'] <= spot * 1.03]
-        chain_dir = puts
+    # Seleciona direcao — strikes ja filtrados em 92-108% na busca
+    chain_dir = calls if direction == 'CALL' else puts
 
     if not chain_dir:
         return {"ticker": ticker, "direction": direction, "spot": spot,
