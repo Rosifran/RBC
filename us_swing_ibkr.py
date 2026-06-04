@@ -330,9 +330,9 @@ def get_full_snapshot(ib: IB, ticker: str) -> dict:
     stk = Stock(ticker, 'SMART', 'USD')
     ib.qualifyContracts(stk)
 
-    # 104=HV | 106=OI | 162=IV rank | 411=realtime greeks
-    t = ib.reqMktData(stk, genericTickList='104,106,411')
-    ib.sleep(3)
+    # 104=HV30 | 106=shortable | 411=gregas | 100=optvol call | 101=optvol put
+    t = ib.reqMktData(stk, genericTickList='104,411,100,101')
+    ib.sleep(4)
 
     spot   = float(t.last or t.close or t.bid or 0)
     iv_ann = 0.0
@@ -349,10 +349,17 @@ def get_full_snapshot(ib: IB, ticker: str) -> dict:
         except Exception:
             hv30 = 0.0
 
-    # Fallback: usa IV da cadeia se HV nao chegar
-    # Sera preenchido depois com media da cadeia
+    # P/C ratio via option volume do subjacente
+    # tick 100 = call option volume | tick 101 = put option volume
     call_vol = 0
     put_vol  = 0
+    try:
+        if hasattr(t, 'callVolume') and t.callVolume and t.callVolume > 0:
+            call_vol = int(t.callVolume)
+        if hasattr(t, 'putVolume') and t.putVolume and t.putVolume > 0:
+            put_vol = int(t.putVolume)
+    except Exception:
+        pass
 
     ib.cancelMktData(stk)
     return {
@@ -468,7 +475,15 @@ def fetch_full_chain(ib: IB, ticker: str, spot: float) -> tuple:
             # O scoring vai penalizar spread 100% e liquidez zero
 
             mid = round((bid + ask) / 2, 2) if (bid + ask) > 0 else round(price_ref, 2)
-            oi  = int(t.openInterest) if hasattr(t, 'openInterest') and t.openInterest and t.openInterest > 0 else 0
+            # OI: tenta campo direto, fallback para 0
+            oi = 0
+            try:
+                if hasattr(t, 'openInterest') and t.openInterest and t.openInterest > 0:
+                    oi = int(t.openInterest)
+                elif hasattr(t, 'optionOpenInterest') and t.optionOpenInterest and t.optionOpenInterest > 0:
+                    oi = int(t.optionOpenInterest)
+            except Exception:
+                oi = 0
 
             results.append({
                 "ticker":        ticker,
