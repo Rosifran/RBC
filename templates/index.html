@@ -1982,7 +1982,11 @@
   }
 
   async function saveJournalNotes() {
-    const today = new Date().toISOString().split('T')[0];
+    // Usa data ET (UTC-4) para evitar virar dia no servidor Railway (UTC)
+    const nowET = new Date(new Date().toLocaleString('en-US', {timeZone: 'America/New_York'}));
+    const today = nowET.getFullYear() + '-' +
+      String(nowET.getMonth()+1).padStart(2,'0') + '-' +
+      String(nowET.getDate()).padStart(2,'0');
     const body = {
       date:             today,
       trade_quality:    document.getElementById('j-trade-quality').value || null,
