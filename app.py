@@ -826,13 +826,23 @@ def modo2():
         if decision and "CALL" in decision and vol_trig and spot_now:
             if float(spot_now) > float(vol_trig) + near_level:
                 chase_warning = True
-        if decision and "PUT" in decision and zero_gamma and spot_now:
+        if decision and "PUT" in decision and spot_now:
             zg_val = spy.get("zero_gamma")
             if zg_val and float(spot_now) < float(zg_val) - near_level:
                 chase_warning = True
 
+        # Put Wall check — nao perseguir PUT no suporte
+        pw_val = spy.get("put_wall")
+        if pw_val and spot_now and "PUT" in (decision or ""):
+            if float(spot_now) <= float(pw_val) + 0.25:
+                entry = f"SPY already at Put Wall {pw_val}. Wait for acceptance below {pw_val} or retest/rejection near VT {vol_trig}."
+                stop  = f"SPY recovers above {pw_val}"
+                t1    = round(float(pw_val) - 2, 2)
+                t2    = round(float(pw_val) - 4, 2)
+                chase_warning = True
+
     except Exception as gap_err:
-        gap_warning = f"Gap analysis indisponivel: {gap_err}"
+        gap_warning = f"Gap analysis indisponivel: {gap_err}" 
 
     # Resumo em uma frase
     one_sentence = (f"{gamma_regime.replace('_', ' ')}, SPY {spot_now}"
