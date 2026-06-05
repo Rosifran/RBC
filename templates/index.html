@@ -1893,7 +1893,19 @@
         html += '<td style="padding:5px 8px;text-align:center;">'+c1+'</td>';
         html += '<td style="padding:5px 8px;text-align:center;">'+cw+'</td>';
         html += '<td style="padding:5px 8px;text-align:center;">'+vt+'</td>';
-        html += '<td style="padding:5px 8px;color:#475569;font-size:10px;">'+(r.trade_quality||'-')+'</td>';
+        const qMap = {
+          'clean_breakout':      ['#16a34a','Breakout'],
+          'late_follow_through': ['#d97706','Late FT'],
+          'call_wall_rejection': ['#dc2626','CW Reject'],
+          'vol_trigger_lost':    ['#dc2626','VT Lost'],
+          'reclaim':             ['#16a34a','Reclaim'],
+          'choppy':              ['#94a3b8','Choppy'],
+          'failed_breakout':     ['#dc2626','Failed BO'],
+          'no_trade_day':        ['#64748b','No Trade'],
+        };
+        const qv = r.trade_quality || '';
+        const [qc, ql] = qMap[qv] || ['#94a3b8', qv || '-'];
+        html += '<td style="padding:5px 8px;font-size:10px;"><span style="background:'+qc+'18;color:'+qc+';padding:2px 6px;border-radius:4px;font-weight:500;white-space:nowrap;">'+ql+'</span></td>';
         html += '</tr>';
       });
       html += '</tbody></table></div>';
