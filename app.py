@@ -481,19 +481,19 @@ def parse_pm_pdf():
     return jsonify({"ok": True, **parsed})
 
 
-# ── TradingView market quote (SPY + VIX) ─────────────────────────────
-_tv_quote = {}  # {"spy": float, "vix": float, "ts": str}
+# ── TradingView market quote (SPY + VIX) → PostgreSQL ────────────────
 
 @app.route("/api/tv/quote", methods=["POST"])
 def tv_quote_post():
     """
-    Recebe quote de mercado do TradingView.
-    Payload esperado: {"symbol": "SPY"|"VIX", "price": 756.10, "time": "2026-06-08T10:05:00"}
+    Recebe quote de mercado do TradingView e salva no PostgreSQL.
+    Payload: {"symbol": "SPY"|"VIX", "price": 756.10, "time": "2026-06-08T10:05:00"}
     """
+    from journal import save_market_quote
     data   = request.get_json(silent=True) or {}
-    symbol = str(data.get("symbol", "")).upper().replace("$", "")
+    symbol = str(data.get("symbol", "")).upper().replace("$", "").replace("CBOE:", "")
     price  = data.get("price")
-    ts     = data.get("time") or datetime.utcnow().isoformat()
+    tv_ts  = data.get("time")
 
     if not symbol or price is None:
         return jsonify({"error": "symbol and price required"}), 400
@@ -503,38 +503,73 @@ def tv_quote_post():
     except (ValueError, TypeError):
         return jsonify({"error": "price must be numeric"}), 400
 
-    if symbol in ("SPY", "SPDR"):
-        _tv_quote["spy"] = price
-    elif symbol in ("VIX", "CBOE:VIX", "VIX1D"):
-        _tv_quote["vix"] = price
-    else:
+    # Normaliza símbolo
+    if symbol in ("SPDR", "SPY500"):
+        symbol = "SPY"
+    elif symbol in ("VIX1D", "VIX"):
+        symbol = "VIX"
+
+    if symbol not in ("SPY", "VIX"):
         return jsonify({"error": f"unknown symbol: {symbol}"}), 400
 
-    _tv_quote["ts"] = ts
-    return jsonify({"ok": True, "symbol": symbol, "price": price, "ts": ts})
+    # Converte tv_ts para datetime
+    tv_time = None
+    if tv_ts:
+        try:
+            # TradingView pode mandar Unix ms ou ISO string
+            if str(tv_ts).isdigit():
+                ts_int = int(tv_ts)
+                # se for segundos (< 1e12) converte; se for ms divide
+                if ts_int > 1e12:
+                    ts_int = ts_int // 1000
+                from datetime import timezone
+                tv_time = datetime.fromtimestamp(ts_int, tz=timezone.utc)
+            else:
+                tv_time = datetime.fromisoformat(str(tv_ts).replace("Z", "+00:00"))
+        except Exception:
+            tv_time = None
+
+    save_market_quote(symbol, price, tv_time)
+    return jsonify({"ok": True, "symbol": symbol, "price": price})
 
 
 @app.route("/api/tv/quote", methods=["GET"])
 def tv_quote_get():
-    """Retorna o último quote recebido do TradingView."""
-    if not _tv_quote:
-        return jsonify({"ok": False, "message": "Sem dados recentes — preencher manualmente."}), 200
-    age_ok = True
-    if _tv_quote.get("ts"):
+    """Retorna último quote do PostgreSQL com flag fresh (<30 min)."""
+    from journal import get_market_quotes
+    from datetime import timezone
+
+    quotes = get_market_quotes()
+    if not quotes:
+        return jsonify({"ok": False, "message": "Sem dados recentes — preencher manualmente."})
+
+    spy_row = quotes.get("SPY") or {}
+    vix_row = quotes.get("VIX") or {}
+
+    spy   = float(spy_row.get("price") or 0) or None
+    vix   = float(vix_row.get("price") or 0) or None
+
+    # fresh = received_at de SPY menos de 30 min atrás
+    fresh = False
+    ts_str = None
+    if spy_row.get("received_at"):
         try:
-            from datetime import timezone
-            ts = datetime.fromisoformat(_tv_quote["ts"].replace("Z", "+00:00"))
-            age_min = (datetime.now(timezone.utc) - ts).total_seconds() / 60
-            age_ok = age_min < 30  # considera stale após 30 min
+            rec = spy_row["received_at"]
+            if hasattr(rec, "tzinfo") and rec.tzinfo is None:
+                rec = rec.replace(tzinfo=timezone.utc)
+            age_min = (datetime.now(timezone.utc) - rec).total_seconds() / 60
+            fresh   = age_min < 30
+            ts_str  = rec.strftime("%H:%M ET")
         except Exception:
             pass
+
     return jsonify({
-        "ok":     True,
-        "spy":    _tv_quote.get("spy"),
-        "vix":    _tv_quote.get("vix"),
-        "ts":     _tv_quote.get("ts"),
-        "fresh":  age_ok,
-        "message": None if age_ok else "Dado com mais de 30 min — confirmar manualmente.",
+        "ok":     bool(spy and vix),
+        "spy":    spy,
+        "vix":    vix,
+        "ts":     ts_str,
+        "fresh":  fresh,
+        "message": None if fresh else "Dado com mais de 30 min — confirmar manualmente.",
     })
 
 

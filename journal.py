@@ -150,6 +150,52 @@ def get_snapshot_by_date(date_str):
     return dict(row) if row else {}
 
 
+# ── Market Quotes (TradingView intraday) ─────────────────────────────
+
+CREATE_MARKET_QUOTES = """
+CREATE TABLE IF NOT EXISTS market_quotes (
+    symbol      VARCHAR(10) PRIMARY KEY,
+    price       NUMERIC(10,4),
+    tv_time     TIMESTAMP,
+    received_at TIMESTAMP DEFAULT NOW()
+);
+"""
+
+def init_market_quotes():
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(CREATE_MARKET_QUOTES)
+        conn.commit()
+
+def save_market_quote(symbol, price, tv_time=None):
+    """Salva ou atualiza quote de SPY ou VIX."""
+    init_market_quotes()
+    sql = """
+        INSERT INTO market_quotes (symbol, price, tv_time, received_at)
+        VALUES (%(symbol)s, %(price)s, %(tv_time)s, NOW())
+        ON CONFLICT (symbol) DO UPDATE SET
+            price       = EXCLUDED.price,
+            tv_time     = EXCLUDED.tv_time,
+            received_at = NOW();
+    """
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(sql, {"symbol": symbol, "price": price, "tv_time": tv_time})
+        conn.commit()
+
+def get_market_quotes():
+    """Retorna SPY e VIX do banco. Retorna {} se tabela vazia."""
+    try:
+        init_market_quotes()
+        with get_conn() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("SELECT symbol, price, tv_time, received_at FROM market_quotes")
+                rows = cur.fetchall()
+        return {r["symbol"]: dict(r) for r in rows}
+    except Exception:
+        return {}
+
+
 # ── Swing Scans (Modo 5) ──────────────────────────────────────────────
 from datetime import datetime as _dt_swing
 
