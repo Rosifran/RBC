@@ -1088,10 +1088,10 @@
 
   <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
     <div style="padding:4px 8px;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;border-bottom:1px solid #f1f5f9;">Plano</div>
-    ${row('#16a34a', 'Entrada',  m2d.entry)}
-    ${row('#dc2626', 'Stop',     m2d.stop)}
-    ${row('#3b82f6', 'Target 1', m2d.target_1)}
-    ${row('#8b5cf6', 'Target 2', m2d.target_2)}
+    ${m2d.chase_warning ? '' : row('#16a34a', 'Entrada',  m2d.entry)}
+    ${m2d.chase_warning ? '' : row('#dc2626', 'Stop',     m2d.stop)}
+    ${m2d.chase_warning ? '' : row('#3b82f6', 'Target 1', m2d.target_1)}
+    ${m2d.chase_warning ? '' : row('#8b5cf6', 'Target 2', m2d.target_2)}
     ${row('#dc2626', 'Risco',    m2d.risk)}
     ${row('#94a3b8', 'Score PDF', score ? score+'/5' : '—')}
   </div>
@@ -1269,9 +1269,9 @@
       acaoDesc  = d.entry || '';
     }
 
-    // Strikes sugeridos (so se nao for NO TRADE)
+    // Strikes sugeridos (so se nao for NO TRADE e sem chase warning)
     let strikesHtml = '';
-    if (!isNo && sp && lv.vol_trigger) {
+    if (!isNo && !d.chase_warning && sp && lv.vol_trigger) {
       const vtN = parseFloat(lv.vol_trigger);
       const zgN = lv.zero_gamma ? parseFloat(lv.zero_gamma) : vtN - 2;
       const cwN = lv.call_wall  ? parseFloat(lv.call_wall)  : vtN + 6;

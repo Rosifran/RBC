@@ -787,11 +787,30 @@ def modo2():
         decision = "PUT TREND"
         reason   = (f"SPY below Vol Trigger {vol_trig}."
                     " Negative gamma — dealers amplify the move downward.")
-        entry    = f"Buy put OTM. SPY accepted below {vol_trig}."
         stop     = f"SPY closes back above {vol_trig}."
-        dns      = _below(all_lvls, spot_now, 2)
-        t1       = dns[0] if dns else round(float(vol_trig) - 3, 2)
-        t2       = _safe_t2_put(t1, all_lvls)
+
+        # Alvos PUT TREND: só combos e spy_levels ABAIXO do spot_now
+        # Put Wall nunca é alvo automático — é suporte extremo estrutural
+        _put_candidates = sorted(
+            [l for l in (spy.get('combos') or []) + (spy.get('spy_levels') or [])
+             if isinstance(l, (int, float)) and float(l) < float(spot_now)],
+            reverse=True
+        )
+        # Filtra só níveis próximos (dentro de 8 pts)
+        _put_nearby = [l for l in _put_candidates
+                       if float(spot_now) - float(l) <= 8.0]
+
+        t1 = _put_nearby[0] if _put_nearby else None
+        t2 = _put_nearby[1] if len(_put_nearby) >= 2 else None
+
+        # Validação final: nunca alvo acima ou igual ao spot
+        if t1 and float(t1) >= float(spot_now): t1 = None
+        if t2 and float(t2) >= float(spot_now): t2 = None
+
+        # Put Wall como nota de suporte extremo
+        pw_note = f" Put Wall {put_wall} = suporte extremo." if put_wall else ""
+        entry   = f"Buy put OTM. SPY accepted below {vol_trig}.{pw_note}"
+
         op_score = min(3, m1_score + 1)
         hard_rules.append(f"EXIT PUT immediately if SPY recovers {vol_trig}.")
         if at_move_low:
