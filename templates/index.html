@@ -617,6 +617,12 @@
   <div class="inputs-card">
     <p class="inputs-card-title">Dados de mercado</p>
     <div class="form-grid">
+      <div class="form-group full" style="margin-bottom:4px;">
+        <button type="button" onclick="fillFromTradingView()" style="background:#0f172a;color:#fff;border:none;border-radius:6px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;">
+          🔄 Usar último TradingView
+        </button>
+        <span id="tv-quote-status" style="font-size:11px;color:#94a3b8;margin-top:4px;display:block;"></span>
+      </div>
       <div class="form-group">
         <label class="form-label">VIX — agora <span style="color:#e53e3e">*</span></label>
         <input class="form-input" id="vix_now" type="number" step="0.01" placeholder="ex: 18.50" oninput="updateModo2Preview()">
@@ -658,7 +664,7 @@
 <div id="panel-modo3" class="tab-panel">
   <p class="section-label">Modo 3</p>
   <h2 class="section-title">Análise Operacional</h2>
-  <p class="section-sub">Análise operacional 0DTE — insira spot, IV e prêmio da opção.</p>
+  <p class="section-sub">Checklist de execução 0DTE — herda decisão do Modo 2. Informe prêmio e strike após o fill.</p>
 
   <div class="metrics-row" id="modo3-metrics" style="display:none">
     <div class="metric-card">
@@ -681,47 +687,33 @@
   <div class="inputs-card">
     <p class="inputs-card-title">Dados do ativo e opção</p>
     <div style="display:flex;gap:8px;margin-bottom:12px;">
-      <button type="button" onclick="fillFromPDF3()" style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:600;color:#334155;cursor:pointer;">📄 Usar dados do PDF</button>
+      <button type="button" onclick="fillFromModo2()" style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:600;color:#334155;cursor:pointer;">⚡ Usar decisão do Modo 2</button>
       <button type="button" onclick="fillExample3()" style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:600;color:#334155;cursor:pointer;">⚡ Exemplo 0DTE</button>
     </div>
+    <!-- Spot, IV e Tipo herdados do Modo 2 automaticamente -->
+    <!-- inputs ocultos mantidos para compatibilidade com runModo3 -->
+    <input type="hidden" id="m3-spot">
+    <input type="hidden" id="m3-iv">
+    <input type="hidden" id="m3-tipo">
     <div class="form-grid">
-      <div class="form-group">
-        <label class="form-label">Spot</label>
-        <input class="form-input" id="m3-spot" type="number" step="0.01" placeholder="ex: 520.00" oninput="updateModo3Preview()">
-        <span class="form-hint">Preço atual do ativo-objeto</span>
-      </div>
-      <div class="form-group">
-        <label class="form-label">IV (%)</label>
-        <input class="form-input" id="m3-iv" type="number" step="0.1" placeholder="ex: 22.5" oninput="updateModo3Preview()">
-        <span class="form-hint">Volatilidade implícita anualizada</span>
-      </div>
       <div class="form-group">
         <label class="form-label">Prêmio <span style="color:#94a3b8;font-weight:400;">(opcional)</span></label>
         <input class="form-input" id="m3-premio" type="number" step="0.01" placeholder="ex: 1.80 — opcional">
-        <span class="form-hint">Se não informado, alvo/stop serão calculados após entrada</span>
+        <span class="form-hint">Preencha após o fill na IBKR para calcular alvo/stop</span>
       </div>
       <div class="form-group">
-        <label class="form-label">Strike</label>
+        <label class="form-label">Strike escolhido</label>
         <input class="form-input" id="m3-strike" type="number" step="0.01" placeholder="ex: 525.00">
-        <span class="form-hint">Strike da opção</span>
+        <span class="form-hint">Strike confirmado no broker</span>
       </div>
       <div class="form-group">
-        <label class="form-label">Tipo</label>
-        <select class="form-input" id="m3-tipo">
-          <option value="">Selecionar...</option>
-          <option value="CALL">CALL</option>
-          <option value="PUT">PUT</option>
-        </select>
-        <span class="form-hint">Direção da opção</span>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Horário (ET)</label>
+        <label class="form-label">Horário de entrada (ET)</label>
         <input class="form-input" id="m3-dte" type="text" placeholder="ex: 10:15">
         <span class="form-hint">Hora da entrada (0DTE = vence hoje)</span>
       </div>
       <div class="form-group full">
         <label class="form-label">Observações operacionais</label>
-        <input class="form-input" id="m3-obs" type="text" placeholder="ex: entrada no ZG, recuo do Vol Trigger...">
+        <input class="form-input" id="m3-obs" type="text" placeholder="ex: entrada no reclaim do VT, rejeição em 746...">
       </div>
     </div>
   </div>
@@ -1182,6 +1174,28 @@
     }
   }
 
+  // ── TradingView auto-fill ──
+  async function fillFromTradingView() {
+    const statusEl = document.getElementById('tv-quote-status');
+    statusEl.textContent = 'Buscando...';
+    try {
+      const res  = await fetch('/api/tv/quote');
+      const data = await res.json();
+      if (!data.ok || !data.spy || !data.vix) {
+        statusEl.textContent = 'Sem dados recentes — preencher manualmente.';
+        return;
+      }
+      document.getElementById('vix_now').value  = data.vix;
+      document.getElementById('spot_now').value = data.spy;
+      updateModo2Preview();
+      const ts = data.ts ? new Date(parseInt(data.ts)).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) : '';
+      const freshMsg = data.fresh ? '✅' : '⚠ dado antigo —';
+      statusEl.textContent = `${freshMsg} SPY ${data.spy} | VIX ${data.vix}${ts ? ' · ' + ts : ''}`;
+    } catch(e) {
+      statusEl.textContent = 'Erro ao buscar — preencher manualmente.';
+    }
+  }
+
   // ── Modo 2: VIX + SPY ──
   function updateModo2Preview() {
     const vix = document.getElementById('m2-vix').value;
@@ -1530,6 +1544,19 @@
     if (premio) document.getElementById('m3-premio-display').textContent = parseFloat(premio).toFixed(2);
   }
 
+  // Preenche campos ocultos do Modo 3 a partir do Modo 2
+  function fillFromModo2() {
+    const spot = window._modo2Spot;
+    const tipo = window._modo2Tipo;
+    const vix  = window._modo2Data && window._modo2Data.vix_now;
+    if (spot) document.getElementById('m3-spot').value = spot;
+    if (tipo) document.getElementById('m3-tipo').value = tipo;
+    if (vix)  document.getElementById('m3-iv').value   = vix;
+    if (!spot && !tipo) {
+      showError('modo3', 'Execute o Modo 2 primeiro.');
+    }
+  }
+
   async function runModo3() {
     const btn = document.getElementById('btn-modo3');
     btn.disabled = true;
@@ -1537,28 +1564,32 @@
     showError('modo3', '');
 
     try {
-      const spotVal = document.getElementById('m3-spot').value;
-      const ivVal = document.getElementById('m3-iv').value;
-
       if (!_pdfData || !_pdfData.sg_string) {
         showModo3Result({});
         return;
       }
 
-      const body = {
-        // campos exigidos pelo backend atual
-        sg_raw: _pdfData.sg_string,
-        spot_spy: spotVal,
-        vix: ivVal,
+      // Herda spot/vix do Modo 2; fallback para inputs ocultos
+      const spotVal = window._modo2Spot || document.getElementById('m3-spot').value;
+      const ivVal   = (window._modo2Data && window._modo2Data.vix_now) ||
+                      document.getElementById('m3-iv').value;
 
-        // campos adicionais para o painel operacional
-        spot: spotVal,
-        iv: ivVal,
-        premio: document.getElementById('m3-premio').value,
-        strike: document.getElementById('m3-strike').value,
-        tipo: document.getElementById('m3-tipo').value,
-        dte: document.getElementById('m3-dte').value,
-        observacoes: document.getElementById('m3-obs').value,
+      // Sincroniza inputs ocultos para compatibilidade
+      document.getElementById('m3-spot').value = spotVal || '';
+      document.getElementById('m3-iv').value   = ivVal   || '';
+      document.getElementById('m3-tipo').value = window._modo2Tipo || '';
+
+      const body = {
+        sg_raw:       _pdfData.sg_string,
+        spot_spy:     spotVal,
+        vix:          ivVal,
+        spot:         spotVal,
+        iv:           ivVal,
+        premio:       document.getElementById('m3-premio').value,
+        strike:       document.getElementById('m3-strike').value,
+        tipo:         window._modo2Tipo || document.getElementById('m3-tipo').value,
+        dte:          document.getElementById('m3-dte').value,
+        observacoes:  document.getElementById('m3-obs').value,
       };
       const res = await fetch('/api/modo3', {
         method: 'POST',
