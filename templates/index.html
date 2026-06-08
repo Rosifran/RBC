@@ -1477,6 +1477,30 @@
     ${acaoDesc ? `<div style="font-size:11px;color:#64748b;margin-top:4px;line-height:1.4;">${acaoDesc}</div>` : ''}
   </div>
 
+${(() => {
+    const ns = d.next_setup;
+    if (!ns) return '';
+    const rowNs = (color, label, text) => !text ? '' :
+      `<div style="display:flex;align-items:baseline;border-left:3px solid ${color};margin-bottom:2px;">
+        <span style="min-width:90px;padding:3px 8px;font-size:10px;font-weight:700;color:${color};text-transform:uppercase;flex-shrink:0;">${label}</span>
+        <span style="padding:3px 8px;font-size:11px;color:#1e293b;line-height:1.5;flex:1;">${text}</span>
+      </div>`;
+    return `
+  <div style="background:#fff;border:0.5px solid #e2e8f0;border-left:4px solid #6366f1;border-radius:12px;overflow:hidden;">
+    <div style="padding:6px 12px;font-size:10px;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:.06em;border-bottom:0.5px solid #f1f5f9;background:#fafaff;">
+      Próximo Setup a Monitorar
+    </div>
+    <div style="padding:6px 0 4px;">
+      ${ns.context ? `<div style="padding:2px 12px 6px;font-size:11px;color:#64748b;font-style:italic;">${ns.context}</div>` : ''}
+      ${rowNs('#16a34a', 'CALL',       ns.call_setup)}
+      ${rowNs('#dc2626', 'PUT',        ns.put_setup)}
+      ${rowNs('#64748b', 'NO TRADE',   ns.no_trade)}
+      ${ns.key_level    ? rowNs('#6366f1', 'NÍVEL-CHAVE', ns.key_level)    : ''}
+      ${ns.invalidation ? rowNs('#f97316', 'INVALIDAÇÃO', ns.invalidation) : ''}
+    </div>
+  </div>`;
+  })()}
+
 </div>`;
 
     const box = document.getElementById('modo2-result');

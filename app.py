@@ -1021,6 +1021,46 @@ def modo2():
     one_sentence = (f"{gamma_regime.replace('_', ' ')}, SPY {spot_now}"
                     f" vs VT {vol_trig} — {decision}. {entry}")
 
+    # ── Próximo setup a monitorar (cockpit de espera) ─────────────────
+    _vt  = vol_trig
+    _zg  = spy.get("zero_gamma") or vol_trig
+    _cw  = call_wall
+    _pw  = put_wall
+    _ref = spy.get("reference_price") or spot_now
+
+    if _vt and _zg and str(_vt) != str(_zg):
+        _key_level = f"{_vt}/{_zg}"
+    else:
+        _key_level = str(_vt or _zg or "—")
+
+    if gamma_regime == "NEGATIVE_GAMMA":
+        next_setup = {
+            "call_setup":   f"SPY recuperar {_key_level} com aceitação (fechar acima por 2+ velas).",
+            "put_setup":    f"SPY retestar {_key_level} e rejeitar — confirmação de continuação baixista.",
+            "no_trade":     f"SPY entre {_ref}–{_vt} sem direção clara — aguardar.",
+            "key_level":    _key_level,
+            "invalidation": f"Viés PUT perde força se SPY recuperar {_key_level}.",
+            "context":      "NEGATIVE GAMMA — mercado frágil. Dealers amplificam moves.",
+        }
+    elif gamma_regime == "POSITIVE_GAMMA":
+        next_setup = {
+            "call_setup":   f"SPY retestar {_key_level} e segurar — entrada CALL REVERSAL perto do piso.",
+            "put_setup":    f"SPY se aproximar de {_cw} e rejeitar — entrada PUT REVERSAL perto do teto.",
+            "no_trade":     f"SPY no meio da faixa {_vt}–{_cw} — sem edge estrutural.",
+            "key_level":    _key_level,
+            "invalidation": f"Viés CALL perde força se SPY perder {_key_level}. Viés PUT perde força se SPY superar {_cw}.",
+            "context":      "POSITIVE GAMMA — dealers sustentam range. Reversões nos extremos.",
+        }
+    else:
+        next_setup = {
+            "call_setup":   None,
+            "put_setup":    None,
+            "no_trade":     "Dados insuficientes — preencher manualmente.",
+            "key_level":    None,
+            "invalidation": None,
+            "context":      None,
+        }
+
     # Output: compatível com Modo 3
     ow["rbc_decision"] = {
         "gamma_regime":     gamma_regime,
@@ -1034,6 +1074,7 @@ def modo2():
         "risk":             risk_str,
         "hard_rules":       hard_rules,
         "one_sentence":     one_sentence,
+        "next_setup":       next_setup,
         "hiro":             None,
         "hiro_state":       hiro_state,
         "context_bias":     context_bias,
