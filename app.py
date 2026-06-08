@@ -481,6 +481,63 @@ def parse_pm_pdf():
     return jsonify({"ok": True, **parsed})
 
 
+# ── TradingView market quote (SPY + VIX) ─────────────────────────────
+_tv_quote = {}  # {"spy": float, "vix": float, "ts": str}
+
+@app.route("/api/tv/quote", methods=["POST"])
+def tv_quote_post():
+    """
+    Recebe quote de mercado do TradingView.
+    Payload esperado: {"symbol": "SPY"|"VIX", "price": 756.10, "time": "2026-06-08T10:05:00"}
+    """
+    data   = request.get_json(silent=True) or {}
+    symbol = str(data.get("symbol", "")).upper().replace("$", "")
+    price  = data.get("price")
+    ts     = data.get("time") or datetime.utcnow().isoformat()
+
+    if not symbol or price is None:
+        return jsonify({"error": "symbol and price required"}), 400
+
+    try:
+        price = float(price)
+    except (ValueError, TypeError):
+        return jsonify({"error": "price must be numeric"}), 400
+
+    if symbol in ("SPY", "SPDR"):
+        _tv_quote["spy"] = price
+    elif symbol in ("VIX", "CBOE:VIX", "VIX1D"):
+        _tv_quote["vix"] = price
+    else:
+        return jsonify({"error": f"unknown symbol: {symbol}"}), 400
+
+    _tv_quote["ts"] = ts
+    return jsonify({"ok": True, "symbol": symbol, "price": price, "ts": ts})
+
+
+@app.route("/api/tv/quote", methods=["GET"])
+def tv_quote_get():
+    """Retorna o último quote recebido do TradingView."""
+    if not _tv_quote:
+        return jsonify({"ok": False, "message": "Sem dados recentes — preencher manualmente."}), 200
+    age_ok = True
+    if _tv_quote.get("ts"):
+        try:
+            from datetime import timezone
+            ts = datetime.fromisoformat(_tv_quote["ts"].replace("Z", "+00:00"))
+            age_min = (datetime.now(timezone.utc) - ts).total_seconds() / 60
+            age_ok = age_min < 30  # considera stale após 30 min
+        except Exception:
+            pass
+    return jsonify({
+        "ok":     True,
+        "spy":    _tv_quote.get("spy"),
+        "vix":    _tv_quote.get("vix"),
+        "ts":     _tv_quote.get("ts"),
+        "fresh":  age_ok,
+        "message": None if age_ok else "Dado com mais de 30 min — confirmar manualmente.",
+    })
+
+
 @app.route("/api/modo1", methods=["POST"])
 def modo1():
     """Pre-market: parse SpotGamma data and return SPY key levels."""
