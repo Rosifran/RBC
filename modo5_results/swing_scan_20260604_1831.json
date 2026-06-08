@@ -1,0 +1,173 @@
+[
+  {
+    "ticker": "NVDA",
+    "direction": "CALL",
+    "spot": 216.81,
+    "scanned": 18,
+    "overall_verdict": "REPROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 2,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": -0.1,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.45,
+          "signal": "P/C 0.45 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "NVDA",
+        "direction": "CALL",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 213.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 7.97,
+        "last": 0,
+        "close": 7.97,
+        "mid": 7.97,
+        "volume": 0,
+        "open_interest": 0,
+        "iv_pct": 38.7,
+        "delta": 0.659,
+        "gamma": 0.02261,
+        "theta": -0.2373,
+        "price_ref": 7.97,
+        "spot": 216.81,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 1,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.66 aceitavel",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 0 / OI 0 baixa liquidez",
+          "iv_event": "IV 39% razoavel"
+        },
+        "entry_price": 7.97,
+        "stop_price": 5.18,
+        "target_1": 11.16,
+        "target_2": 14.35
+      },
+      {
+        "ticker": "NVDA",
+        "direction": "CALL",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 212.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 8.52,
+        "last": 0,
+        "close": 8.52,
+        "mid": 8.52,
+        "volume": 0,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 8.52,
+        "spot": 216.81,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 0 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 8.52,
+        "stop_price": 5.54,
+        "target_1": 11.93,
+        "target_2": 15.34
+      },
+      {
+        "ticker": "NVDA",
+        "direction": "CALL",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 214.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 7.44,
+        "last": 0,
+        "close": 7.44,
+        "mid": 7.44,
+        "volume": 0,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 7.44,
+        "spot": 216.81,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 0 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 7.44,
+        "stop_price": 4.84,
+        "target_1": 10.42,
+        "target_2": 13.39
+      }
+    ],
+    "timestamp": "2026-06-04 18:31 ET"
+  }
+]

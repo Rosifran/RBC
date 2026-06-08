@@ -1,0 +1,8 @@
+[
+  {
+    "ticker": "NVDA",
+    "direction": "CALL",
+    "spot": 212.59,
+    "error": "Sem contratos validos"
+  }
+]

@@ -1,0 +1,1238 @@
+[
+  {
+    "ticker": "NVDA",
+    "direction": "CALL",
+    "spot": 219.09,
+    "scanned": 18,
+    "overall_verdict": "APROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 2,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 0.2,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": -1.4,
+          "signal": "Skew -1.4% \u2014 neutro, favoravel para ambas direcoes",
+          "score": 2
+        },
+        "pc_ratio": {
+          "pc_ratio": null,
+          "signal": "sem dados",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "NVDA",
+        "direction": "CALL",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 215.0,
+        "right": "C",
+        "bid": 9.05,
+        "ask": 9.15,
+        "last": 9.09,
+        "close": 6.99,
+        "mid": 9.1,
+        "volume": 5387,
+        "open_interest": 0,
+        "iv_pct": 38.3,
+        "delta": 0.622,
+        "gamma": 0.02314,
+        "theta": -0.2399,
+        "price_ref": 9.15,
+        "spot": 219.09,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 1.1,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.62 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 1.1% excelente",
+          "liquidity": "Vol 5,387 / OI 0 aceitavel",
+          "iv_event": "IV 38% razoavel"
+        },
+        "entry_price": 9.15,
+        "stop_price": 5.95,
+        "target_1": 12.81,
+        "target_2": 16.47
+      },
+      {
+        "ticker": "NVDA",
+        "direction": "CALL",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 218.0,
+        "right": "C",
+        "bid": 7.4,
+        "ask": 7.5,
+        "last": 7.44,
+        "close": 5.66,
+        "mid": 7.45,
+        "volume": 1251,
+        "open_interest": 0,
+        "iv_pct": 38.5,
+        "delta": 0.551,
+        "gamma": 0.02396,
+        "theta": -0.251,
+        "price_ref": 7.5,
+        "spot": 219.09,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 1.3,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.55 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 1.3% excelente",
+          "liquidity": "Vol 1,251 / OI 0 aceitavel",
+          "iv_event": "IV 38% razoavel"
+        },
+        "entry_price": 7.5,
+        "stop_price": 4.88,
+        "target_1": 10.5,
+        "target_2": 13.5
+      },
+      {
+        "ticker": "NVDA",
+        "direction": "CALL",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 220.0,
+        "right": "C",
+        "bid": 6.4,
+        "ask": 6.5,
+        "last": 6.45,
+        "close": 4.93,
+        "mid": 6.45,
+        "volume": 37415,
+        "open_interest": 0,
+        "iv_pct": 38.6,
+        "delta": 0.503,
+        "gamma": 0.02409,
+        "theta": -0.2522,
+        "price_ref": 6.5,
+        "spot": 219.09,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 1.6,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.50 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 1.6% excelente",
+          "liquidity": "Vol 37,415 / OI 0 aceitavel",
+          "iv_event": "IV 39% razoavel"
+        },
+        "entry_price": 6.5,
+        "stop_price": 4.23,
+        "target_1": 9.1,
+        "target_2": 11.7
+      }
+    ],
+    "timestamp": "2026-06-04 13:15 ET"
+  },
+  {
+    "ticker": "NVDA",
+    "direction": "PUT",
+    "spot": 219.08,
+    "scanned": 16,
+    "overall_verdict": "APROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 2,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 0.0,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": -1.2,
+          "signal": "Skew -1.2% \u2014 neutro, favoravel para ambas direcoes",
+          "score": 2
+        },
+        "pc_ratio": {
+          "pc_ratio": null,
+          "signal": "sem dados",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "NVDA",
+        "direction": "PUT",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 212.0,
+        "right": "P",
+        "bid": 3.45,
+        "ask": 3.5,
+        "last": 3.5,
+        "close": 5.6,
+        "mid": 3.48,
+        "volume": 1370,
+        "open_interest": 0,
+        "iv_pct": 38.7,
+        "delta": -0.311,
+        "gamma": 0.02154,
+        "theta": -0.1974,
+        "price_ref": 3.5,
+        "spot": 219.08,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 1.4,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.31 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 1.4% excelente",
+          "liquidity": "Vol 1,370 / OI 0 aceitavel",
+          "iv_event": "IV 39% razoavel"
+        },
+        "entry_price": 3.5,
+        "stop_price": 2.27,
+        "target_1": 4.9,
+        "target_2": 6.3
+      },
+      {
+        "ticker": "NVDA",
+        "direction": "PUT",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 220.0,
+        "right": "P",
+        "bid": 6.85,
+        "ask": 6.95,
+        "last": 6.9,
+        "close": 10.01,
+        "mid": 6.9,
+        "volume": 1424,
+        "open_interest": 0,
+        "iv_pct": 38.6,
+        "delta": -0.499,
+        "gamma": 0.02427,
+        "theta": -0.2272,
+        "price_ref": 6.95,
+        "spot": 219.08,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 1.4,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.50 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 1.4% excelente",
+          "liquidity": "Vol 1,424 / OI 0 aceitavel",
+          "iv_event": "IV 39% razoavel"
+        },
+        "entry_price": 6.95,
+        "stop_price": 4.52,
+        "target_1": 9.73,
+        "target_2": 12.51
+      },
+      {
+        "ticker": "NVDA",
+        "direction": "PUT",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 215.0,
+        "right": "P",
+        "bid": 4.5,
+        "ask": 4.6,
+        "last": 4.59,
+        "close": 7.06,
+        "mid": 4.55,
+        "volume": 5698,
+        "open_interest": 0,
+        "iv_pct": 38.6,
+        "delta": -0.38,
+        "gamma": 0.02328,
+        "theta": -0.2146,
+        "price_ref": 4.6,
+        "spot": 219.08,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 2.2,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.38 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 2.2% excelente",
+          "liquidity": "Vol 5,698 / OI 0 aceitavel",
+          "iv_event": "IV 39% razoavel"
+        },
+        "entry_price": 4.6,
+        "stop_price": 2.99,
+        "target_1": 6.44,
+        "target_2": 8.28
+      }
+    ],
+    "timestamp": "2026-06-04 13:16 ET"
+  },
+  {
+    "ticker": "AAPL",
+    "direction": "CALL",
+    "spot": 311.02,
+    "scanned": 7,
+    "overall_verdict": "APROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 2,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 2.8,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": 0.1,
+          "signal": "Skew +0.1% \u2014 neutro, favoravel para ambas direcoes",
+          "score": 2
+        },
+        "pc_ratio": {
+          "pc_ratio": null,
+          "signal": "sem dados",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "AAPL",
+        "direction": "CALL",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 310.0,
+        "right": "C",
+        "bid": 7.0,
+        "ask": 7.15,
+        "last": 7.1,
+        "close": 6.9,
+        "mid": 7.08,
+        "volume": 1241,
+        "open_interest": 0,
+        "iv_pct": 25.3,
+        "delta": 0.551,
+        "gamma": 0.02563,
+        "theta": -0.2412,
+        "price_ref": 7.15,
+        "spot": 311.02,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 2.1,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.55 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 2.1% excelente",
+          "liquidity": "Vol 1,241 / OI 0 aceitavel",
+          "iv_event": "IV 25% razoavel"
+        },
+        "entry_price": 7.15,
+        "stop_price": 4.65,
+        "target_1": 10.01,
+        "target_2": 12.87
+      },
+      {
+        "ticker": "AAPL",
+        "direction": "CALL",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 315.0,
+        "right": "C",
+        "bid": 4.65,
+        "ask": 4.8,
+        "last": 4.68,
+        "close": 4.81,
+        "mid": 4.72,
+        "volume": 1801,
+        "open_interest": 0,
+        "iv_pct": 25.4,
+        "delta": 0.424,
+        "gamma": 0.02531,
+        "theta": -0.2324,
+        "price_ref": 4.8,
+        "spot": 311.02,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 3.2,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.42 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 3.2% excelente",
+          "liquidity": "Vol 1,801 / OI 0 aceitavel",
+          "iv_event": "IV 25% razoavel"
+        },
+        "entry_price": 4.8,
+        "stop_price": 3.12,
+        "target_1": 6.72,
+        "target_2": 8.64
+      },
+      {
+        "ticker": "AAPL",
+        "direction": "CALL",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 320.0,
+        "right": "C",
+        "bid": 2.98,
+        "ask": 3.1,
+        "last": 3.01,
+        "close": 3.11,
+        "mid": 3.04,
+        "volume": 1502,
+        "open_interest": 0,
+        "iv_pct": 25.7,
+        "delta": 0.309,
+        "gamma": 0.02253,
+        "theta": -0.2173,
+        "price_ref": 3.1,
+        "spot": 311.02,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 3.9,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.31 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 3.9% excelente",
+          "liquidity": "Vol 1,502 / OI 0 aceitavel",
+          "iv_event": "IV 26% razoavel"
+        },
+        "entry_price": 3.1,
+        "stop_price": 2.02,
+        "target_1": 4.34,
+        "target_2": 5.58
+      }
+    ],
+    "timestamp": "2026-06-04 13:16 ET"
+  },
+  {
+    "ticker": "AAPL",
+    "direction": "PUT",
+    "spot": 311.05,
+    "scanned": 7,
+    "overall_verdict": "APROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 2,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 3.1,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": 0.1,
+          "signal": "Skew +0.1% \u2014 neutro, favoravel para ambas direcoes",
+          "score": 2
+        },
+        "pc_ratio": {
+          "pc_ratio": null,
+          "signal": "sem dados",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "AAPL",
+        "direction": "PUT",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 305.0,
+        "right": "P",
+        "bid": 3.4,
+        "ask": 3.5,
+        "last": 3.47,
+        "close": 4.08,
+        "mid": 3.45,
+        "volume": 510,
+        "open_interest": 0,
+        "iv_pct": 25.8,
+        "delta": -0.328,
+        "gamma": 0.02319,
+        "theta": -0.1964,
+        "price_ref": 3.5,
+        "spot": 311.05,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 2.9,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.33 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 2.9% excelente",
+          "liquidity": "Vol 510 / OI 0 aceitavel",
+          "iv_event": "IV 26% razoavel"
+        },
+        "entry_price": 3.5,
+        "stop_price": 2.27,
+        "target_1": 4.9,
+        "target_2": 6.3
+      },
+      {
+        "ticker": "AAPL",
+        "direction": "PUT",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 310.0,
+        "right": "P",
+        "bid": 5.3,
+        "ask": 5.5,
+        "last": 5.25,
+        "close": 6.01,
+        "mid": 5.4,
+        "volume": 1173,
+        "open_interest": 0,
+        "iv_pct": 25.3,
+        "delta": -0.453,
+        "gamma": 0.02591,
+        "theta": -0.2065,
+        "price_ref": 5.5,
+        "spot": 311.05,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 3.7,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.45 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 3.7% excelente",
+          "liquidity": "Vol 1,173 / OI 0 aceitavel",
+          "iv_event": "IV 25% razoavel"
+        },
+        "entry_price": 5.5,
+        "stop_price": 3.58,
+        "target_1": 7.7,
+        "target_2": 9.9
+      },
+      {
+        "ticker": "AAPL",
+        "direction": "PUT",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 315.0,
+        "right": "P",
+        "bid": 7.95,
+        "ask": 8.2,
+        "last": 8.21,
+        "close": 8.94,
+        "mid": 8.07,
+        "volume": 46,
+        "open_interest": 0,
+        "iv_pct": 25.4,
+        "delta": -0.582,
+        "gamma": 0.02569,
+        "theta": -0.1985,
+        "price_ref": 8.2,
+        "spot": 311.05,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 3.1,
+        "score": 8,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.58 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 3.1% excelente",
+          "liquidity": "Vol 46 / OI 0 baixa liquidez",
+          "iv_event": "IV 25% razoavel"
+        },
+        "entry_price": 8.2,
+        "stop_price": 5.33,
+        "target_1": 11.48,
+        "target_2": 14.76
+      }
+    ],
+    "timestamp": "2026-06-04 13:16 ET"
+  },
+  {
+    "ticker": "META",
+    "direction": "CALL",
+    "spot": 629.35,
+    "scanned": 13,
+    "overall_verdict": "APROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 2,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 0.6,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": -2.7,
+          "signal": "Skew -2.7% \u2014 calls caras, bullish institucional. Cuidado com PUT.",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": null,
+          "signal": "sem dados",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "META",
+        "direction": "CALL",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 630.0,
+        "right": "C",
+        "bid": 16.9,
+        "ask": 17.3,
+        "last": 17.07,
+        "close": 15.06,
+        "mid": 17.1,
+        "volume": 1677,
+        "open_interest": 0,
+        "iv_pct": 34.3,
+        "delta": 0.514,
+        "gamma": 0.00945,
+        "theta": -0.6349,
+        "price_ref": 17.3,
+        "spot": 629.35,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 2.3,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.51 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 2.3% excelente",
+          "liquidity": "Vol 1,677 / OI 0 aceitavel",
+          "iv_event": "IV 34% razoavel"
+        },
+        "entry_price": 17.3,
+        "stop_price": 11.25,
+        "target_1": 24.22,
+        "target_2": 31.14
+      },
+      {
+        "ticker": "META",
+        "direction": "CALL",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 620.0,
+        "right": "C",
+        "bid": 21.95,
+        "ask": 22.5,
+        "last": 22.11,
+        "close": 19.46,
+        "mid": 22.23,
+        "volume": 1158,
+        "open_interest": 0,
+        "iv_pct": 33.6,
+        "delta": 0.61,
+        "gamma": 0.00927,
+        "theta": -0.5974,
+        "price_ref": 22.5,
+        "spot": 629.35,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 2.5,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.61 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 2.5% excelente",
+          "liquidity": "Vol 1,158 / OI 0 aceitavel",
+          "iv_event": "IV 34% razoavel"
+        },
+        "entry_price": 22.5,
+        "stop_price": 14.62,
+        "target_1": 31.5,
+        "target_2": 40.5
+      },
+      {
+        "ticker": "META",
+        "direction": "CALL",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 640.0,
+        "right": "C",
+        "bid": 12.6,
+        "ask": 13.0,
+        "last": 12.85,
+        "close": 11.48,
+        "mid": 12.8,
+        "volume": 2789,
+        "open_interest": 0,
+        "iv_pct": 34.8,
+        "delta": 0.423,
+        "gamma": 0.00912,
+        "theta": -0.6224,
+        "price_ref": 13.0,
+        "spot": 629.35,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 3.1,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.42 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 3.1% excelente",
+          "liquidity": "Vol 2,789 / OI 0 aceitavel",
+          "iv_event": "IV 35% razoavel"
+        },
+        "entry_price": 13.0,
+        "stop_price": 8.45,
+        "target_1": 18.2,
+        "target_2": 23.4
+      }
+    ],
+    "timestamp": "2026-06-04 13:16 ET"
+  },
+  {
+    "ticker": "META",
+    "direction": "PUT",
+    "spot": 629.46,
+    "scanned": 14,
+    "overall_verdict": "APROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 2,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": -0.3,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": -2.7,
+          "signal": "Skew -2.7% \u2014 calls caras, bullish institucional. Cuidado com PUT.",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": null,
+          "signal": "sem dados",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "META",
+        "direction": "PUT",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 645.0,
+        "right": "P",
+        "bid": 25.6,
+        "ask": 26.25,
+        "last": 21.1,
+        "close": 31.34,
+        "mid": 25.93,
+        "volume": 38,
+        "open_interest": 0,
+        "iv_pct": 35.1,
+        "delta": -0.619,
+        "gamma": 0.00879,
+        "theta": -0.5821,
+        "price_ref": 26.25,
+        "spot": 629.46,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 2.5,
+        "score": 8,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.62 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 2.5% excelente",
+          "liquidity": "Vol 38 / OI 0 baixa liquidez",
+          "iv_event": "IV 35% razoavel"
+        },
+        "entry_price": 26.25,
+        "stop_price": 17.06,
+        "target_1": 36.75,
+        "target_2": 47.25
+      },
+      {
+        "ticker": "META",
+        "direction": "PUT",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 640.0,
+        "right": "P",
+        "bid": 22.35,
+        "ask": 22.95,
+        "last": 22.4,
+        "close": 27.91,
+        "mid": 22.65,
+        "volume": 302,
+        "open_interest": 0,
+        "iv_pct": 34.8,
+        "delta": -0.579,
+        "gamma": 0.00917,
+        "theta": -0.5711,
+        "price_ref": 22.95,
+        "spot": 629.46,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 2.6,
+        "score": 8,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.58 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 2.6% excelente",
+          "liquidity": "Vol 302 / OI 0 baixa liquidez",
+          "iv_event": "IV 35% razoavel"
+        },
+        "entry_price": 22.95,
+        "stop_price": 14.92,
+        "target_1": 32.13,
+        "target_2": 41.31
+      },
+      {
+        "ticker": "META",
+        "direction": "PUT",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 630.0,
+        "right": "P",
+        "bid": 16.6,
+        "ask": 17.1,
+        "last": 16.3,
+        "close": 21.48,
+        "mid": 16.85,
+        "volume": 439,
+        "open_interest": 0,
+        "iv_pct": 34.3,
+        "delta": -0.488,
+        "gamma": 0.00949,
+        "theta": -0.5839,
+        "price_ref": 17.1,
+        "spot": 629.46,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 3.0,
+        "score": 8,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.49 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 3.0% excelente",
+          "liquidity": "Vol 439 / OI 0 baixa liquidez",
+          "iv_event": "IV 34% razoavel"
+        },
+        "entry_price": 17.1,
+        "stop_price": 11.12,
+        "target_1": 23.94,
+        "target_2": 30.78
+      }
+    ],
+    "timestamp": "2026-06-04 13:16 ET"
+  },
+  {
+    "ticker": "AMZN",
+    "direction": "CALL",
+    "spot": 253.81,
+    "scanned": 2,
+    "overall_verdict": "APROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 2,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": -0.9,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": -0.9,
+          "signal": "Skew -0.9% \u2014 neutro, favoravel para ambas direcoes",
+          "score": 2
+        },
+        "pc_ratio": {
+          "pc_ratio": null,
+          "signal": "sem dados",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "AMZN",
+        "direction": "CALL",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 260.0,
+        "right": "C",
+        "bid": 3.75,
+        "ask": 3.9,
+        "last": 3.81,
+        "close": 3.1,
+        "mid": 3.83,
+        "volume": 2529,
+        "open_interest": 0,
+        "iv_pct": 30.9,
+        "delta": 0.369,
+        "gamma": 0.02448,
+        "theta": -0.2233,
+        "price_ref": 3.9,
+        "spot": 253.81,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 3.9,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.37 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 3.9% excelente",
+          "liquidity": "Vol 2,529 / OI 0 aceitavel",
+          "iv_event": "IV 31% razoavel"
+        },
+        "entry_price": 3.9,
+        "stop_price": 2.54,
+        "target_1": 5.46,
+        "target_2": 7.02
+      },
+      {
+        "ticker": "AMZN",
+        "direction": "CALL",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 270.0,
+        "right": "C",
+        "bid": 1.46,
+        "ask": 1.52,
+        "last": 1.49,
+        "close": 1.31,
+        "mid": 1.49,
+        "volume": 7777,
+        "open_interest": 0,
+        "iv_pct": 31.8,
+        "delta": 0.176,
+        "gamma": 0.01634,
+        "theta": -0.1502,
+        "price_ref": 1.52,
+        "spot": 253.81,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 4.0,
+        "score": 7,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.18 fora do range",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 4.0% excelente",
+          "liquidity": "Vol 7,777 / OI 0 aceitavel",
+          "iv_event": "IV 32% razoavel"
+        },
+        "entry_price": 1.52,
+        "stop_price": 0.99,
+        "target_1": 2.13,
+        "target_2": 2.74
+      }
+    ],
+    "timestamp": "2026-06-04 13:16 ET"
+  },
+  {
+    "ticker": "AMZN",
+    "direction": "PUT",
+    "spot": 253.81,
+    "scanned": 1,
+    "overall_verdict": "APROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 2,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": -1.4,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": -0.9,
+          "signal": "Skew -0.9% \u2014 neutro, favoravel para ambas direcoes",
+          "score": 2
+        },
+        "pc_ratio": {
+          "pc_ratio": null,
+          "signal": "sem dados",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "AMZN",
+        "direction": "PUT",
+        "expiration": "20260618",
+        "dte": 14,
+        "strike": 260.0,
+        "right": "P",
+        "bid": 9.4,
+        "ask": 9.65,
+        "last": 9.28,
+        "close": 12.54,
+        "mid": 9.53,
+        "volume": 155,
+        "open_interest": 0,
+        "iv_pct": 30.9,
+        "delta": -0.637,
+        "gamma": 0.02477,
+        "theta": -0.1943,
+        "price_ref": 9.65,
+        "spot": 253.81,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 2.6,
+        "score": 8,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.64 ideal",
+          "dte": "14d ideal (14-35d)",
+          "spread": "Spread 2.6% excelente",
+          "liquidity": "Vol 155 / OI 0 baixa liquidez",
+          "iv_event": "IV 31% razoavel"
+        },
+        "entry_price": 9.65,
+        "stop_price": 6.27,
+        "target_1": 13.51,
+        "target_2": 17.37
+      }
+    ],
+    "timestamp": "2026-06-04 13:17 ET"
+  }
+]
