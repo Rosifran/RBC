@@ -161,42 +161,104 @@ def normalize_claude_output(parsed):
     froth     = macro.get("extreme_call_froth")
     vol_spasm = macro.get("volatility_spasm_risk")
 
+    ref_price = spy.get("reference_price")
     put_line  = vol_trig or zero_g
-    above_put = [c for c in combos_f if put_line and c > put_line]
 
-    # no_trade_hi = segundo combo acima do put_line
-    if len(above_put) >= 2:
-        no_trade_hi = above_put[1]
-    elif above_put:
-        no_trade_hi = above_put[0]
+    # ── Regime: RBC decide com base em reference_price vs vol_trigger ──
+    # NEGATIVE GAMMA: ref abaixo do Vol Trigger → mercado frágil
+    # POSITIVE GAMMA: ref igual ou acima do Vol Trigger → mercado sustentado
+    if ref_price and vol_trig:
+        negative_gamma = ref_price < vol_trig
     else:
-        no_trade_hi = call_wall
+        negative_gamma = False  # sem dados suficientes, assume positivo
 
-    # CALL escalonado — começa acima de no_trade_hi
-    if len(above_put) >= 3 and call_wall:
-        parsed["plan"]["call_trigger"] = f"SPY above {above_put[1]}, better above {above_put[2]}, strongest above {call_wall}."
-    elif len(above_put) >= 2 and call_wall:
-        parsed["plan"]["call_trigger"] = f"SPY above {above_put[1]}, strongest above {call_wall}."
-    elif call_wall:
-        parsed["plan"]["call_trigger"] = f"SPY above {call_wall}."
+    # Combos abaixo e acima da Call Wall (para separar entradas de alvos)
+    combos_below_cw = [c for c in combos_f if call_wall and c < call_wall]
+    combos_above_cw = [c for c in combos_f if call_wall and c >= call_wall]
 
-    # PUT linha dura
-    if put_line:
-        parsed["plan"]["put_trigger"] = f"SPY below {put_line}."
+    if negative_gamma:
+        # ── NEGATIVE GAMMA ────────────────────────────────────────────
+        # CALL: só em reclaim do Vol Trigger / Zero Gamma
+        # Não usar combos acima da Call Wall como entrada
+        vt_str = vol_trig or zero_g
+        zg_str = zero_g or vol_trig
+        if vt_str and zg_str and vt_str != zg_str:
+            parsed["plan"]["call_trigger"] = (
+                f"SPY reclaim {vt_str} with acceptance. "
+                f"Confirm above {zg_str}. "
+                f"Targets: {call_wall or 'Call Wall'}."
+            )
+        elif vt_str:
+            parsed["plan"]["call_trigger"] = (
+                f"SPY reclaim {vt_str} with acceptance. "
+                f"Target: {call_wall or 'Call Wall'}. "
+                f"Do not chase call above Call Wall."
+            )
 
-    # NO TRADE zona de compressão
-    if put_line and no_trade_hi:
-        parsed["plan"]["avoid"] = f"SPY between {put_line} and {no_trade_hi}."
+        # PUT: rejeição ou aceitação abaixo do Vol Trigger
+        if put_line:
+            parsed["plan"]["put_trigger"] = (
+                f"SPY rejection of {put_line} or acceptance below. "
+                f"Targets: {ref_price or 'Reference Price'}, then {spy.get('put_wall') or 'Put Wall'}. "
+                f"Do not chase if already extended from {put_line}."
+            )
 
-    # BEST operacional
-    if put_line and no_trade_hi:
-        parsed["plan"]["best_setup"] = f"Wait for breakout; do not trade inside {put_line}–{no_trade_hi} compression zone."
+        # NO TRADE
+        if put_line and call_wall:
+            parsed["plan"]["avoid"] = (
+                f"SPY between {put_line} and {call_wall} without clear direction. "
+                f"Wait for rejection or reclaim of {put_line}."
+            )
 
-    # SCORE baseado em sinais de risco
-    if froth and vol_spasm:
+        # BEST operacional
+        parsed["plan"]["best_setup"] = (
+            f"NEGATIVE GAMMA regime — fragile market. "
+            f"Best: PUT on rejection of {put_line or 'Vol Trigger'}, "
+            f"or CALL only on clean reclaim of {put_line or 'Vol Trigger'}. "
+            f"No trade in middle of range."
+        )
+
+        # SCORE em Negative Gamma
         parsed["score"]["value"] = 2
-        cor_str = f" and COR1M {cor1m}" if cor1m else ""
-        parsed["score"]["justification"] = f"Positive gamma supports stocks, but extreme call froth{cor_str} create volatility-spasm risk."
+        cor_str = f" COR1M {cor1m}." if cor1m else ""
+        parsed["score"]["justification"] = (
+            f"Negative Gamma regime — SPY below Vol Trigger. "
+            f"Fragile, headline-sensitive.{cor_str} Reduce size, wait for level."
+        )
+
+    else:
+        # ── POSITIVE GAMMA ────────────────────────────────────────────
+        # Lógica original mantida: combos acima do put_line como escada
+        above_put = [c for c in combos_f if put_line and c > put_line]
+
+        if len(above_put) >= 2:
+            no_trade_hi = above_put[1]
+        elif above_put:
+            no_trade_hi = above_put[0]
+        else:
+            no_trade_hi = call_wall
+
+        if len(above_put) >= 3 and call_wall:
+            parsed["plan"]["call_trigger"] = f"SPY above {above_put[1]}, better above {above_put[2]}, strongest above {call_wall}."
+        elif len(above_put) >= 2 and call_wall:
+            parsed["plan"]["call_trigger"] = f"SPY above {above_put[1]}, strongest above {call_wall}."
+        elif call_wall:
+            parsed["plan"]["call_trigger"] = f"SPY above {call_wall}."
+
+        if put_line:
+            parsed["plan"]["put_trigger"] = f"SPY below {put_line}."
+
+        if put_line and no_trade_hi:
+            parsed["plan"]["avoid"] = f"SPY between {put_line} and {no_trade_hi}."
+
+        if put_line and no_trade_hi:
+            parsed["plan"]["best_setup"] = f"Wait for breakout; do not trade inside {put_line}–{no_trade_hi} compression zone."
+
+        # SCORE em Positive Gamma
+        if froth and vol_spasm:
+            parsed["score"]["value"] = 2
+            cor_str = f" and COR1M {cor1m}" if cor1m else ""
+            parsed["score"]["justification"] = f"Positive gamma supports stocks, but extreme call froth{cor_str} create volatility-spasm risk."
 
     # 6. Normalize bias to single word
     regime = parsed.get("regime") or {}
