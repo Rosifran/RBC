@@ -623,6 +623,12 @@
         </button>
         <span id="tv-quote-status" style="font-size:11px;color:#94a3b8;margin-top:4px;display:block;"></span>
       </div>
+      <div class="form-group full" style="margin-bottom:4px;">
+        <button type="button" onclick="fillFromTradingView()" style="background:#0f172a;color:#fff;border:none;border-radius:6px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;">
+          🔄 Usar último TradingView
+        </button>
+        <span id="tv-quote-status" style="font-size:11px;color:#94a3b8;margin-top:4px;display:block;"></span>
+      </div>
       <div class="form-group">
         <label class="form-label">VIX — agora <span style="color:#e53e3e">*</span></label>
         <input class="form-input" id="vix_now" type="number" step="0.01" placeholder="ex: 18.50" oninput="updateModo2Preview()">
@@ -1171,6 +1177,28 @@
     } finally {
       document.getElementById('sg-status').classList.remove('visible');
       btn.disabled = false;
+    }
+  }
+
+  // ── TradingView auto-fill ──
+  async function fillFromTradingView() {
+    const statusEl = document.getElementById('tv-quote-status');
+    statusEl.textContent = 'Buscando...';
+    try {
+      const res  = await fetch('/api/tv/quote');
+      const data = await res.json();
+      if (!data.ok || !data.spy || !data.vix) {
+        statusEl.textContent = 'Sem dados recentes — preencher manualmente.';
+        return;
+      }
+      document.getElementById('vix_now').value  = data.vix;
+      document.getElementById('spot_now').value = data.spy;
+      updateModo2Preview();
+      const ts = data.ts ? new Date(parseInt(data.ts)).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) : '';
+      const freshMsg = data.fresh ? '✅' : '⚠ dado antigo —';
+      statusEl.textContent = `${freshMsg} SPY ${data.spy} | VIX ${data.vix}${ts ? ' · ' + ts : ''}`;
+    } catch(e) {
+      statusEl.textContent = 'Erro ao buscar — preencher manualmente.';
     }
   }
 
