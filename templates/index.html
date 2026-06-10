@@ -1196,14 +1196,18 @@
     }
   }
 
-  // ── Modo 2: VIX + SPY ──
+  // ── Modo 2: VIX + SPY ── (null-safe: elementos podem nao existir)
   function updateModo2Preview() {
-    const vix = document.getElementById('m2-vix').value;
-    const spy = document.getElementById('m2-spy').value;
-    const show = vix || spy;
-    document.getElementById('modo2-metrics').style.display = show ? 'flex' : 'none';
-    if (vix) document.getElementById('m2-vix-display').textContent = parseFloat(vix).toFixed(2);
-    if (spy) document.getElementById('m2-spy-display').textContent = parseFloat(spy).toFixed(2);
+    const vixEl = document.getElementById('m2-vix');
+    const spyEl = document.getElementById('m2-spy');
+    const vix = vixEl ? vixEl.value : '';
+    const spy = spyEl ? spyEl.value : '';
+    const metricsEl = document.getElementById('modo2-metrics');
+    if (metricsEl) metricsEl.style.display = (vix || spy) ? 'flex' : 'none';
+    const vd = document.getElementById('m2-vix-display');
+    const sd = document.getElementById('m2-spy-display');
+    if (vix && vd) vd.textContent = parseFloat(vix).toFixed(2);
+    if (spy && sd) sd.textContent = parseFloat(spy).toFixed(2);
   }
 
   function showModo2Result(data) {
