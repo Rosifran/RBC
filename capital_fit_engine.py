@@ -30,6 +30,7 @@ CONFIG = {
     "max_spread_pct": 0.05,        # spread bid/ask máximo aceitável (5%)
     "min_volume": 100,             # volume mínimo no contrato
     "min_open_interest": 200,      # OI mínimo (se disponível; None = ignora)
+    "oi_zero_means_missing": True, # feed IBKR atual retorna OI=0 sempre → tratar como ausente
     "min_delta": 0.30,             # abaixo disso = delta baixo demais
     "ideal_delta": (0.35, 0.55),   # faixa ideal de delta
     "dte_range": (14, 35),         # janela swing
@@ -142,7 +143,9 @@ def capital_fit_engine(contract, spot=None, ticker_profile=None):
     volume = int(volume) if volume is not None else None
     oi = _get(contract, "open_interest", "oi")
     oi = int(oi) if oi is not None else None
-    iv = _get(contract, "iv", "implied_vol", "implied_volatility")
+    if oi == 0 and cfg["oi_zero_means_missing"]:
+        oi = None  # feed atual não entrega OI — 0 é ausência, não OI real
+    iv = _get(contract, "iv", "iv_pct", "implied_vol", "implied_volatility")
     iv = float(iv) if iv is not None else None
     if iv is not None and iv > 3:  # veio em % (ex: 45.0) em vez de decimal
         iv = iv / 100.0
@@ -165,7 +168,7 @@ def capital_fit_engine(contract, spot=None, ticker_profile=None):
             "cost_bucket": "DADOS_INSUFICIENTES",
             "capital_status": "DADOS_INSUFICIENTES",
             "reason": f"feed IBKR incompleto: faltando {', '.join(missing)}",
-            "preferred_structure": "SKIP",
+            "preferred_structure": "WAIT",  # WAIT = revalidar quando feed completo; SKIP = reprovação real
             "rosi_note": (
                 "Dados incompletos do feed IBKR. Ausência de dado não significa "
                 "contrato ruim — revalidar antes de decidir."
@@ -177,15 +180,19 @@ def capital_fit_engine(contract, spot=None, ticker_profile=None):
     spread = _spread_pct(bid, ask)
 
     # ---------- gates duros (só com dado PRESENTE e comprovadamente ruim) ----------
-    # Liquidez: medida pelo melhor dado disponível. Se um dos dois (vol/OI)
-    # estiver ausente, decide pelo que existe — ausência já foi tratada acima.
+    # Liquidez em 3 estados:
+    #   OK          → volume ou OI acima do mínimo
+    #   BAD         → dados presentes confirmam liquidez ruim → REPROVO
+    #   UNCONFIRMED → volume baixo mas OI ausente no feed → NÃO reprova (regra GPT #2)
     vol_bad = volume is not None and volume < cfg["min_volume"]
     oi_bad = oi is not None and oi < cfg["min_open_interest"]
-    liquidity_bad = (
-        (volume is not None and oi is not None and vol_bad and oi_bad)
-        or (volume is not None and oi is None and vol_bad)
-        or (volume is None and oi is not None and oi_bad)
-    )
+    if (volume or 0) >= cfg["min_volume"] or (oi or 0) >= cfg["min_open_interest"]:
+        liquidity = "OK"
+    elif (vol_bad and oi_bad) or (volume is None and oi_bad):
+        liquidity = "BAD"
+    else:
+        liquidity = "UNCONFIRMED"
+    liquidity_bad = liquidity == "BAD"
     spread_terrible = spread is not None and spread > cfg["max_spread_pct"] * 2  # >10%
 
     fails = []
@@ -212,7 +219,7 @@ def capital_fit_engine(contract, spot=None, ticker_profile=None):
 
     # ---------- checks de qualidade (soft) ----------
     spread_ok = spread is not None and spread <= cfg["max_spread_pct"]
-    volume_ok = (volume or 0) >= cfg["min_volume"] or (oi or 0) >= cfg["min_open_interest"]
+    volume_ok = liquidity != "BAD"  # UNCONFIRMED passa, mas rebaixa status depois
     dte_ok = dte is not None and cfg["dte_range"][0] <= dte <= cfg["dte_range"][1]
     delta_ideal = (
         delta is not None
@@ -312,6 +319,15 @@ def capital_fit_engine(contract, spot=None, ticker_profile=None):
         reason = "; ".join(problemas) or "filtros de qualidade reprovados"
         note = "Contrato não adequado para o capital/perfil atual."
 
+    # liquidez não confirmada (OI ausente + volume baixo) rebaixa status, não reprova
+    if status == "APROVO_CAPITAL" and liquidity == "UNCONFIRMED":
+        status = "MONITORAR"
+        reason += f"; liquidez nao confirmada (vol {volume}, OI ausente no feed)"
+        note += (
+            " Liquidez não confirmada — OI ausente no feed; "
+            "checar volume na abertura antes de entrar."
+        )
+
     # risco no stop acima do limite rebaixa status (mesmo com bucket ok)
     if status == "APROVO_CAPITAL" and risk_at_stop > cfg["max_risk_at_stop"]:
         status = "MONITORAR"
@@ -342,10 +358,14 @@ STATUS_ICON = {
 def format_capital_fit_block(capital_fit):
     """Bloco visual padrão CAPITAL FIT para exibir junto do score técnico."""
     icon = STATUS_ICON.get(capital_fit["capital_status"], "")
+    cost = capital_fit.get("contract_cost")
+    risk = capital_fit.get("risk_at_stop")
+    cost_str = f"${cost:.0f}" if cost is not None else "N/A"
+    risk_str = f"${risk:.0f}" if risk is not None else "N/A"
     return (
         "CAPITAL FIT\n"
-        f"* Custo do contrato: ${capital_fit['contract_cost']:.0f}\n"
-        f"* Risco no stop (35%): ${capital_fit['risk_at_stop']:.0f}\n"
+        f"* Custo do contrato: {cost_str}\n"
+        f"* Risco no stop (35%): {risk_str}\n"
         f"* Bucket: {capital_fit['cost_bucket']}\n"
         f"* Status capital: {icon} {capital_fit['capital_status']}\n"
         f"* Estrutura preferida: {capital_fit['preferred_structure']}\n"
@@ -380,6 +400,46 @@ def sort_by_capital_fit(results, ideal_first=True):
             (r.get("capital_fit") or {}).get("cost_bucket", "REPROVO"), 9
         ),
     )
+
+
+# ============================================================
+# INTEGRAÇÃO MODO 5 — enriquecimento do payload de swing_scans
+# ============================================================
+def enrich_scan_results(results, ideal_first=False):
+    """
+    Enriquecimento in-place do payload do Modo 5 (formato real confirmado
+    em /api/modo5/latest):
+
+        results = [
+          {"ticker": "AAPL", "spot": 289.91, "direction": "CALL",
+           "top_contracts": [{"ask":..., "bid":..., "delta":..., "dte":...,
+                              "volume":..., "open_interest":..., "iv_pct":...}, ...],
+           ...},
+          ...
+        ]
+
+    Adiciona:
+        bloco["ticker_profile"]          → perfil do ticker
+        contrato["capital_fit"]          → output do engine
+    Se ideal_first=True, reordena top_contracts (IDEAL primeiro).
+
+    Uso no scanner (1 linha, antes de salvar em swing_scans):
+        from capital_fit_engine import enrich_scan_results
+        results = enrich_scan_results(results)
+    """
+    for block in results or []:
+        ticker = block.get("ticker", "")
+        block_spot = block.get("spot")
+        profile = get_ticker_profile(ticker)
+        block["ticker_profile"] = profile
+        contracts = block.get("top_contracts") or []
+        for c in contracts:
+            c["capital_fit"] = capital_fit_engine(
+                c, spot=c.get("spot", block_spot), ticker_profile=profile
+            )
+        if ideal_first:
+            block["top_contracts"] = sort_by_capital_fit(contracts)
+    return results
 
 
 # ============================================================
