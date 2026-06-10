@@ -1822,6 +1822,28 @@ ${(() => {
       </div>`;
   }
 
+  function modo5Toggle(id) {
+    const d  = document.getElementById(id);
+    const ch = document.getElementById(id + '-ch');
+    if (!d) return;
+    const open = d.style.display !== 'none';
+    d.style.display = open ? 'none' : 'block';
+    if (ch) ch.textContent = open ? '\u25B8' : '\u25BE';
+  }
+
+  const M5_BUCKET_PRIO = {IDEAL_FOR_ONE_CONTRACT:0, ACCEPTABLE:1, CHEAP_SLOW:2,
+                          EXPENSIVE:3, BETTER_AS_SPREAD:4, DADOS_INSUFICIENTES:5, REPROVO:6};
+
+  function modo5BestContract(contracts) {
+    if (!contracts || !contracts.length) return null;
+    return [...contracts].sort((a, b) => {
+      const pa = M5_BUCKET_PRIO[a.capital_fit?.cost_bucket] ?? 9;
+      const pb = M5_BUCKET_PRIO[b.capital_fit?.cost_bucket] ?? 9;
+      if (pa !== pb) return pa - pb;
+      return (b.score || 0) - (a.score || 0);
+    })[0];
+  }
+
   function renderModo5(ticker, dir) {
     if (ticker !== undefined) _modo5Ticker = ticker;
     if (dir     !== undefined) _modo5Dir    = dir;
@@ -1904,11 +1926,33 @@ ${(() => {
         const vColor = verdict === 'APROVO' ? '#16a34a' : verdict === 'AGUARDAR' ? '#d97706' : '#dc2626';
         const vIcon  = verdict === 'APROVO' ? '✅' : verdict === 'AGUARDAR' ? '⚠' : '❌';
 
-        html += `<div style="padding:10px 14px;border-bottom:0.5px solid #f1f5f9;">`;
-        html += `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-          <span style="font-size:12px;font-weight:500;color:${dirColor};">${dir}</span>
-          <span style="font-size:11px;background:${vBg};color:${vColor};padding:2px 10px;border-radius:20px;font-weight:500;">${vIcon} ${verdict}</span>
+        // ── Linha-resumo compacta (clique para expandir detalhes) ──
+        const bc    = modo5BestContract(scan.top_contracts);
+        const bcf   = bc?.capital_fit || null;
+        const cfPal = {APROVO_CAPITAL:['#f0fdf4','#16a34a'], MONITORAR:['#fffbeb','#d97706'],
+                       REPROVO_CAPITAL:['#fef2f2','#dc2626'], DADOS_INSUFICIENTES:['#f8fafc','#64748b']};
+        const cfCol = cfPal[bcf?.capital_status] || cfPal.DADOS_INSUFICIENTES;
+        const detId = `m5d-${tkr}-${dir}`;
+        const bcTxt = bc
+          ? `${bc.strike}${dir === 'CALL' ? 'C' : 'P'} \u00B7 $${bc.entry_price?.toFixed(2) ?? '\u2014'}${bcf?.contract_cost != null ? ' ($' + Math.round(bcf.contract_cost) + ')' : ''}`
+          : 'sem contratos';
+        html += `<div style="border-bottom:0.5px solid #f1f5f9;">`;
+        html += `<div onclick="modo5Toggle('${detId}')" style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span id="${detId}-ch" style="font-size:10px;color:#94a3b8;">\u25B8</span>
+            <span style="font-size:12px;font-weight:600;color:${dirColor};min-width:32px;">${dir}</span>
+            <span style="font-size:12px;font-weight:500;color:#1e293b;">${bcTxt}</span>
+            ${bc ? `<span style="font-size:10px;color:#64748b;">${bc.score}/10</span>` : ''}
+            ${bcf ? `<span style="font-size:9px;background:${cfCol[0]};color:${cfCol[1]};padding:2px 8px;border-radius:20px;font-weight:600;">${bcf.cost_bucket}</span>` : ''}
+            ${bcf ? `<span style="font-size:9px;color:#64748b;">${bcf.preferred_structure}</span>` : ''}
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            ${bcf ? `<span style="font-size:9px;color:${cfCol[1]};font-weight:600;">${bcf.capital_status}</span>` : ''}
+            <span style="font-size:11px;background:${vBg};color:${vColor};padding:2px 10px;border-radius:20px;font-weight:500;">${vIcon} ${verdict}</span>
+          </div>
         </div>`;
+        // ── Detalhes (ocultos por padrao) ──
+        html += `<div id="${detId}" style="display:none;padding:0 14px 12px 14px;">`;
 
         // Edge
         const ev = edge.verdict || '';
@@ -1982,7 +2026,7 @@ ${(() => {
           });
           html += `</div>`;
         }
-        html += `</div>`;
+        html += `</div></div>`; // fecha detalhes + wrapper da linha
       });
       html += `</div>`;
     });

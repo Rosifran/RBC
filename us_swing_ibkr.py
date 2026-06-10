@@ -58,7 +58,11 @@ DELTA_RANGE = {
     'PUT':  (-0.65, -0.30),
 }
 OUTPUT_DIR      = Path(__file__).parent / 'modo5_results'
-DEFAULT_TICKERS = ['NVDA', 'AAPL', 'META', 'AMZN']
+DEFAULT_TICKERS = [
+    'NVDA', 'AAPL', 'META', 'AMZN',   # big tech (caros — geralmente spread)
+    'AMD', 'UBER', 'PLTR', 'SOFI',    # meio-termo acessivel
+    'BAC', 'XLF', 'QQQ', 'SPY',       # financeiros/ETFs
+]
 
 
 # ── Edge RBC — calculos quantitativos ────────────────────────────────
@@ -643,6 +647,18 @@ def print_result(r: dict) -> None:
             si = "✅" if s == 2 else "⚠" if s == 1 else "❌"
             print(f"    {si} [{s}/2] {note}")
 
+        cf = c.get('capital_fit')
+        if cf:
+            _cfi  = {"APROVO_CAPITAL": "🟢", "MONITORAR": "🟡",
+                     "REPROVO_CAPITAL": "🔴", "DADOS_INSUFICIENTES": "⚪"}
+            ic    = _cfi.get(cf.get('capital_status', ''), '')
+            cost  = f"${cf['contract_cost']:.0f}" if cf.get('contract_cost') is not None else "N/A"
+            risk  = f"${cf['risk_at_stop']:.0f}"  if cf.get('risk_at_stop')  is not None else "N/A"
+            print(f"  Capital Fit:")
+            print(f"    {ic} {cf.get('capital_status','')} | Bucket: {cf.get('cost_bucket','')}")
+            print(f"    Custo: {cost} | Risco no stop (35%): {risk} | Estrutura: {cf.get('preferred_structure','')}")
+            print(f"    Nota: {cf.get('rosi_note','')}")
+
     print(f"\n{SEP2}")
 
 
@@ -695,19 +711,16 @@ def main():
     for ticker in args.tickers:
         for direction in directions:
             r = scan_ticker(ib, ticker, direction)
+            # Capital Fit — enriquece ANTES do print e do salvamento (so adiciona campos)
+            try:
+                from capital_fit_engine import enrich_scan_results
+                enrich_scan_results([r])
+            except Exception as cf_err:
+                print(f"  Aviso: capital_fit indisponivel — {cf_err}")
             results.append(r)
             print_result(r)
 
     ib.disconnect()
-
-    # Capital Fit Engine — camada de adequacao de capital (nao altera score tecnico)
-    try:
-        from capital_fit_engine import enrich_scan_results
-        enrich_scan_results(results)
-        print("  Capital Fit aplicado aos contratos.")
-    except Exception as cf_err:
-        print(f"  Aviso: capital_fit indisponivel — {cf_err}")
-
     save_results(results)
 
     # Salvar no PostgreSQL
