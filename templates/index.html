@@ -567,6 +567,16 @@
 
   <div id="modo1-form" style="display:none">
     <p class="section-label">Análise</p>
+    <details style="margin-bottom:16px;border:0.5px solid #e2e8f0;border-radius:10px;padding:8px 12px;background:#fafafa;">
+      <summary style="font-size:12px;font-weight:600;color:#64748b;cursor:pointer;">📅 Calendário econômico (colar do SpotGamma)</summary>
+      <div style="margin-top:8px;">
+        <textarea id="cal-paste" rows="5" placeholder="Cole aqui o calendário do SpotGamma (Important Dates)..." style="width:100%;box-sizing:border-box;font-size:11px;font-family:monospace;border:0.5px solid #e2e8f0;border-radius:8px;padding:8px;"></textarea>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
+          <button type="button" onclick="saveCalendar()" style="font-size:12px;padding:6px 14px;border:0.5px solid #cbd5e1;border-radius:8px;background:#fff;cursor:pointer;">Salvar calendário</button>
+          <span id="cal-status" style="font-size:11px;color:#64748b;"></span>
+        </div>
+      </div>
+    </details>
     <h3 class="section-title" style="font-size:16px;margin-bottom:20px">Executar Modo 1</h3>
     <div class="inputs-card">
       <p class="inputs-card-title">Parâmetros adicionais</p>
@@ -943,6 +953,24 @@
       setLoading('parse', false);
       btn.disabled = false;
     }
+  }
+
+  async function saveCalendar() {
+    const txt = document.getElementById('cal-paste').value;
+    const st  = document.getElementById('cal-status');
+    if (!txt.trim()) { st.textContent = 'Cole o texto primeiro.'; return; }
+    st.textContent = 'Salvando...';
+    try {
+      const res = await fetch('/api/calendar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ raw: txt })
+      });
+      const data = await res.json();
+      st.textContent = data.ok
+        ? `✅ ${data.saved} eventos salvos — cobertura até ${data.coverage_until}`
+        : (data.error || 'Erro ao salvar');
+    } catch (e) { st.textContent = 'Erro: ' + e.message; }
   }
 
   async function runModo1() {
@@ -1406,6 +1434,8 @@
         <div style="font-size:20px;font-weight:500;color:${decColor};">${dec || 'NO TRADE'}</div>
       </div>
       <div style="text-align:right;">
+        ${(d.calendar_risk && d.calendar_risk.label && ['MEDIUM','HIGH','EXTREME'].indexOf(d.calendar_risk.risk_level) >= 0) ? `<div style="margin-bottom:4px;"><span style="font-size:11px;background:${d.calendar_risk.risk_level==='EXTREME'?'#fef2f2':d.calendar_risk.risk_level==='HIGH'?'#fff7ed':'#fffbeb'};color:${d.calendar_risk.risk_level==='EXTREME'?'#991b1b':d.calendar_risk.risk_level==='HIGH'?'#9a3412':'#92400e'};padding:3px 10px;border-radius:8px;font-weight:600;">📅 ${d.calendar_risk.label} · ${d.calendar_risk.risk_level}</span></div>` : ''}
+        ${(d.calendar_risk && d.calendar_risk.needs_update) ? `<div style="margin-bottom:4px;"><span style="font-size:10px;background:#f1f5f9;color:#475569;padding:2px 8px;border-radius:8px;">📅 Calendario ate ${d.calendar_risk.coverage_until || '—'} — colar atualizacao no Modo 1</span></div>` : ''}
         <span style="font-size:11px;background:${statusBg};color:${statusColor};padding:3px 10px;border-radius:8px;font-weight:500;">${status}</span>
         <div style="font-size:10px;color:#64748b;margin-top:4px;">Score ${sc}/5 · Risco ${d.risk || '—'}</div>
       </div>
@@ -1476,6 +1506,7 @@
     ${ib.primary_block ? `<div style="font-size:11px;font-weight:600;color:${qColor};margin-bottom:3px;">${ib.primary_block.replace(/_/g, ' ')}</div>` : ''}
     ${ib.report ? `<div style="font-size:12px;color:#1e293b;line-height:1.5;">${ib.report}</div>` : ''}
     ${ib.alternative ? `<div style="font-size:11px;color:#64748b;margin-top:4px;"><b>Alternativa:</b> ${ib.alternative}</div>` : ''}
+    ${(d.calendar_risk && d.calendar_risk.note && ['HIGH','EXTREME'].indexOf(d.calendar_risk.risk_level) >= 0) ? `<div style="font-size:11px;color:#7c2d12;margin-top:6px;padding-top:6px;border-top:0.5px solid rgba(0,0,0,0.08);">📅 ${d.calendar_risk.note}</div>` : ''}
   </div>`;
   })() : ''}
 

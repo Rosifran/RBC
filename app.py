@@ -576,6 +576,186 @@ def tv_quote_get():
     })
 
 
+# ── Calendar Risk Engine (curso SpotGamma) ──────────────────────────
+
+_CAL_EXTREME = ("cpi", "inflation rate", "core inflation", "fomc",
+                "fed interest rate", "fed press conference",
+                "nonfarm", "payroll")
+_CAL_HIGH    = ("pce", "ppi", "producer price", "gdp",
+                "economic projections", "jackson hole")
+_CAL_MEDIUM  = ("retail sales", "michigan", "consumer sentiment", "ism",
+                "jolts", "unemployment", "housing starts",
+                "building permits", "durable goods", "personal income",
+                "confidence")
+
+def _cal_importance(name):
+    n = (name or "").lower()
+    if any(k in n for k in _CAL_EXTREME):
+        return 3
+    if any(k in n for k in _CAL_HIGH):
+        return 2
+    if any(k in n for k in _CAL_MEDIUM):
+        return 1
+    return 0
+
+def _parse_sg_calendar(raw):
+    """Parser do calendario colado do SpotGamma.
+    Formato: 'Wednesday 06-10 08:30 am EDT' / 'US' / '!!!' / 'Nome (May)'"""
+    import re
+    from datetime import date as _date
+    events, pend_date, pend_time = [], None, None
+    today = _date.today()
+    for line in (raw or "").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        m = re.match(r'^[A-Za-z]+\s+(\d{1,2})-(\d{1,2})\s+(\d{1,2}:\d{2})\s*(am|pm)', line, re.I)
+        if m:
+            mm, dd = int(m.group(1)), int(m.group(2))
+            yy = today.year if mm >= today.month else today.year + 1
+            try:
+                pend_date = _date(yy, mm, dd).isoformat()
+                pend_time = f"{m.group(3)} {m.group(4).lower()} ET"
+            except ValueError:
+                pend_date = None
+            continue
+        if line.upper() == "US" or set(line) <= set("!"):
+            continue
+        if pend_date:
+            events.append({"date": pend_date, "name": line, "time": pend_time,
+                           "importance": _cal_importance(line)})
+    return events
+
+def _third_friday(year, month):
+    from datetime import date as _date, timedelta as _td
+    d = _date(year, month, 1)
+    fridays = 0
+    while True:
+        if d.weekday() == 4:
+            fridays += 1
+            if fridays == 3:
+                return d
+        d += _td(days=1)
+
+def _today_et():
+    try:
+        from zoneinfo import ZoneInfo
+    except ImportError:
+        from backports.zoneinfo import ZoneInfo
+    return datetime.now(ZoneInfo("America/New_York")).date()
+
+def analyze_calendar_risk(today=None):
+    """Eventos do banco + OPEX e VIX expiration calculados por regra."""
+    from datetime import timedelta as _td, date as _date
+    from journal import get_calendar_events
+    today = today or _today_et()
+    tomorrow = today + _td(days=1)
+
+    rows = get_calendar_events(from_date=today.isoformat())
+    ev_today    = [r for r in rows if str(r["event_date"]) == today.isoformat()]
+    ev_tomorrow = [r for r in rows if str(r["event_date"]) == tomorrow.isoformat()]
+    coverage    = max([str(r["event_date"]) for r in rows], default=None)
+    needs_update = (not coverage) or (_date.fromisoformat(coverage) < today + _td(days=7))
+
+    # OPEX = 3a sexta do mes (proxima, se a deste mes ja passou)
+    opex = _third_friday(today.year, today.month)
+    if opex < today:
+        nm = today.month % 12 + 1
+        ny = today.year + (1 if nm == 1 else 0)
+        opex = _third_friday(ny, nm)
+    opex_week = (opex - _td(days=opex.weekday())) <= today <= opex
+
+    # VIX expiration = 30 dias antes da 3a sexta do mes seguinte
+    nm = today.month % 12 + 1
+    ny = today.year + (1 if nm == 1 else 0)
+    vix_exp = _third_friday(ny, nm) - _td(days=30)
+    if vix_exp < today:
+        nm2 = nm % 12 + 1
+        ny2 = ny + (1 if nm2 == 1 else 0)
+        vix_exp = _third_friday(ny2, nm2) - _td(days=30)
+    _vw_start = vix_exp - _td(days=vix_exp.weekday())
+    vix_exp_week = _vw_start <= today <= _vw_start + _td(days=6)
+
+    week_end = today + _td(days=6 - today.weekday())
+    fomc_week = any(
+        ("fomc" in (r["event_name"] or "").lower()
+         or "fed interest" in (r["event_name"] or "").lower())
+        for r in rows
+        if today.isoformat() <= str(r["event_date"]) <= week_end.isoformat())
+
+    max_today    = max([r.get("importance") or 0 for r in ev_today], default=0)
+    max_tomorrow = max([r.get("importance") or 0 for r in ev_tomorrow], default=0)
+
+    if max_today >= 3:
+        risk = "EXTREME"
+    elif max_tomorrow >= 3 or max_today == 2 or (opex_week and fomc_week):
+        risk = "HIGH"
+    elif max_tomorrow == 2 or max_today == 1 or opex_week or vix_exp_week:
+        risk = "MEDIUM"
+    else:
+        risk = "LOW"
+
+    def _top_name(evs):
+        evs = sorted(evs, key=lambda r: -(r.get("importance") or 0))
+        return evs[0]["event_name"] if evs else None
+
+    label = None
+    if ev_today and max_today >= max_tomorrow:
+        label = f"{_top_name(ev_today)} hoje"
+    elif ev_tomorrow and max_tomorrow > 0:
+        label = f"{_top_name(ev_tomorrow)} amanha"
+    elif opex_week and fomc_week:
+        label = "Semana OPEX + FOMC"
+    elif vix_exp_week:
+        label = "Semana VIX expiration"
+    elif opex_week:
+        label = "Semana de OPEX"
+
+    note = None
+    if risk == "EXTREME":
+        note = (f"Calendario EXTREME: {label}. Volatilidade sticky, opcoes caras. "
+                f"Exigir confirmacao extra ou estrutura — tamanho reduzido.")
+    elif risk == "HIGH":
+        note = f"Calendario HIGH: {label}. Exigir confirmacao extra."
+    elif risk == "MEDIUM" and label:
+        note = f"Calendario: {label}."
+
+    return {
+        "risk_level":      risk,
+        "score_impact":    {"LOW": 0, "MEDIUM": -1, "HIGH": -2, "EXTREME": -3}[risk],
+        "label":           label,
+        "note":            note,
+        "events_today":    [{"name": r["event_name"], "time": r.get("event_time")} for r in ev_today],
+        "events_tomorrow": [{"name": r["event_name"], "time": r.get("event_time")} for r in ev_tomorrow],
+        "opex_week":       opex_week,
+        "opex_date":       opex.isoformat(),
+        "vix_exp_week":    vix_exp_week,
+        "vix_exp_date":    vix_exp.isoformat(),
+        "fomc_week":       fomc_week,
+        "coverage_until":  coverage,
+        "needs_update":    needs_update,
+    }
+
+@app.route("/api/calendar", methods=["POST"])
+def calendar_post():
+    """Recebe o texto colado do SpotGamma, parseia e salva (upsert)."""
+    from journal import save_calendar_events
+    data = request.get_json(silent=True) or {}
+    events = _parse_sg_calendar(data.get("raw") or "")
+    if not events:
+        return jsonify({"ok": False, "error": "Nenhum evento reconhecido no texto."})
+    n = save_calendar_events(events)
+    coverage = max(e["date"] for e in events)
+    return jsonify({"ok": True, "saved": n, "coverage_until": coverage})
+
+@app.route("/api/calendar", methods=["GET"])
+def calendar_get():
+    try:
+        return jsonify({"ok": True, **analyze_calendar_risk()})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)})
+
+
 @app.route("/api/modo1", methods=["POST"])
 def modo1():
     """Pre-market: parse SpotGamma data and return SPY key levels."""
@@ -1495,11 +1675,28 @@ def modo2():
             "context":      None,
         }
 
+    # ── Calendar Risk Engine (curso SpotGamma) ────────────────────────
+    try:
+        calendar_risk = analyze_calendar_risk()
+    except Exception as _cal_err:
+        calendar_risk = {"risk_level": "LOW", "score_impact": 0, "label": None,
+                         "note": None, "events_today": [], "events_tomorrow": [],
+                         "opex_week": False, "vix_exp_week": False,
+                         "fomc_week": False, "coverage_until": None,
+                         "needs_update": False, "error": str(_cal_err)}
+
     # ── Hard Blocks — camada de inteligencia pos-motor ────────────────
     intelligence_block = evaluate_hard_blocks(
         decision, gamma_regime, regime_strength, regime_zone,
         operational_note, location, anchors,
         at_move_high, at_move_low, next_setup)
+
+    # Calendar ajusta a qualidade (regra aprovada: sem bloquear ate o Score)
+    if calendar_risk.get("risk_level") in ("HIGH", "EXTREME"):
+        if calendar_risk.get("note"):
+            intelligence_block["reasons"].append(calendar_risk["note"])
+        if intelligence_block.get("entry_quality") == "GOOD":
+            intelligence_block["entry_quality"] = "CAUTION"
 
     # Output: compatível com Modo 3
     ow["rbc_decision"] = {
@@ -1515,6 +1712,7 @@ def modo2():
         "location":         location,
         "anchors":          anchors,
         "intelligence_block": intelligence_block,
+        "calendar_risk":    calendar_risk,
         "decision":         decision,
         "reason":           reason,
         "entry":            entry,

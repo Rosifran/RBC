@@ -197,6 +197,50 @@ def get_market_quotes():
 
 
 # ── Swing Scans (Modo 5) ──────────────────────────────────────────────
+# ── Calendar events (Calendar Risk Engine) ──────────────────────────
+
+def init_calendar():
+    with get_conn() as conn, conn.cursor() as cur:
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS calendar_events (
+                event_date DATE NOT NULL,
+                event_name VARCHAR(120) NOT NULL,
+                event_time VARCHAR(24),
+                importance INT DEFAULT 1,
+                PRIMARY KEY (event_date, event_name)
+            )""")
+        conn.commit()
+
+def save_calendar_events(events):
+    """Upsert de eventos: [{date, name, time, importance}]. Sem duplicar."""
+    if not events:
+        return 0
+    init_calendar()
+    n = 0
+    with get_conn() as conn, conn.cursor() as cur:
+        for ev in events:
+            cur.execute("""
+                INSERT INTO calendar_events (event_date, event_name, event_time, importance)
+                VALUES (%s, %s, %s, %s)
+                ON CONFLICT (event_date, event_name)
+                DO UPDATE SET event_time = EXCLUDED.event_time,
+                              importance = EXCLUDED.importance
+            """, (ev["date"], ev["name"][:120], ev.get("time"), ev.get("importance", 1)))
+            n += 1
+        conn.commit()
+    return n
+
+def get_calendar_events(from_date=None):
+    init_calendar()
+    with get_conn() as conn, conn.cursor(cursor_factory=RealDictCursor) as cur:
+        if from_date:
+            cur.execute("SELECT * FROM calendar_events WHERE event_date >= %s ORDER BY event_date",
+                        (from_date,))
+        else:
+            cur.execute("SELECT * FROM calendar_events ORDER BY event_date")
+        return cur.fetchall()
+
+
 from datetime import datetime as _dt_swing
 
 CREATE_SWING = """
