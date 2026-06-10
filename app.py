@@ -676,6 +676,98 @@ def modo2():
         opts = sorted([l for l in candidates if float(l) < float(t1)], reverse=True)
         return opts[0] if opts else round(float(t1) - 2, 2)
 
+    def _level_type(v, s, rp, m1h, m1l):
+        """Classifica o tipo de um nivel para o Location Engine."""
+        if v is None:
+            return None
+        vf = float(v)
+        if s.get('call_wall')   and vf == float(s['call_wall']):   return 'CALL_WALL'
+        if s.get('put_wall')    and vf == float(s['put_wall']):    return 'PUT_WALL'
+        if s.get('vol_trigger') and vf == float(s['vol_trigger']): return 'VOL_TRIGGER'
+        if s.get('zero_gamma')  and vf == float(s['zero_gamma']):  return 'ZERO_GAMMA'
+        if rp  and vf == float(rp):  return 'RISK_PIVOT'
+        if m1h and vf == float(m1h): return '1D_MOVE_HIGH'
+        if m1l and vf == float(m1l): return '1D_MOVE_LOW'
+        return 'COMBO/LEVEL'
+
+    def analyze_trade_location(spot, levels, near, s, rp=None, m1h=None, m1l=None):
+        """Location Engine — curso SpotGamma.
+        Posicao do spot no micro-range entre os niveis reais do dia.
+        Informativo: nao decide, nao altera o motor."""
+        if not spot or not levels:
+            return None
+        spot_f = float(spot)
+        sups = [float(l) for l in levels if float(l) < spot_f]
+        ress = [float(l) for l in levels if float(l) > spot_f]
+        n_sup = max(sups) if sups else None
+        n_res = min(ress) if ress else None
+
+        loc = {
+            "nearest_support":         n_sup,
+            "nearest_support_type":    _level_type(n_sup, s, rp, m1h, m1l),
+            "nearest_resistance":      n_res,
+            "nearest_resistance_type": _level_type(n_res, s, rp, m1h, m1l),
+            "distance_to_support":     round(spot_f - n_sup, 2) if n_sup is not None else None,
+            "distance_to_resistance":  round(n_res - spot_f, 2) if n_res is not None else None,
+            "range_position":          None,
+            "location_zone":           None,
+            "location_quality":        None,
+            "location_warning":        None,
+            "location_report":         None,
+            "is_near_call_wall":   bool(s.get('call_wall')   and abs(spot_f - float(s['call_wall']))   <= near),
+            "is_near_put_wall":    bool(s.get('put_wall')    and abs(spot_f - float(s['put_wall']))    <= near),
+            "is_near_vol_trigger": bool(s.get('vol_trigger') and abs(spot_f - float(s['vol_trigger'])) <= near),
+            "is_near_risk_pivot":  bool(rp                   and abs(spot_f - float(rp))               <= near),
+            "is_near_zero_gamma":  bool(s.get('zero_gamma')  and abs(spot_f - float(s['zero_gamma']))  <= near),
+        }
+
+        if n_sup is not None and n_res is not None and n_res > n_sup:
+            rpos = (spot_f - n_sup) / (n_res - n_sup)
+            loc["range_position"] = round(rpos, 2)
+            if rpos <= 0.25:
+                loc["location_zone"] = "NEAR_SUPPORT"
+            elif rpos <= 0.40:
+                loc["location_zone"] = "LOWER_RANGE"
+            elif rpos <= 0.60:
+                loc["location_zone"] = "MIDDLE_OF_RANGE"
+            elif rpos <= 0.75:
+                loc["location_zone"] = "UPPER_RANGE"
+            else:
+                loc["location_zone"] = "NEAR_RESISTANCE"
+
+        # Qualidade da localizacao
+        # DANGEROUS sobrepoe tudo: colado em wall = zona de armadilha,
+        # nao de entrada (CALL atrasado na CW / PUT atrasado na PW).
+        _z = loc["location_zone"]
+        if loc["is_near_call_wall"] or loc["is_near_put_wall"]:
+            loc["location_quality"] = "DANGEROUS"
+        elif _z in ("NEAR_SUPPORT", "NEAR_RESISTANCE"):
+            loc["location_quality"] = "STRONG"   # perto de nivel decisivo comum
+        elif _z in ("LOWER_RANGE", "UPPER_RANGE"):
+            loc["location_quality"] = "MEDIUM"
+        elif _z == "MIDDLE_OF_RANGE":
+            loc["location_quality"] = "WEAK"
+
+        # Warning contextual (prioridade: walls > meio do range)
+        if loc["is_near_call_wall"]:
+            loc["location_warning"] = ("Preco perto do Call Wall — evitar CALL atrasado.")
+        elif loc["is_near_put_wall"]:
+            loc["location_warning"] = ("Preco perto do Put Wall — evitar PUT atrasado; "
+                                       "risco de bounce/V-bottom.")
+        elif _z == "MIDDLE_OF_RANGE":
+            loc["location_warning"] = ("Preco entre suporte e resistencia, sem edge "
+                                       "estrutural claro. Aguardar aproximacao de nivel "
+                                       "ou confirmacao.")
+
+        # Relatorio descritivo
+        if n_sup is not None and n_res is not None and loc["range_position"] is not None:
+            loc["location_report"] = (
+                f"SPY {spot_f} entre {n_sup} ({loc['nearest_support_type']}) e "
+                f"{n_res} ({loc['nearest_resistance_type']}) — posicao "
+                f"{loc['range_position']} ({_z}). Qualidade: {loc['location_quality']}.")
+
+        return loc
+
     spy        = sg.get('SPY') or sg.get('$SPY') or {}
     combos_raw = spy.get('combos') or spy.get('combo_strikes') or []
     combos     = sorted([c for c in combos_raw if isinstance(c, (int, float))])
@@ -770,6 +862,20 @@ def modo2():
     # ── Alertas 1D Move ──
     at_move_high = bool(move_1d_high and abs(float(spot_now) - float(move_1d_high)) <= near_level)
     at_move_low  = bool(move_1d_low  and abs(float(spot_now) - float(move_1d_low))  <= near_level)
+
+    # ── Location Engine (curso SpotGamma) ─────────────────────────────
+    # Risk Pivot e 1D Moves incluidos nos niveis SO aqui —
+    # all_lvls original intacto (alvos nao mudam).
+    _loc_levels = all_lvls[:]
+    if risk_pivot:
+        _loc_levels.append(risk_pivot)
+    if move_1d_high:
+        _loc_levels.append(float(move_1d_high))
+    if move_1d_low:
+        _loc_levels.append(float(move_1d_low))
+    location = analyze_trade_location(
+        spot_now, _loc_levels, near_level, spy,
+        rp=risk_pivot, m1h=move_1d_high, m1l=move_1d_low)
 
     # HIRO: não disponível — não bloqueia decisão
     hiro_state = "not_available"
@@ -893,6 +999,22 @@ def modo2():
             f"({operational_regime_source} {operational_regime_line}) — chase risk elevado. Nao perseguir.")
     if operational_note:
         hard_rules.append(f"⚠ {operational_note}")
+    # ── Warnings do Location Engine (apos camada operacional) ─────────
+    if location:
+        if location.get("location_warning"):
+            hard_rules.append(f"⚠ LOCATION: {location['location_warning']}")
+        if decision and "CALL" in decision and location.get("location_zone") == "NEAR_RESISTANCE" \
+                and not location.get("is_near_call_wall"):
+            hard_rules.append(
+                f"⚠ LOCATION: CALL colado na resistencia "
+                f"{location['nearest_resistance']} ({location['nearest_resistance_type']}) "
+                f"— exigir rompimento com aceitacao (2+ velas fechadas acima).")
+        if decision and "PUT" in decision and location.get("location_zone") == "NEAR_SUPPORT" \
+                and not location.get("is_near_put_wall"):
+            hard_rules.append(
+                f"⚠ LOCATION: PUT colado no suporte "
+                f"{location['nearest_support']} ({location['nearest_support_type']}) "
+                f"— aguardar perda do nivel com aceitacao abaixo.")
     if at_move_high:
         hard_rules.append(
             f"⚠ SPY at 1D Move High {move_1d_high} — PUT reversal possible.")
@@ -1141,6 +1263,7 @@ def modo2():
         "regime_zone":      regime_zone,
         "regime_strength":  regime_strength,
         "operational_note": operational_note,
+        "location":         location,
         "decision":         decision,
         "reason":           reason,
         "entry":            entry,
