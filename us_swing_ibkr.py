@@ -699,6 +699,15 @@ def main():
             print_result(r)
 
     ib.disconnect()
+
+    # Capital Fit Engine — camada de adequacao de capital (nao altera score tecnico)
+    try:
+        from capital_fit_engine import enrich_scan_results
+        enrich_scan_results(results)
+        print("  Capital Fit aplicado aos contratos.")
+    except Exception as cf_err:
+        print(f"  Aviso: capital_fit indisponivel — {cf_err}")
+
     save_results(results)
 
     # Salvar no PostgreSQL

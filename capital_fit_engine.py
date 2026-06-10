@@ -156,7 +156,8 @@ def capital_fit_engine(contract, spot=None, ticker_profile=None):
     missing = []
     if ask is None or ask <= 0:
         missing.append("ask")
-    if bid is None or bid < 0:
+    if bid is None or bid <= 0:
+        # scanner usa 0 como sentinela de ausente; ask cai p/ close fora do pregao
         missing.append("bid")
     if volume is None and oi is None:
         missing.append("volume/OI")

@@ -1730,9 +1730,16 @@ ${(() => {
   function modo5IsMarketOpen(scanTime) {
     // scanTime formato YYYYMMDD_HHMM — verifica se estava dentro do horario de mercado
     if (!scanTime) return false;
-    const m = scanTime.match(/([0-9]{8})_([0-9]{2})([0-9]{2})/);
-    if (!m) return false;
-    const hhmm = parseInt(m[2]) * 100 + parseInt(m[3]);
+    // Aceita "2026-06-10 10:34 ET" (formato real do scanner) e "20260610_1034" (legado)
+    let hh = null, mm = null;
+    let m = scanTime.match(/\b([0-9]{2}):([0-9]{2})\b/);
+    if (m) { hh = m[1]; mm = m[2]; }
+    else {
+      m = scanTime.match(/[0-9]{8}_([0-9]{2})([0-9]{2})/);
+      if (m) { hh = m[1]; mm = m[2]; }
+    }
+    if (hh === null) return false;
+    const hhmm = parseInt(hh) * 100 + parseInt(mm);
     return hhmm >= 930 && hhmm < 1600;
   }
 
@@ -1742,6 +1749,28 @@ ${(() => {
     const hasData = c.delta && c.delta !== 0 && c.iv_pct && c.iv_pct > 0 && c.volume > 0;
     if (!hasData) return 'AGUARDAR';
     return c.verdict || 'AGUARDAR';
+  }
+
+  function modo5CapitalFitBlock(c) {
+    const cf = c.capital_fit;
+    if (!cf) return '';
+    const palette = {
+      'APROVO_CAPITAL':      {bg:'#f0fdf4', fg:'#16a34a', icon:'\u{1F7E2}'},
+      'MONITORAR':           {bg:'#fffbeb', fg:'#d97706', icon:'\u{1F7E1}'},
+      'REPROVO_CAPITAL':     {bg:'#fef2f2', fg:'#dc2626', icon:'\u{1F534}'},
+      'DADOS_INSUFICIENTES': {bg:'#f8fafc', fg:'#64748b', icon:'\u26AA'},
+    };
+    const st = palette[cf.capital_status] || palette['DADOS_INSUFICIENTES'];
+    const cost = cf.contract_cost != null ? '$' + Math.round(cf.contract_cost) : 'N/A';
+    const risk = cf.risk_at_stop  != null ? '$' + Math.round(cf.risk_at_stop)  : 'N/A';
+    return `<div style="margin-top:6px;padding:6px 8px;background:${st.bg};border-radius:6px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+          <span style="font-size:9px;font-weight:600;color:${st.fg};text-transform:uppercase;">Capital Fit \u00B7 ${cf.cost_bucket || ''}</span>
+          <span style="font-size:9px;color:${st.fg};font-weight:600;">${st.icon} ${cf.capital_status || ''}</span>
+        </div>
+        <div style="font-size:9px;color:#64748b;">Custo ${cost} \u00B7 Risco no stop ${risk} \u00B7 Estrutura: ${cf.preferred_structure || '\u2014'}</div>
+        <div style="font-size:9px;color:#94a3b8;margin-top:2px;font-style:italic;">${cf.rosi_note || ''}</div>
+      </div>`;
   }
 
   function renderModo5(ticker, dir) {
@@ -1899,6 +1928,7 @@ ${(() => {
               <div style="margin-top:4px;font-size:9px;color:#94a3b8;">
                 Vol ${c.volume?.toLocaleString() || '0'} · OI ${c.open_interest?.toLocaleString() || '0'} · Spread ${c.spread_pct || '—'}%
               </div>
+              ${modo5CapitalFitBlock(c)}
             </div>`;
           });
           html += `</div>`;
