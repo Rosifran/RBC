@@ -870,8 +870,12 @@ def modo2():
         anc = anchors or {}
         ns  = next_setup or {}
 
-        def _set_primary(code):
+        _INFO_BLOCKS = ("MIDDLE_OF_RANGE", "CALL_IN_UPPER_RANGE", "PUT_IN_LOWER_RANGE")
+
+        def _set_primary(code, blocking=False):
             if not ib["primary_block"]:
+                ib["primary_block"] = code
+            elif blocking and ib["primary_block"] in _INFO_BLOCKS:
                 ib["primary_block"] = code
 
         # B1 — MIDDLE_OF_RANGE (POOR, nao bloqueia)
@@ -884,24 +888,24 @@ def modo2():
         # B2 — NO_ANCHOR (direcao do trade)
         if is_call and (anc.get("upside") or {}).get("quality") == "NONE":
             ib["blocked"] = True
-            _set_primary("NO_UPSIDE_ANCHOR")
+            _set_primary("NO_UPSIDE_ANCHOR", blocking=True)
             ib["reasons"].append("CALL sem ancora superior — sem destino estrutural.")
         if is_put and (anc.get("downside") or {}).get("quality") == "NONE":
             ib["blocked"] = True
-            _set_primary("NO_DOWNSIDE_ANCHOR")
+            _set_primary("NO_DOWNSIDE_ANCHOR", blocking=True)
             ib["reasons"].append("PUT sem ancora inferior — sem destino estrutural.")
 
         # B4 — CALL_INTO_CALL_WALL
         if is_call and loc.get("is_near_call_wall"):
             ib["blocked"] = True
-            _set_primary("CALL_INTO_CALL_WALL")
+            _set_primary("CALL_INTO_CALL_WALL", blocking=True)
             ib["suggested_action"] = "WAIT"
             ib["reasons"].append("CALL colado na Call Wall — resistencia/pinning, nao entrada.")
 
         # B5 — PUT_INTO_PUT_WALL
         if is_put and loc.get("is_near_put_wall"):
             ib["blocked"] = True
-            _set_primary("PUT_INTO_PUT_WALL")
+            _set_primary("PUT_INTO_PUT_WALL", blocking=True)
             ib["suggested_action"] = "WAIT"
             ib["reasons"].append("PUT colado no Put Wall — suporte/risco de V-bottom, nao entrada.")
 
@@ -926,17 +930,19 @@ def modo2():
         # B9 — IMPLIED_MOVE_BOUNDARY
         if is_call and at_move_high:
             ib["blocked"] = True
-            _set_primary("CALL_AT_IMPLIED_MOVE_HIGH")
+            _set_primary("CALL_AT_IMPLIED_MOVE_HIGH", blocking=True)
             ib["reasons"].append("Preco ja no topo do 1D implied move — movimento esperado consumido.")
         if is_put and at_move_low:
             ib["blocked"] = True
-            _set_primary("PUT_AT_IMPLIED_MOVE_LOW")
+            _set_primary("PUT_AT_IMPLIED_MOVE_LOW", blocking=True)
             ib["reasons"].append("Preco ja no fundo do 1D implied move — movimento esperado consumido.")
 
         # B11 — OPERATIONAL_CHASE_RISK
         if regime_strength == "extended":
-            ib["reasons"].append("OPERATIONAL_CHASE_RISK")
-            _set_primary("OPERATIONAL_CHASE_RISK")
+            ib["reasons"].append(
+                "OPERATIONAL_CHASE_RISK — SPY esticado da linha operacional "
+                "(Risk Pivot). Nao perseguir.")
+            _set_primary("OPERATIONAL_CHASE_RISK", blocking=True)
             if is_active:
                 ib["blocked"]          = True
                 ib["suggested_action"] = "DO_NOT_CHASE"
