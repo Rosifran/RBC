@@ -676,6 +676,27 @@ def modo2():
         opts = sorted([l for l in candidates if float(l) < float(t1)], reverse=True)
         return opts[0] if opts else round(float(t1) - 2, 2)
 
+    def _abs_large_gamma(s):
+        """Extrai absolute gamma strike e large gamma levels (se existirem).
+        Defensivo: cobre os nomes do blueprint e formatos num/dict."""
+        abs_g = (s.get('absolute_gamma_strike') or s.get('absolute_gamma')
+                 or s.get('abs_gamma'))
+        abs_g = float(abs_g) if isinstance(abs_g, (int, float)) else None
+        larges = []
+        raw = list(s.get('large_gamma_levels') or [])
+        for i in (1, 2, 3, 4):
+            v = s.get(f'large_gamma_{i}')
+            if v is not None:
+                raw.append(v)
+        for g in raw:
+            if isinstance(g, (int, float)):
+                larges.append(float(g))
+            elif isinstance(g, dict):
+                gv = g.get('level') or g.get('price') or g.get('strike')
+                if isinstance(gv, (int, float)):
+                    larges.append(float(gv))
+        return abs_g, larges
+
     def _level_type(v, s, rp, m1h, m1l):
         """Classifica o tipo de um nivel para o Location Engine."""
         if v is None:
@@ -688,6 +709,11 @@ def modo2():
         if rp  and vf == float(rp):  return 'RISK_PIVOT'
         if m1h and vf == float(m1h): return '1D_MOVE_HIGH'
         if m1l and vf == float(m1l): return '1D_MOVE_LOW'
+        _ag, _lgs = _abs_large_gamma(s)
+        if _ag and vf == _ag:
+            return 'ABS_GAMMA'
+        if any(vf == g for g in _lgs):
+            return 'LARGE_GAMMA'
         return 'COMBO/LEVEL'
 
     def analyze_trade_location(spot, levels, near, s, rp=None, m1h=None, m1l=None):
@@ -767,6 +793,61 @@ def modo2():
                 f"{loc['range_position']} ({_z}). Qualidade: {loc['location_quality']}.")
 
         return loc
+
+    def find_trade_anchors(spot, s, near, m1h=None, m1l=None):
+        """Anchor Engine — curso SpotGamma.
+        Destino estrutural do trade em cada direcao.
+        Sem ancora = sem edge. Ancora ja alcancada = chase."""
+        if not spot:
+            return None
+        spot_f = float(spot)
+
+        cands = []
+        if s.get('call_wall'):
+            cands.append((float(s['call_wall']), 'CALL_WALL', 'HIGH'))
+        if s.get('put_wall'):
+            cands.append((float(s['put_wall']), 'PUT_WALL', 'HIGH'))
+        _ag, _lgs = _abs_large_gamma(s)
+        if _ag:
+            cands.append((_ag, 'ABS_GAMMA', 'HIGH'))
+        for g in _lgs:
+            cands.append((g, 'LARGE_GAMMA', 'HIGH'))
+        for c in (s.get('combos') or s.get('combo_strikes') or []):
+            if isinstance(c, (int, float)):
+                cands.append((float(c), 'COMBO', 'MEDIUM'))
+        if m1h:
+            cands.append((float(m1h), '1D_MOVE_HIGH', 'MEDIUM'))
+        if m1l:
+            cands.append((float(m1l), '1D_MOVE_LOW', 'MEDIUM'))
+        for l in (s.get('spy_levels') or []):
+            if isinstance(l, (int, float)):
+                cands.append((float(l), 'SPY_LEVEL', 'LOW'))
+
+        ups = sorted([c for c in cands if c[0] > spot_f], key=lambda x: x[0])
+        dns = sorted([c for c in cands if c[0] < spot_f], key=lambda x: -x[0])
+
+        def _mk(lst):
+            if not lst:
+                return {"price": None, "type": None, "quality": "NONE",
+                        "distance_pts": None, "distance_pct": None, "reached": False}
+            price, typ, qual = lst[0]
+            dist = round(abs(price - spot_f), 2)
+            return {
+                "price": price, "type": typ, "quality": qual,
+                "distance_pts": dist,
+                "distance_pct": round(dist / spot_f * 100, 3),
+                "reached": dist <= near,
+            }
+
+        up, dn = _mk(ups), _mk(dns)
+        note = None
+        if up["quality"] == "NONE" and dn["quality"] == "NONE":
+            note = "Sem ancoras estruturais em nenhuma direcao — sem destino definido."
+        elif up["quality"] == "NONE":
+            note = "CALL sem ancora superior clara — trade possivel mas sem destino estrutural."
+        elif dn["quality"] == "NONE":
+            note = "PUT sem ancora inferior clara — trade possivel mas sem destino estrutural."
+        return {"upside": up, "downside": dn, "anchor_note": note}
 
     spy        = sg.get('SPY') or sg.get('$SPY') or {}
     combos_raw = spy.get('combos') or spy.get('combo_strikes') or []
@@ -876,6 +957,10 @@ def modo2():
     location = analyze_trade_location(
         spot_now, _loc_levels, near_level, spy,
         rp=risk_pivot, m1h=move_1d_high, m1l=move_1d_low)
+
+    # ── Anchor Engine (curso SpotGamma) ───────────────────────────────
+    anchors = find_trade_anchors(
+        spot_now, spy, near_level, m1h=move_1d_high, m1l=move_1d_low)
 
     # HIRO: não disponível — não bloqueia decisão
     hiro_state = "not_available"
@@ -1015,6 +1100,18 @@ def modo2():
                 f"⚠ LOCATION: PUT colado no suporte "
                 f"{location['nearest_support']} ({location['nearest_support_type']}) "
                 f"— aguardar perda do nivel com aceitacao abaixo.")
+    # ── Warnings do Anchor Engine (apos Location) ─────────────────────
+    if anchors:
+        if anchors.get("anchor_note"):
+            hard_rules.append(f"⚠ ANCHOR: {anchors['anchor_note']}")
+        if decision and "CALL" in decision and anchors["upside"]["reached"]:
+            hard_rules.append(
+                f"⚠ ANCHOR: ancora superior {anchors['upside']['price']} "
+                f"({anchors['upside']['type']}) ja alcancada — alvo consumido, chase risk.")
+        if decision and "PUT" in decision and anchors["downside"]["reached"]:
+            hard_rules.append(
+                f"⚠ ANCHOR: ancora inferior {anchors['downside']['price']} "
+                f"({anchors['downside']['type']}) ja alcancada — alvo consumido, chase risk.")
     if at_move_high:
         hard_rules.append(
             f"⚠ SPY at 1D Move High {move_1d_high} — PUT reversal possible.")
@@ -1264,6 +1361,7 @@ def modo2():
         "regime_strength":  regime_strength,
         "operational_note": operational_note,
         "location":         location,
+        "anchors":          anchors,
         "decision":         decision,
         "reason":           reason,
         "entry":            entry,
