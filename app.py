@@ -24,6 +24,7 @@ Return ONLY a valid JSON object with exactly these fields. No markdown, no expla
 {{
   "spy": {{
     "reference_price": null,
+    "risk_pivot": null,
     "call_wall": null,
     "put_wall": null,
     "vol_trigger": null,
@@ -79,6 +80,7 @@ Rules:
 - move_1d_high and move_1d_low: absolute SPY price levels
 - cor1m: extract the COR1M indicator value if mentioned
 - risk_pivot_spx: extract the Risk Pivot SPX level if mentioned
+- spy.risk_pivot: SPY Risk Pivot level if mentioned; if only SPX Risk Pivot is given, divide by 10 (e.g. SPX 7400 -> SPY 740.0)
 - positive_gamma_support: true/false
 - extreme_call_froth: true/false
 - volatility_spasm_risk: true/false
@@ -710,6 +712,61 @@ def modo2():
         else "NEGATIVE_GAMMA"
     )
 
+    # ── Camada OPERACIONAL — Risk Pivot (curso SpotGamma) ─────────────
+    # Vol Trigger = regime ESTRUTURAL (gamma_regime acima, motor intacto).
+    # Risk Pivot  = linha OPERACIONAL intraday — incorpora posicoes 0DTE.
+    # Camadas separadas: o motor decide pelo estrutural; o operacional
+    # informa zona de transicao, chase risk e divergencia entre linhas.
+    risk_pivot = None
+    try:
+        _rp = data.get("risk_pivot")
+        if _rp:
+            risk_pivot = float(_rp)
+            if risk_pivot > 2000:  # veio em escala SPX → converte p/ SPY
+                risk_pivot = round(risk_pivot / 10, 2)
+    except (ValueError, TypeError):
+        risk_pivot = None
+
+    operational_regime_line   = risk_pivot or (float(vol_trig) if vol_trig else None)
+    operational_regime_source = "RISK_PIVOT" if risk_pivot else ("VOL_TRIGGER" if vol_trig else None)
+
+    distance_to_operational_pct = None
+    operational_regime          = None
+    regime_zone                 = None
+    regime_strength             = None
+    if operational_regime_line and spot_now:
+        distance_to_operational_pct = round(
+            (float(spot_now) - operational_regime_line) / operational_regime_line * 100, 3)
+        operational_regime = "ABOVE_LINE" if distance_to_operational_pct >= 0 else "BELOW_LINE"
+        _abs_d = abs(distance_to_operational_pct)
+        if _abs_d <= 0.15:
+            regime_zone     = "TRANSITION"
+            regime_strength = "transition"
+        elif _abs_d <= 0.35:
+            regime_strength = "moderate"
+        elif _abs_d <= 0.80:
+            regime_strength = "clear"
+        else:
+            regime_strength = "extended"  # esticado = chase risk
+
+    # Divergencia entre camadas: SPY entre Risk Pivot e Vol Trigger
+    operational_note = None
+    if risk_pivot and vol_trig and spot_now:
+        _s, _vt_v = float(spot_now), float(vol_trig)
+        _above_rp = _s >= risk_pivot
+        _above_vt = _s >= _vt_v
+        if _above_rp != _above_vt:
+            if _above_rp:
+                operational_note = (
+                    f"SPY entre Risk Pivot {risk_pivot} e Vol Trigger {_vt_v} — "
+                    f"zona intermediaria: risco operacional controlado, mas regime "
+                    f"estrutural ainda negativo. Exigir confirmacao extra.")
+            else:
+                operational_note = (
+                    f"SPY entre Vol Trigger {_vt_v} e Risk Pivot {risk_pivot} — "
+                    f"zona intermediaria: regime estrutural positivo, mas linha "
+                    f"operacional perdida. Exigir confirmacao extra.")
+
     # ── Alertas 1D Move ──
     at_move_high = bool(move_1d_high and abs(float(spot_now) - float(move_1d_high)) <= near_level)
     at_move_low  = bool(move_1d_low  and abs(float(spot_now) - float(move_1d_low))  <= near_level)
@@ -825,6 +882,17 @@ def modo2():
 
     # Hard rules obrigatórias
     hard_rules.append("Saida obrigatoria 12:30 ET se nao houver follow-through.")
+    if regime_zone == "TRANSITION":
+        hard_rules.append(
+            f"⚠ SPY a {abs(distance_to_operational_pct):.2f}% da linha operacional "
+            f"({operational_regime_source} {operational_regime_line}) — zona de TRANSICAO. "
+            f"Toque nao e aceitacao: aguardar 2+ velas fechadas do lado escolhido.")
+    elif regime_strength == "extended":
+        hard_rules.append(
+            f"⚠ SPY esticado {abs(distance_to_operational_pct):.2f}% da linha operacional "
+            f"({operational_regime_source} {operational_regime_line}) — chase risk elevado. Nao perseguir.")
+    if operational_note:
+        hard_rules.append(f"⚠ {operational_note}")
     if at_move_high:
         hard_rules.append(
             f"⚠ SPY at 1D Move High {move_1d_high} — PUT reversal possible.")
@@ -1065,6 +1133,14 @@ def modo2():
     # Output: compatível com Modo 3
     ow["rbc_decision"] = {
         "gamma_regime":     gamma_regime,
+        "risk_pivot":       risk_pivot,
+        "operational_regime_line":     operational_regime_line,
+        "operational_regime_source":   operational_regime_source,
+        "operational_regime":          operational_regime,
+        "distance_to_operational_pct": distance_to_operational_pct,
+        "regime_zone":      regime_zone,
+        "regime_strength":  regime_strength,
+        "operational_note": operational_note,
         "decision":         decision,
         "reason":           reason,
         "entry":            entry,

@@ -1529,6 +1529,11 @@ ${(() => {
         vix_now:   vix_now,
         spot_open: document.getElementById('spot_open').value,
         spot_now:  spot_now,
+        risk_pivot: (window._pdfData && (
+                      (window._pdfData.spy && window._pdfData.spy.risk_pivot) ||
+                      (window._pdfData.macro && window._pdfData.macro.risk_pivot_spx
+                        ? window._pdfData.macro.risk_pivot_spx / 10 : null)
+                    )) || null,
         macro:     document.getElementById('m2-macro').value,
         vix:       document.getElementById('m2-vix').value,
       };
