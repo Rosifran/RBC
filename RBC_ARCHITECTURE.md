@@ -65,8 +65,21 @@ Tarde     → PM Note PDF → Journal Modo 4
 - **Tabela:** `trade_journal` (PostgreSQL)
 
 ### Modo 5 — Swing
-- **Input:** scanner IBKR local
-- **Output:** resultados salvos em `swing_scans` (PostgreSQL)
+Modo 5 — Swing (atualizado 2026-06-10)
+
+- Input: scanner IBKR local (us_swing_ibkr.py)
+- Universo: NVDA, AAPL, META, AMZN, AMD, UBER, PLTR, SOFI, BAC, XLF, QQQ, SPY
+- Camada Capital Fit (capital_fit_engine.py v1.4): classifica cada contrato
+  por adequação ao capital (1 contrato, custo ideal $150-350, stop -35%,
+  risco máx $250). Buckets: IDEAL_FOR_ONE_CONTRACT / ACCEPTABLE / CHEAP_SLOW /
+  EXPENSIVE / BETTER_AS_SPREAD / REPROVO / DADOS_INSUFICIENTES (WAIT).
+  OI=0 do feed = ausente; liquidez não confirmada rebaixa, não reprova.
+- Output: terminal (bloco abaixo do Score detalhe) + swing_scans (PostgreSQL,
+  capital_fit dentro de contracts/raw) + dashboard compacto no app
+  (linha-resumo por ticker/direção, melhor contrato por capital fit,
+  detalhes expandem no clique)
+- Patches: patch_capital_fit.py, patch_capital_fit_v2.py,
+  patch_modo5_universe_layout.py
 
 ---
 
