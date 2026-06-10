@@ -849,6 +849,146 @@ def modo2():
             note = "PUT sem ancora inferior clara — trade possivel mas sem destino estrutural."
         return {"upside": up, "downside": dn, "anchor_note": note}
 
+    def evaluate_hard_blocks(decision, gamma_regime, regime_strength, regime_zone,
+                             operational_note, location, anchors,
+                             at_move_high, at_move_low, next_setup):
+        """Hard Blocks — camada de inteligencia pos-motor (curso SpotGamma).
+        Nao altera a decisao do motor: avalia a qualidade da entrada."""
+        ib = {
+            "blocked": False,
+            "primary_block": None,
+            "reasons": [],
+            "entry_quality": None,
+            "suggested_action": None,
+            "alternative": "",
+            "report": "",
+        }
+        is_call   = bool(decision and "CALL" in decision)
+        is_put    = bool(decision and "PUT" in decision)
+        is_active = is_call or is_put
+        loc = location or {}
+        anc = anchors or {}
+        ns  = next_setup or {}
+
+        def _set_primary(code):
+            if not ib["primary_block"]:
+                ib["primary_block"] = code
+
+        # B1 — MIDDLE_OF_RANGE (POOR, nao bloqueia)
+        if loc.get("location_zone") == "MIDDLE_OF_RANGE":
+            ib["reasons"].append("Preco no meio do range. Sem edge estrutural.")
+            _set_primary("MIDDLE_OF_RANGE")
+            ib["entry_quality"]    = "POOR"
+            ib["suggested_action"] = "WAIT"
+
+        # B2 — NO_ANCHOR (direcao do trade)
+        if is_call and (anc.get("upside") or {}).get("quality") == "NONE":
+            ib["blocked"] = True
+            _set_primary("NO_UPSIDE_ANCHOR")
+            ib["reasons"].append("CALL sem ancora superior — sem destino estrutural.")
+        if is_put and (anc.get("downside") or {}).get("quality") == "NONE":
+            ib["blocked"] = True
+            _set_primary("NO_DOWNSIDE_ANCHOR")
+            ib["reasons"].append("PUT sem ancora inferior — sem destino estrutural.")
+
+        # B4 — CALL_INTO_CALL_WALL
+        if is_call and loc.get("is_near_call_wall"):
+            ib["blocked"] = True
+            _set_primary("CALL_INTO_CALL_WALL")
+            ib["suggested_action"] = "WAIT"
+            ib["reasons"].append("CALL colado na Call Wall — resistencia/pinning, nao entrada.")
+
+        # B5 — PUT_INTO_PUT_WALL
+        if is_put and loc.get("is_near_put_wall"):
+            ib["blocked"] = True
+            _set_primary("PUT_INTO_PUT_WALL")
+            ib["suggested_action"] = "WAIT"
+            ib["reasons"].append("PUT colado no Put Wall — suporte/risco de V-bottom, nao entrada.")
+
+        # B12 — CALL_IN_UPPER_RANGE (POOR, nao bloqueia se longe da CW)
+        if is_call and loc.get("location_zone") in ("UPPER_RANGE", "NEAR_RESISTANCE")                 and not loc.get("is_near_call_wall"):
+            ib["entry_quality"]    = "POOR"
+            ib["suggested_action"] = "WAIT"
+            _set_primary("CALL_IN_UPPER_RANGE")
+            ib["reasons"].append(
+                "CALL na parte alta do range — assimetria ruim. "
+                "Aguardar pullback ou rompimento aceito.")
+
+        # B13 — PUT_IN_LOWER_RANGE (POOR, nao bloqueia se longe da PW)
+        if is_put and loc.get("location_zone") in ("LOWER_RANGE", "NEAR_SUPPORT")                 and not loc.get("is_near_put_wall"):
+            ib["entry_quality"]    = "POOR"
+            ib["suggested_action"] = "WAIT"
+            _set_primary("PUT_IN_LOWER_RANGE")
+            ib["reasons"].append(
+                "PUT na parte baixa do range — risco de entrada atrasada. "
+                "Aguardar reteste/rejeicao ou perda aceita do suporte.")
+
+        # B9 — IMPLIED_MOVE_BOUNDARY
+        if is_call and at_move_high:
+            ib["blocked"] = True
+            _set_primary("CALL_AT_IMPLIED_MOVE_HIGH")
+            ib["reasons"].append("Preco ja no topo do 1D implied move — movimento esperado consumido.")
+        if is_put and at_move_low:
+            ib["blocked"] = True
+            _set_primary("PUT_AT_IMPLIED_MOVE_LOW")
+            ib["reasons"].append("Preco ja no fundo do 1D implied move — movimento esperado consumido.")
+
+        # B11 — OPERATIONAL_CHASE_RISK
+        if regime_strength == "extended":
+            ib["reasons"].append("OPERATIONAL_CHASE_RISK")
+            _set_primary("OPERATIONAL_CHASE_RISK")
+            if is_active:
+                ib["blocked"]          = True
+                ib["suggested_action"] = "DO_NOT_CHASE"
+                ib["entry_quality"]    = "BLOCKED"
+
+        # Alertas (nao bloqueiam): transicao e divergencia de camadas
+        if regime_zone == "TRANSITION" and not ib["blocked"]:
+            ib["reasons"].append("Zona de transicao — toque nao e aceitacao.")
+            if ib["entry_quality"] is None:
+                ib["entry_quality"] = "CAUTION"
+        if operational_note and not ib["blocked"]:
+            ib["reasons"].append(operational_note)
+            if ib["entry_quality"] is None:
+                ib["entry_quality"] = "CAUTION"
+
+        # Consolidacao
+        if ib["blocked"] and is_active:
+            ib["entry_quality"] = "BLOCKED"
+            if not ib["suggested_action"]:
+                ib["suggested_action"] = "WAIT"
+        if not is_active:
+            # NO TRADE: sem banner vermelho — qualidade POOR/CAUTION
+            ib["blocked"] = False
+            if ib["entry_quality"] not in ("POOR", "CAUTION"):
+                ib["entry_quality"] = "CAUTION"
+            if ib["suggested_action"] not in ("WAIT", "NO_TRADE"):
+                ib["suggested_action"] = "NO_TRADE" if ib["entry_quality"] == "POOR" else "WAIT"
+        if ib["entry_quality"] is None:
+            ib["entry_quality"] = "GOOD"
+        if ib["suggested_action"] is None:
+            ib["suggested_action"] = "TRADE_ALLOWED"
+
+        # Alternativa — vem do proximo setup
+        if is_call:
+            ib["alternative"] = ns.get("call_setup") or ns.get("no_trade") or ""
+        elif is_put:
+            ib["alternative"] = ns.get("put_setup") or ns.get("no_trade") or ""
+        else:
+            ib["alternative"] = ns.get("no_trade") or ""
+
+        # Report estilo mentor
+        _r = []
+        if ib["entry_quality"] == "GOOD":
+            _r.append("Entrada estruturalmente limpa pelas camadas de inteligencia.")
+        elif ib["reasons"]:
+            _r.append(ib["reasons"][0])
+        if loc.get("location_report"):
+            _r.append(loc["location_report"])
+        ib["report"] = " ".join(_r)
+
+        return ib
+
     spy        = sg.get('SPY') or sg.get('$SPY') or {}
     combos_raw = spy.get('combos') or spy.get('combo_strikes') or []
     combos     = sorted([c for c in combos_raw if isinstance(c, (int, float))])
@@ -1349,6 +1489,12 @@ def modo2():
             "context":      None,
         }
 
+    # ── Hard Blocks — camada de inteligencia pos-motor ────────────────
+    intelligence_block = evaluate_hard_blocks(
+        decision, gamma_regime, regime_strength, regime_zone,
+        operational_note, location, anchors,
+        at_move_high, at_move_low, next_setup)
+
     # Output: compatível com Modo 3
     ow["rbc_decision"] = {
         "gamma_regime":     gamma_regime,
@@ -1362,6 +1508,7 @@ def modo2():
         "operational_note": operational_note,
         "location":         location,
         "anchors":          anchors,
+        "intelligence_block": intelligence_block,
         "decision":         decision,
         "reason":           reason,
         "entry":            entry,

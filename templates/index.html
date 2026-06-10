@@ -1275,7 +1275,7 @@
 
     // Strikes sugeridos (so se nao for NO TRADE e sem chase warning)
     let strikesHtml = '';
-    if (!isNo && !d.chase_warning && sp && lv.vol_trigger) {
+    if (!isNo && !d.chase_warning && !(d.intelligence_block && d.intelligence_block.blocked) && sp && lv.vol_trigger) {
       const vtN = parseFloat(lv.vol_trigger);
       const zgN = lv.zero_gamma ? parseFloat(lv.zero_gamma) : vtN - 2;
       const cwN = lv.call_wall  ? parseFloat(lv.call_wall)  : vtN + 6;
@@ -1461,9 +1461,27 @@
     </div>` : ''}
   </div>
 
+  ${d.intelligence_block ? (() => {
+    const ib = d.intelligence_block;
+    const q  = ib.entry_quality;
+    const qColor = q === 'GOOD' ? '#16a34a' : q === 'CAUTION' ? '#d97706' : q === 'POOR' ? '#ea580c' : '#dc2626';
+    const qBg    = q === 'GOOD' ? '#f0fdf4' : q === 'CAUTION' ? '#fffbeb' : q === 'POOR' ? '#fff7ed' : '#fef2f2';
+    return `
+  <div style="background:${qBg};border:0.5px solid ${qColor};border-left:4px solid ${qColor};border-radius:12px;padding:10px 14px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+      <span style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;">Intelligence Overlay</span>
+      <span style="font-size:11px;font-weight:700;color:${qColor};">${q}${ib.suggested_action ? ' · ' + ib.suggested_action.replace(/_/g, ' ') : ''}</span>
+    </div>
+    ${ib.blocked ? `<div style="font-size:12px;font-weight:700;color:#dc2626;margin-bottom:3px;">🚫 TRADE BLOQUEADO PELA CAMADA DE INTELIGENCIA</div>` : ''}
+    ${ib.primary_block ? `<div style="font-size:11px;font-weight:600;color:${qColor};margin-bottom:3px;">${ib.primary_block.replace(/_/g, ' ')}</div>` : ''}
+    ${ib.report ? `<div style="font-size:12px;color:#1e293b;line-height:1.5;">${ib.report}</div>` : ''}
+    ${ib.alternative ? `<div style="font-size:11px;color:#64748b;margin-top:4px;"><b>Alternativa:</b> ${ib.alternative}</div>` : ''}
+  </div>`;
+  })() : ''}
+
   ${gapHtml}
 
-  ${!isNo ? `
+  ${!isNo && !(d.intelligence_block && d.intelligence_block.blocked) ? `
   <div style="background:#ffffff;border:0.5px solid #e2e8f0;border-radius:12px;overflow:hidden;">
     <div style="padding:8px 12px;font-size:10px;font-weight:500;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:0.5px solid #e2e8f0;">Plano de trade</div>
     ${d.entry ? `<div style="display:flex;gap:0;border-left:3px solid #bbf7d0;margin-bottom:1px;"><span style="min-width:72px;padding:5px 8px;font-size:10px;font-weight:500;color:#16a34a;text-transform:uppercase;flex-shrink:0;">Entrada</span><span style="padding:5px 8px;font-size:12px;color:#1e293b;line-height:1.4;flex:1;">${d.entry}</span></div>` : ''}
