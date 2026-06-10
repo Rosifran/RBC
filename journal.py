@@ -341,11 +341,12 @@ def get_swing_latest_scan():
             if not row:
                 return []
             latest_time = row['scan_time']
-            # Busca todos os registros desse scan
+            # Busca os registros do dia mais recente — 1 linha por ticker+direcao
+            # (DISTINCT ON mantem o registro mais novo quando ha varios scans no dia)
             cur.execute("""
-                SELECT * FROM swing_scans
+                SELECT DISTINCT ON (ticker, direction) * FROM swing_scans
                 WHERE scan_date = (SELECT scan_date FROM swing_scans ORDER BY created_at DESC LIMIT 1)
-                ORDER BY ticker, direction
+                ORDER BY ticker, direction, created_at DESC
             """)
             rows = cur.fetchall()
     result = []
