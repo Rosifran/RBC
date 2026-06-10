@@ -1255,7 +1255,7 @@
       acaoDesc  = 'Movimento ja aconteceu. Esperar proximo setup.';
     } else if (isNo) {
       acaoAgora = 'NAO ENTRAR';
-      acaoDesc  = d.reason || 'SPY no meio da faixa, sem edge estrutural.';
+      acaoDesc  = (d.location && d.location.location_report) ? d.location.location_report : (d.reason || 'SPY no meio da faixa, sem edge estrutural.');
     } else if (tq === 'TOO_EARLY') {
       acaoAgora = 'AGUARDAR — muito cedo';
       acaoDesc  = 'Entrar somente apos 9:45 ET.';
@@ -1467,18 +1467,18 @@
     ${hardHtml}
   </div>` : `
   <div style="background:#f8fafc;border-radius:12px;padding:10px 14px;">
-    <div style="font-size:12px;color:#64748b;line-height:1.6;">${d.reason || 'SPY no meio da faixa, sem edge estrutural.'}</div>
-    ${d.target_1 && d.target_2 ? `
+    <div style="font-size:12px;color:#64748b;line-height:1.6;">${(d.location && d.location.location_report) ? d.location.location_report : (d.reason || 'SPY no meio da faixa, sem edge estrutural.')}</div>
+    ${d.location && d.location.nearest_resistance && d.location.nearest_support ? `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
       <div style="background:#f8fafc;border-radius:8px;padding:8px 10px;">
-        <div style="font-size:10px;color:#64748b;">Extremo superior</div>
-        <div style="font-size:14px;font-weight:500;color:#16a34a;">${parseFloat(d.target_1) > parseFloat(d.target_2) ? d.target_1 : d.target_2}</div>
-        <div style="font-size:10px;color:#94a3b8;">Call Wall / resistencia</div>
+        <div style="font-size:10px;color:#64748b;">Resistência mais próxima</div>
+        <div style="font-size:14px;font-weight:500;color:#16a34a;">${d.location.nearest_resistance}</div>
+        <div style="font-size:10px;color:#94a3b8;">${d.location.nearest_resistance_type || ''}</div>
       </div>
       <div style="background:#f8fafc;border-radius:8px;padding:8px 10px;">
-        <div style="font-size:10px;color:#64748b;">Extremo inferior</div>
-        <div style="font-size:14px;font-weight:500;color:#dc2626;">${parseFloat(d.target_1) < parseFloat(d.target_2) ? d.target_1 : d.target_2}</div>
-        <div style="font-size:10px;color:#94a3b8;">Vol Trigger / suporte</div>
+        <div style="font-size:10px;color:#64748b;">Suporte mais próximo</div>
+        <div style="font-size:14px;font-weight:500;color:#dc2626;">${d.location.nearest_support}</div>
+        <div style="font-size:10px;color:#94a3b8;">${d.location.nearest_support_type || ''}</div>
       </div>
     </div>` : ''}
   </div>`}
