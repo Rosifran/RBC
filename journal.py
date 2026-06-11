@@ -241,6 +241,43 @@ def get_calendar_events(from_date=None):
         return cur.fetchall()
 
 
+# ── Quote History (Flow Proxy — SPY x VIX intraday) ─────────────────
+
+def init_quote_history():
+    with get_conn() as conn, conn.cursor() as cur:
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS quote_history (
+                id          SERIAL PRIMARY KEY,
+                symbol      VARCHAR(10) NOT NULL,
+                price       NUMERIC(10,4) NOT NULL,
+                received_at TIMESTAMP DEFAULT NOW()
+            )""")
+        conn.commit()
+
+def save_quote_history(symbol, price, tv_time=None):
+    """INSERT no historico intraday + retencao de 3 dias."""
+    init_quote_history()
+    with get_conn() as conn, conn.cursor() as cur:
+        cur.execute(
+            "INSERT INTO quote_history (symbol, price) VALUES (%s, %s)",
+            (symbol, price))
+        cur.execute(
+            "DELETE FROM quote_history WHERE received_at < NOW() - INTERVAL '3 days'")
+        conn.commit()
+
+def get_quote_history(symbol, minutes=30):
+    """Quotes do simbolo na janela, em ordem cronologica."""
+    init_quote_history()
+    with get_conn() as conn, conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(
+            """SELECT price, received_at FROM quote_history
+               WHERE symbol = %s
+                 AND received_at >= NOW() - INTERVAL '1 minute' * %s
+               ORDER BY received_at ASC""",
+            (symbol, minutes))
+        return cur.fetchall()
+
+
 from datetime import datetime as _dt_swing
 
 CREATE_SWING = """

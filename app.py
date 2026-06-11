@@ -533,6 +533,11 @@ def tv_quote_post():
             tv_time = None
 
     save_market_quote(symbol, price, tv_time)
+    try:
+        from journal import save_quote_history
+        save_quote_history(symbol, price, tv_time)
+    except Exception:
+        pass  # historico nunca derruba o webhook
     return jsonify({"ok": True, "symbol": symbol, "price": price})
 
 
@@ -735,6 +740,60 @@ def analyze_calendar_risk(today=None):
         "coverage_until":  coverage,
         "needs_update":    needs_update,
     }
+
+def analyze_flow_proxy(window_min=30):
+    """Flow Proxy — SPY x VIX intraday (curso SpotGamma, Patch 2 adaptado).
+    Proxy honesto do HIRO: confirma ou contradiz a direcao pela demanda
+    por hedge. NAO antecipa fluxo — confirma."""
+    try:
+        from journal import get_quote_history
+        spy_rows = get_quote_history("SPY", window_min)
+        vix_rows = get_quote_history("VIX", window_min)
+    except Exception:
+        return None
+    if len(spy_rows) < 3 or len(vix_rows) < 3:
+        return None  # historico insuficiente — fica invisivel
+
+    def _chg_pct(rows):
+        first, last = float(rows[0]["price"]), float(rows[-1]["price"])
+        if not first:
+            return 0.0
+        return round((last - first) / first * 100, 3)
+
+    spy_pct = _chg_pct(spy_rows)
+    vix_pct = _chg_pct(vix_rows)
+
+    spy_dir = "UP" if spy_pct > 0.10 else ("DOWN" if spy_pct < -0.10 else "FLAT")
+    vix_dir = "UP" if vix_pct > 1.5 else ("DOWN" if vix_pct < -1.5 else "FLAT")
+
+    if spy_dir == "UP" and vix_dir == "DOWN":
+        state = "CONFIRMING_UP"
+        note  = "Flow proxy: SPY sobe com medo caindo — fluxo confirmando alta."
+    elif spy_dir == "UP" and vix_dir == "UP":
+        state = "FRAGILE_UP"
+        note  = ("Flow proxy: SPY sobe com demanda por hedge subindo — "
+                 "rally desconfiado, alta fragil.")
+    elif spy_dir == "DOWN" and vix_dir == "UP":
+        state = "CONFIRMING_DOWN"
+        note  = "Flow proxy: queda com VIX subindo — fluxo defensivo real."
+    elif spy_dir == "DOWN" and vix_dir == "DOWN":
+        state = "SQUEEZE_RISK"
+        note  = ("Flow proxy: queda SEM medo (VIX caindo na queda) — "
+                 "risco de squeeze/V-bottom. Cuidado com PUT atrasado.")
+    else:
+        state, note = "NEUTRAL", None
+
+    return {
+        "flow_state":  state,
+        "note":        note,
+        "spy_chg_pct": spy_pct,
+        "vix_chg_pct": vix_pct,
+        "spy_dir":     spy_dir,
+        "vix_dir":     vix_dir,
+        "window_min":  window_min,
+        "samples":     min(len(spy_rows), len(vix_rows)),
+    }
+
 
 def analyze_vol_premium(vix_now, rv_1m, rv_5d, spread=3.5):
     """Volatility Premium — VIX vs Realized Vol (curso SpotGamma).
@@ -1756,6 +1815,22 @@ def modo2():
         if intelligence_block.get("entry_quality") == "GOOD":
             intelligence_block["entry_quality"] = "CAUTION"
 
+    # ── Flow Proxy (SPY x VIX — Patch 2 adaptado) ─────────────────────
+    try:
+        flow_proxy = analyze_flow_proxy()
+    except Exception:
+        flow_proxy = None
+    if flow_proxy and decision:
+        _fs = flow_proxy.get("flow_state")
+        _contradicts = (
+            ("CALL" in decision and _fs in ("CONFIRMING_DOWN", "FRAGILE_UP")) or
+            ("PUT"  in decision and _fs in ("CONFIRMING_UP", "SQUEEZE_RISK")))
+        if _contradicts:
+            if flow_proxy.get("note"):
+                intelligence_block["reasons"].append(flow_proxy["note"])
+            if intelligence_block.get("entry_quality") == "GOOD":
+                intelligence_block["entry_quality"] = "CAUTION"
+
     # Output: compatível com Modo 3
     ow["rbc_decision"] = {
         "gamma_regime":     gamma_regime,
@@ -1772,6 +1847,7 @@ def modo2():
         "intelligence_block": intelligence_block,
         "calendar_risk":    calendar_risk,
         "vol_premium":      vol_premium,
+        "flow_proxy":       flow_proxy,
         "decision":         decision,
         "reason":           reason,
         "entry":            entry,
