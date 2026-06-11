@@ -736,6 +736,55 @@ def analyze_calendar_risk(today=None):
         "needs_update":    needs_update,
     }
 
+def analyze_vol_premium(vix_now, rv_1m, rv_5d, spread=3.5):
+    """Volatility Premium — VIX vs Realized Vol (curso SpotGamma).
+    implied_rv = VIX - spread historico. Compara com RV 1M e RV 5D."""
+    try:
+        vix = float(vix_now) if vix_now not in (None, "") else None
+        r1  = float(rv_1m)  if rv_1m  not in (None, "") else None
+        r5  = float(rv_5d)  if rv_5d  not in (None, "") else None
+    except (ValueError, TypeError):
+        return None
+    if not vix or r1 is None:
+        return None
+
+    implied_rv = round(vix - spread, 1)
+    if r1 < implied_rv - 2:
+        premium_state = "EXPENSIVE"
+    elif r1 > implied_rv + 2:
+        premium_state = "CHEAP"
+    else:
+        premium_state = "FAIR"
+
+    rv_trend = None
+    if r5 is not None:
+        if r5 > r1 + 2:
+            rv_trend = "ACCELERATING"
+        elif r5 < r1 - 2:
+            rv_trend = "COOLING"
+        else:
+            rv_trend = "STABLE"
+
+    note = None
+    if premium_state == "EXPENSIVE" and rv_trend == "ACCELERATING":
+        note = (f"Vol premium: VIX {vix} caro vs RV1M {r1}%, mas RV5D {r5}% "
+                f"acelerando — caro porem justificado. Nao vender vol; "
+                f"compra exige direcao muito clara.")
+    elif premium_state == "EXPENSIVE":
+        note = (f"Vol premium: VIX {vix} caro vs RV1M {r1}% (esperado ~{implied_rv}%) "
+                f"— opcoes caras. Preferir spread/estrutura ou exigir edge maior.")
+    elif premium_state == "CHEAP":
+        note = (f"Vol premium: VIX {vix} barato vs RV1M {r1}% — "
+                f"compra direta favorecida.")
+
+    return {
+        "vix": vix, "spread": spread, "implied_rv": implied_rv,
+        "rv_1m": r1, "rv_5d": r5,
+        "premium_state": premium_state, "rv_trend": rv_trend,
+        "note": note,
+    }
+
+
 @app.route("/api/calendar", methods=["POST"])
 def calendar_post():
     """Recebe o texto colado do SpotGamma, parseia e salva (upsert)."""
@@ -1698,6 +1747,15 @@ def modo2():
         if intelligence_block.get("entry_quality") == "GOOD":
             intelligence_block["entry_quality"] = "CAUTION"
 
+    # ── Volatility Premium (VIX vs RV — curso SpotGamma) ──────────────
+    vol_premium = analyze_vol_premium(
+        vix_now, data.get("rv_1m"), data.get("rv_5d"))
+    if vol_premium and vol_premium.get("premium_state") == "EXPENSIVE":
+        if vol_premium.get("note"):
+            intelligence_block["reasons"].append(vol_premium["note"])
+        if intelligence_block.get("entry_quality") == "GOOD":
+            intelligence_block["entry_quality"] = "CAUTION"
+
     # Output: compatível com Modo 3
     ow["rbc_decision"] = {
         "gamma_regime":     gamma_regime,
@@ -1713,6 +1771,7 @@ def modo2():
         "anchors":          anchors,
         "intelligence_block": intelligence_block,
         "calendar_risk":    calendar_risk,
+        "vol_premium":      vol_premium,
         "decision":         decision,
         "reason":           reason,
         "entry":            entry,

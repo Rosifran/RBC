@@ -653,6 +653,16 @@
         <input class="form-input" id="spot_open" type="number" step="0.01" placeholder="Preenchido pelo PDF">
         <span class="form-hint">Auto-preenchido pelo Modo 1</span>
       </div>
+      <div class="form-group">
+        <label class="form-label">RV 1M %</label>
+        <input class="form-input" id="rv_1m" type="number" step="0.1" placeholder="ex: 13.0">
+        <span class="form-hint">Realized Vol 1 mês (SpotGamma) — opcional</span>
+      </div>
+      <div class="form-group">
+        <label class="form-label">RV 5D %</label>
+        <input class="form-input" id="rv_5d" type="number" step="0.1" placeholder="ex: 20.0">
+        <span class="form-hint">Realized Vol 5 dias — opcional</span>
+      </div>
       <div class="form-group full">
         <label class="form-label">Contexto macro</label>
         <input class="form-input" id="m2-macro" type="text" placeholder="Preenchido pelo PDF">
@@ -1476,6 +1486,7 @@
       <div style="font-size:10px;color:#6366f1;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">Linha Operacional</div>
       <div style="font-size:12px;color:#1e293b;line-height:1.5;">${d.operational_regime_source === 'RISK_PIVOT' ? 'Risk Pivot' : 'Vol Trigger'} <b>${parseFloat(d.operational_regime_line).toFixed(2)}</b>${(d.distance_to_operational_pct || d.distance_to_operational_pct === 0) ? ` · SPY ${d.distance_to_operational_pct > 0 ? '+' : ''}${d.distance_to_operational_pct.toFixed(2)}% ${d.distance_to_operational_pct >= 0 ? 'acima' : 'abaixo'}` : ''}${d.regime_strength === 'extended' ? ` <span style="color:#dc2626;font-weight:600;">· ESTICADO — chase risk</span>` : d.regime_strength === 'transition' ? ` <span style="color:#d97706;font-weight:600;">· zona de TRANSICAO — toque nao e aceitacao</span>` : d.regime_strength === 'clear' ? ` <span style="color:#16a34a;">· regime claro</span>` : d.regime_strength === 'moderate' ? ` <span style="color:#64748b;">· regime moderado</span>` : ''}</div>
       ${d.operational_note ? `<div style="font-size:11px;color:#92400e;margin-top:4px;">⚠ ${d.operational_note}</div>` : ''}
+      ${d.vol_premium ? `<div style="font-size:11px;color:#475569;margin-top:4px;padding-top:4px;border-top:0.5px solid #e0e7ff;">Vol Premium: VIX <b>${d.vol_premium.vix}</b> → RV esperada ~${d.vol_premium.implied_rv}% · RV1M ${d.vol_premium.rv_1m}% <span style="font-weight:600;color:${d.vol_premium.premium_state === 'EXPENSIVE' ? '#dc2626' : d.vol_premium.premium_state === 'CHEAP' ? '#16a34a' : '#64748b'};">${d.vol_premium.premium_state === 'EXPENSIVE' ? 'CARO' : d.vol_premium.premium_state === 'CHEAP' ? 'BARATO' : 'JUSTO'}</span>${(d.vol_premium.rv_5d !== null && d.vol_premium.rv_5d !== undefined) ? ` · RV5D ${d.vol_premium.rv_5d}%${d.vol_premium.rv_trend === 'ACCELERATING' ? ` <span style="color:#d97706;font-weight:600;">acelerando</span>` : d.vol_premium.rv_trend === 'COOLING' ? ' esfriando' : ' estável'}` : ''}</div>` : ''}
     </div>` : ''}
     ${d.location && d.location.range_position !== null && d.location.range_position !== undefined ? `
     <div style="margin-top:6px;padding:8px 10px;background:#fafafa;border:0.5px solid #e2e8f0;border-radius:8px;">
@@ -1600,6 +1611,8 @@ ${(() => {
         vix_now:   vix_now,
         spot_open: document.getElementById('spot_open').value,
         spot_now:  spot_now,
+        rv_1m: parseFloat(document.getElementById('rv_1m').value) || null,
+        rv_5d: parseFloat(document.getElementById('rv_5d').value) || null,
         risk_pivot: (window._pdfData && (
                       (window._pdfData.spy && window._pdfData.spy.risk_pivot) ||
                       (window._pdfData.macro && window._pdfData.macro.risk_pivot_spx
