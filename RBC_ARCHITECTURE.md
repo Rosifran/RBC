@@ -199,4 +199,7 @@ Chase warning → movimento já aconteceu → não perseguir
 Cole o resumo do início do chat + este arquivo completo.
 Comando para carregar: cat ~/RBC/RBC_ARCHITECTURE.md
 O Claude entra direto no nível certo sem mapear o código do zero.
+Patches 11/06: patch_ui_layout.py (largura global 860->1280px),
+patch_modo2_cockpit.py (Modo 2 cockpit: hero Acao Agora, alertas max 3, accordion).
+HIRO/TRACE: Etapa A standalone no repo (flow_context_engine.py); Etapas B/C pausadas — sem acesso ao HIRO/TRACE; Flow Proxy SPY×VIX cobre o papel.
 ```
