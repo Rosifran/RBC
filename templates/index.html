@@ -100,8 +100,18 @@
   }
 
   /* ── Main layout ── */
-  .tab-panel { display: none; padding: 40px; max-width: 860px; }
+  .tab-panel {
+    display: none;
+    padding: 40px;
+    width: calc(100% - 48px);
+    max-width: 1280px;
+    margin: 0 auto;
+  }
   .tab-panel.active { display: block; }
+
+  @media (max-width: 768px) {
+    .tab-panel { width: 100%; padding: 24px 16px; }
+  }
 
   /* ── Section labels ── */
   .section-label {
