@@ -206,25 +206,44 @@ def edge_summary(gex: dict, vrp: dict, skew: dict, pc: dict, direction: str) -> 
             "fatores": {"gex": gex, "vrp": vrp, "skew": skew, "pc_ratio": pc},
         }
 
-    scores    = [gex['score'], vrp['score'], skew['score'], pc['score']]
-    aprovados = sum(1 for s in scores if s >= 1)
+    # ── Edge direcional v2 ─────────────────────────────────────────────
+    # VRP e GEX: nao-direcionais (custo da vol e regime) — score original.
+    # Skew e P/C: DIRECIONAIS — pontuam contra/a favor da direcao pedida.
+    # Favoravel = somente score 2. Neutro (1) NAO conta como favoravel.
+    skew_val = skew.get('skew_pct')
+    pc_val   = pc.get('pc_ratio')
 
-    # Ajuste de direcao
-    skew_val = skew.get('skew_pct') or 0
-    if direction == 'CALL' and skew_val > 5:
-        aprovados -= 1
-    if direction == 'PUT' and skew_val < -5:
-        aprovados -= 1
+    if skew_val is None:
+        skew_s = 1
+    elif direction == 'CALL':
+        # bearish forte contra (0) | bearish leve (1) | neutro (1) | bullish flow a favor (2)
+        skew_s = 0 if skew_val > 5 else (1 if skew_val > -2 else 2)
+    else:  # PUT — espelho
+        skew_s = 0 if skew_val < -5 else (1 if skew_val < 2 else 2)
 
-    if aprovados >= 3:
+    if pc_val is None:
+        pc_s = 1
+    elif direction == 'CALL':
+        pc_s = 2 if pc_val < 0.7 else (0 if pc_val > 1.2 else 1)
+    else:  # PUT — espelho
+        pc_s = 2 if pc_val > 1.2 else (0 if pc_val < 0.7 else 1)
+
+    scores         = [gex['score'], vrp['score'], skew_s, pc_s]
+    favoraveis     = sum(1 for s in scores if s == 2)
+    zeros          = sum(1 for s in scores if s == 0)
+    dir_favoraveis = sum(1 for s in (skew_s, pc_s) if s == 2)  # so Skew/PC carregam direcao
+    aprovados      = favoraveis
+
+    if favoraveis >= 2 and zeros == 0 and dir_favoraveis >= 1:
         verdict = "EDGE FAVORAVEL"
-        note    = f"{aprovados}/4 fatores alinham para {direction}"
-    elif aprovados == 2:
-        verdict = "EDGE NEUTRO"
-        note    = f"Apenas {aprovados}/4 fatores alinham — aguardar confirmacao"
-    else:
+        note    = f"{favoraveis}/4 fatores claramente a favor de {direction}, nenhum contra"
+    elif zeros >= 2 or favoraveis == 0:
         verdict = "EDGE DESFAVORAVEL"
-        note    = f"Apenas {aprovados}/4 fatores alinham — evitar entrada"
+        note    = f"{zeros} fator(es) contra {direction} — evitar entrada"
+    else:
+        verdict = "EDGE NEUTRO"
+        note    = (f"{favoraveis}/4 a favor ({dir_favoraveis} direcional), {zeros} contra "
+                   f"{direction} — sem edge claro, aguardar confirmacao")
 
     return {
         "verdict":    verdict,
@@ -583,8 +602,35 @@ def scan_ticker(ib: IB, ticker: str, direction: str) -> dict:
     scored.sort(key=lambda x: (-x['score'], x.get('spread_pct', 100)))
     top3 = scored[:3]
 
-    best    = top3[0]['score'] if top3 else 0
-    overall = "APROVO" if best >= 8 else "AGUARDAR" if best >= 6 else "REPROVO"
+    best = top3[0]['score'] if top3 else 0
+
+    # ── Verdict integrado: contrato bom NAO basta — precisa de edge ───
+    _ev = edge.get('verdict', '')
+    if "DESFAVORAVEL" in _ev:
+        overall      = "REPROVO"
+        overall_note = f"Edge contra {direction} — contrato bom nao salva direcao ruim."
+    elif "INCOMPLETO" in _ev:
+        overall      = "AGUARDAR"
+        overall_note = "Edge incompleto — rodar com mercado aberto antes de decidir."
+    elif "NEUTRO" in _ev:
+        overall      = "AGUARDAR" if best >= 6 else "REPROVO"
+        overall_note = f"Contrato {best}/10 mas SEM edge direcional — aguardar definicao."
+    else:  # FAVORAVEL
+        overall      = "APROVO" if best >= 8 else "AGUARDAR" if best >= 6 else "REPROVO"
+        overall_note = f"Edge a favor de {direction} + contrato {best}/10."
+
+    # ── Invalidacao da tese (nivel do subjacente) ──────────────────────
+    invalid_level = None
+    invalid_note  = None
+    _iv = snap.get('iv_ann') or 0
+    if spot and _iv:
+        _wk_move = spot * _iv * (7 / 365) ** 0.5
+        if direction == 'PUT':
+            invalid_level = round(spot + 0.5 * _wk_move, 2)
+            invalid_note  = f"PUT invalida se {ticker} fechar ACIMA de ${invalid_level}"
+        else:
+            invalid_level = round(spot - 0.5 * _wk_move, 2)
+            invalid_note  = f"CALL invalida se {ticker} fechar ABAIXO de ${invalid_level}"
 
     return {
         "ticker":          ticker,
@@ -592,6 +638,9 @@ def scan_ticker(ib: IB, ticker: str, direction: str) -> dict:
         "spot":            spot,
         "scanned":         len(chain_dir),
         "overall_verdict": overall,
+        "overall_note":    overall_note,
+        "invalid_level":   invalid_level,
+        "invalid_note":    invalid_note,
         "edge":            edge,
         "top_contracts":   top3,
         "timestamp":       datetime.now().strftime('%Y-%m-%d %H:%M ET'),
@@ -612,6 +661,8 @@ def print_result(r: dict) -> None:
     print(f"\n{SEP2}")
     print(f"  {r['ticker']} · {r['direction']} | Spot ${r['spot']} | {r['timestamp']}")
     print(f"  {icon} {r['overall_verdict']} — {r['scanned']} contratos escaneados")
+    if r.get('overall_note'):
+        print(f"     {r['overall_note']}")
 
     # Edge RBC
     edge = r.get('edge', {})
@@ -641,6 +692,8 @@ def print_result(r: dict) -> None:
         print(f"  Stop       : ${c['stop_price']:.2f}  (-35%)")
         print(f"  Alvo 1     : ${c['target_1']:.2f}  (+40%)")
         print(f"  Alvo 2     : ${c['target_2']:.2f}  (+80%)")
+        if r.get('invalid_note'):
+            print(f"  Invalidacao: {r['invalid_note']}")
         print(f"  Score detalhe:")
         for k, note in c['score_notes'].items():
             s  = c['score_detail'][k]
