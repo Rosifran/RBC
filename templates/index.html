@@ -2000,9 +2000,20 @@ ${(() => {
                        REPROVO_CAPITAL:['#fef2f2','#dc2626'], DADOS_INSUFICIENTES:['#f8fafc','#64748b']};
         const cfCol = cfPal[bcf?.capital_status] || cfPal.DADOS_INSUFICIENTES;
         const detId = `m5d-${tkr}-${dir}`;
+        // card_info_v2 — vencimento, edge e invalidacao na linha-resumo
+        const bcExp  = bc?.expiration
+          ? bc.expiration.replace(/([0-9]{4})([0-9]{2})([0-9]{2})/, '$3/$2') : '';
+        const bcVenc = bcExp && bc?.dte ? `${bcExp} (${bc.dte}d)`
+                     : (bc?.dte ? `${bc.dte}d` : bcExp);
         const bcTxt = bc
-          ? `${bc.strike}${dir === 'CALL' ? 'C' : 'P'} \u00B7 $${bc.entry_price?.toFixed(2) ?? '\u2014'}${bcf?.contract_cost != null ? ' ($' + Math.round(bcf.contract_cost) + ')' : ''}`
+          ? `${bc.strike}${dir === 'CALL' ? 'C' : 'P'} \u00B7 $${bc.entry_price?.toFixed(2) ?? '\u2014'}${bcf?.contract_cost != null ? ' ($' + Math.round(bcf.contract_cost) + ')' : ''}${bcVenc ? ' \u00B7 ' + bcVenc : ''}`
           : 'sem contratos';
+        const _evRaw = edge.verdict || '';
+        const _ev    = _evRaw.replace('EDGE ', '');
+        const _evCol = _evRaw.includes('FAVORAVEL') ? '#16a34a'
+                     : _evRaw.includes('NEUTRO')    ? '#d97706'
+                     : _evRaw.includes('DESFAVORAVEL') ? '#dc2626' : '#94a3b8';
+        const _inv   = scan.invalid_note || null;
         html += `<div style="border-bottom:0.5px solid #f1f5f9;">`;
         html += `<div onclick="modo5Toggle('${detId}')" style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;cursor:pointer;">
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
@@ -2012,6 +2023,8 @@ ${(() => {
             ${bc ? `<span style="font-size:10px;color:#64748b;">${bc.score}/10</span>` : ''}
             ${bcf ? `<span style="font-size:9px;background:${cfCol[0]};color:${cfCol[1]};padding:2px 8px;border-radius:20px;font-weight:600;">${bcf.cost_bucket}</span>` : ''}
             ${bcf ? `<span style="font-size:9px;color:#64748b;">${bcf.preferred_structure}</span>` : ''}
+            ${_ev && _ev !== 'INCOMPLETO' ? `<span style="font-size:9px;color:${_evCol};font-weight:600;border:0.5px solid ${_evCol};padding:1px 6px;border-radius:20px;">EDGE ${_ev}</span>` : ''}
+            ${_inv ? `<span style="font-size:9px;color:#dc2626;font-weight:600;background:#fef2f2;border:0.5px solid #fecaca;padding:1px 6px;border-radius:20px;">\u26a0 ${_inv}</span>` : ''}
           </div>
           <div style="display:flex;align-items:center;gap:6px;">
             ${bcf ? `<span style="font-size:9px;color:${cfCol[1]};font-weight:600;">${bcf.capital_status}</span>` : ''}
@@ -2020,6 +2033,15 @@ ${(() => {
         </div>`;
         // ── Detalhes (ocultos por padrao) ──
         html += `<div id="${detId}" style="display:none;padding:0 14px 12px 14px;">`;
+
+        // Tese (overall_note) + Invalidacao (invalid_note) — Swing v2
+        if (scan.overall_note || scan.invalid_note) {
+          const _hasInv = !!scan.invalid_note;
+          html += `<div style="background:${_hasInv ? '#fef2f2' : '#f8fafc'};border:0.5px solid ${_hasInv ? '#fecaca' : '#e2e8f0'};border-left:3px solid ${_hasInv ? '#dc2626' : '#94a3b8'};border-radius:8px;padding:8px 10px;margin-bottom:8px;">`;
+          if (scan.overall_note) html += `<div style="font-size:11px;color:#1e293b;font-weight:500;line-height:1.4;">Tese: ${scan.overall_note}</div>`;
+          if (scan.invalid_note) html += `<div style="font-size:11px;color:#dc2626;font-weight:700;margin-top:${scan.overall_note ? 4 : 0}px;">\u26a0 Invalidacao: ${scan.invalid_note}</div>`;
+          html += `</div>`;
+        }
 
         // Edge
         const ev = edge.verdict || '';
