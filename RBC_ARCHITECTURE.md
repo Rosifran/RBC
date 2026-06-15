@@ -1,5 +1,5 @@
-# RBC — Risk Bridge Capital | Architecture v1.0
-_Atualizado: 2026-06-09_
+# RBC — Risk Bridge Capital | Architecture v2.0
+_Atualizado: 2026-06-11_
 
 ---
 
@@ -7,14 +7,15 @@ _Atualizado: 2026-06-09_
 
 | Componente | Detalhe |
 |---|---|
-| Scanner EUA | `~/RBC/rbc_0dte_scanner.py` v1.5-beta |
-| App EUA | `https://web-production-00b33.up.railway.app` |
+| App EUA | `~/RBC/app.py` + `~/RBC/templates/index.html` |
+| URL EUA | `https://web-production-00b33.up.railway.app` |
 | GitHub EUA | `github.com/Rosifran/RBC` |
 | Scanner Brasil | `~/RBC-Brasil/rbc_br_scanner.py` v2.1 |
-| App Brasil | `https://web-production-c928f.up.railway.app` |
-| GitHub Brasil | repositório separado (RBC-Brasil) |
-| Banco de dados | PostgreSQL Railway (captivating-tenderness) |
-| Dados mercado | TradingView webhooks → `/api/tv/quote` → PostgreSQL |
+| URL Brasil | `https://web-production-c928f.up.railway.app` |
+| GitHub Brasil | `github.com/Rosifran/RBC-Brasil` |
+| Banco de dados | PostgreSQL Railway |
+| Dados mercado | TradingView webhooks 1min → `/api/tv/quote` → PostgreSQL |
+| Deploy | Railway Auto Deploy (push → deploy automático) |
 
 ---
 
@@ -22,19 +23,32 @@ _Atualizado: 2026-06-09_
 
 - **$47k** SGOV (IBKR) → ~$204/mês
 - **$3k** cash 0DTE EUA
-- **R$2.750** Brasil
+- **R$2.750** Brasil (compra direta 14-35 DTE)
 
 ---
 
 ## Fluxo diário EUA
 
 ```
-Manhã     → Modo 1: upload PDF SpotGamma → extrai níveis + regime
-9:45      → Modo 2: VIX + SPY (botão TradingView) → decisão
+Manhã     → Modo 1: upload PDF SpotGamma → extrai níveis + Risk Pivot
+            📅 Colar calendário SpotGamma (área colapsada no Modo 1) — 1x/semana
+9:45      → Modo 2: botão TradingView + RV 1M/5D (SpotGamma) → cockpit completo
 10:00     → Modo 3: strike + prêmio + execução
 16:01     → TradingView webhook → OHLC automático no journal
 Tarde     → PM Note PDF → Journal Modo 4
 ```
+
+---
+
+## Tabelas PostgreSQL
+
+| Tabela | Conteúdo |
+|---|---|
+| `trade_journal` | Journal diário 0DTE EUA |
+| `market_quotes` | Último quote SPY/VIX (upsert) |
+| `quote_history` | Histórico intraday SPY/VIX (INSERT 1min, retenção 3 dias) |
+| `calendar_events` | Calendário econômico (upsert por data+evento) |
+| `swing_scans` | Resultados scanner Modo 5 |
 
 ---
 
@@ -43,112 +57,128 @@ Tarde     → PM Note PDF → Journal Modo 4
 ### Modo 1 — Pré-mercado
 - **Input:** PDF SpotGamma
 - **Output:** níveis extraídos via Claude API → JSON
-- **Campos:** `reference_price`, `vol_trigger`, `zero_gamma`, `call_wall`, `put_wall`, `combos`, `spy_levels`, `founder_alerts`, `key_events`
-- **Regra:** LLM só extrai níveis. Python decide o plano.
+- **Campos:** `reference_price`, `vol_trigger`, `zero_gamma`, `call_wall`, `put_wall`, `combos`, `spy_levels`, `absolute_gamma_strike`, `large_gamma_levels`, `large_gamma_1-4`, `founder_alerts`, `key_events`, `risk_pivot` (SPX/10)
+- **Área colapsada:** `📅 Calendário econômico` — colar texto do SpotGamma → Salvar (upsert no PG)
 - **Regime:** `reference_price < vol_trigger` → `NEGATIVE_GAMMA`
 
-### Modo 2 — Abertura
-- **Input:** SPY agora, VIX agora (manual ou botão TradingView)
-- **Output:** decisão operacional + cockpit de acompanhamento
-- **Decisões possíveis:** `CALL REVERSAL`, `PUT REVERSAL`, `CALL BREAKOUT SMALL`, `PUT TREND`, `NO TRADE`
-- **Chase warning:** ativo se SPY já distante do nível-chave → oculta plano e strikes
-- **Bloco "Próximo Setup":** sempre presente — CALL/PUT/NO TRADE/NÍVEL-CHAVE/INVALIDAÇÃO
-- **Alvos PUT TREND:** só combos/spy_levels abaixo do spot, dentro de 8 pts. Put Wall = nota de suporte extremo, nunca alvo.
+### Modo 2 — Abertura (cockpit completo)
+- **Input:** SPY agora (botão TradingView ou manual), VIX agora, RV 1M % (opcional), RV 5D % (opcional)
+- **Cadeia de inteligência:**
+```
+Regime estrutural (Vol Trigger)
+  └ Linha Operacional (Risk Pivot) → transição, chase, divergência RP/VT
+      └ Location Engine → posição no range, qualidade, tipos de nível
+          └ Anchor Engine → destino estrutural, ABS/LARGE gamma, chase check
+              └ Hard Blocks B1-B13 → Intelligence Overlay
+                  └ Calendar Risk → eventos hoje/amanhã, OPEX, VIX exp
+                      └ Vol Premium → VIX vs RV 1M/5D
+                          └ Flow Proxy → SPY × VIX intraday 30min
+```
+- **Decisions:** `CALL REVERSAL`, `PUT REVERSAL`, `CALL BREAKOUT SMALL`, `PUT TREND`, `NO TRADE`
+- **Intelligence Overlay:** GOOD (verde) / CAUTION (amarelo) / POOR (laranja) / BLOCKED (vermelho)
+- **Plano/Strikes:** ocultos quando `blocked = true`
 
 ### Modo 3 — Operacional
-- **Input:** herda decisão do Modo 2 automaticamente
-- **Campos manuais:** prêmio, strike, horário de entrada
-- **Output:** checklist de execução — strike sugerido ATM/ideal/OTM, alvo +75%, stop -50%, saída 12:30 ET
+- Herda decisão do Modo 2
+- Strike ATM/ideal/OTM, alvo +75%, stop -50%, saída 12:30 ET
 
 ### Modo 4 — Journal
-- **Input:** TradingView webhook (OHLC automático às 16:01 ET) + PM Note PDF
-- **Tabela:** `trade_journal` (PostgreSQL)
+- TradingView webhook (OHLC 16:01 ET) + PM Note PDF
+- Tabela `trade_journal`
 
 ### Modo 5 — Swing
-Modo 5 — Swing (atualizado 2026-06-10)
-
-- Input: scanner IBKR local (us_swing_ibkr.py)
-- Universo: NVDA, AAPL, META, AMZN, AMD, UBER, PLTR, SOFI, BAC, XLF, QQQ, SPY
-- Camada Capital Fit (capital_fit_engine.py v1.4): classifica cada contrato
-  por adequação ao capital (1 contrato, custo ideal $150-350, stop -35%,
-  risco máx $250). Buckets: IDEAL_FOR_ONE_CONTRACT / ACCEPTABLE / CHEAP_SLOW /
-  EXPENSIVE / BETTER_AS_SPREAD / REPROVO / DADOS_INSUFICIENTES (WAIT).
-  OI=0 do feed = ausente; liquidez não confirmada rebaixa, não reprova.
-- Output: terminal (bloco abaixo do Score detalhe) + swing_scans (PostgreSQL,
-  capital_fit dentro de contracts/raw) + dashboard compacto no app
-  (linha-resumo por ticker/direção, melhor contrato por capital fit,
-  detalhes expandem no clique)
-- Patches: patch_capital_fit.py, patch_capital_fit_v2.py,
-  patch_modo5_universe_layout.py
+- Scanner IBKR TWS: AAPL, AMD, AMZN, BAC, META, NVDA, PLTR, QQQ, SOFI, UBER, XLF
+- 14-35 DTE, stop -35%, alvo 1 +40%, alvo 2 +80%
 
 ---
 
-## Tabelas PostgreSQL
+## Intelligence Layer — Detalhe (Patch 1 SpotGamma)
 
-### `trade_journal`
-Journal diário de trades EUA. Campos principais:
-`date`, `call_wall`, `put_wall`, `vol_trigger`, `zero_gamma`, `c3`, `c4`, `c1`, `open_spy`, `close_spy`, `modo2_decision`, `entry_level`, `target_1`, `target_2`, `stop_level`, `trade_path`, `pm_note_summary`, `pm_hiro`, `pm_vix_close`, `pm_cor1m_close`
+### Risk Pivot
+- Extraído do PDF como SPX/10 → `risk_pivot`
+- Linha Operacional no card Regime: SPY vs RP → `operational_regime` ABOVE/BELOW_LINE
+- `regime_strength`: moderate ≤0.35% / clear ≤0.80% / extended >0.80%
+- `operational_note` quando SPY entre RP e VT (divergência)
 
-### `market_quotes`
-Quote intraday SPY e VIX via TradingView (1 min).
-`symbol VARCHAR(10) PRIMARY KEY`, `price NUMERIC(10,4)`, `tv_time TIMESTAMP`, `received_at TIMESTAMP`
-Fresh = `received_at` < 30 min atrás.
+### Location Engine
+- `location_zone`: NEAR_SUPPORT / LOWER_RANGE / MIDDLE_OF_RANGE / UPPER_RANGE / NEAR_RESISTANCE
+- `location_quality`: DANGEROUS / STRONG / MEDIUM / WEAK
+- `nearest_support/resistance` com tipos: CALL_WALL / PUT_WALL / VOL_TRIGGER / ZERO_GAMMA / RISK_PIVOT / 1D_MOVE / COMBO / ABS_GAMMA / LARGE_GAMMA
 
-### `swing_scans`
-Resultados do scanner Modo 5.
+### Anchor Engine
+- Âncoras em cada direção (upside/downside): preço, tipo, qualidade, distância pts/pct, `reached`
+- Fontes: CALL_WALL, PUT_WALL, ABS_GAMMA, LARGE_GAMMA (todos HIGH), COMBO/1D_MOVE (MEDIUM), SPY_LEVEL (LOW)
+- RP, VT, ZG **não** são âncoras
+- `reached = true` → "alvo consumido, chase risk"
 
----
-
-## TradingView Webhooks
-
-| Alerta | Frequência | Payload |
+### Hard Blocks (evaluate_hard_blocks)
+| Block | Condição | Efeito |
 |---|---|---|
-| RBC Quote — SPY | 1 min | `{"symbol":"SPY","price":"{{close}}","time":"{{time}}"}` |
-| RBC Quote — VIX | 1 min | `{"symbol":"VIX","price":"{{close}}","time":"{{time}}"}` |
-| RBC Close Day | 1D | `{"event":"close_day","date":"...","open":...,"high":...,"low":...,"close":...}` |
+| B1 MIDDLE_OF_RANGE | location_zone == MIDDLE | POOR, não bloqueia |
+| B2 NO_ANCHOR | âncora na direção = NONE | BLOCKED |
+| B4 CALL_INTO_CALL_WALL | CALL + is_near_call_wall | BLOCKED |
+| B5 PUT_INTO_PUT_WALL | PUT + is_near_put_wall | BLOCKED |
+| B9 IMPLIED_MOVE_BOUNDARY | preço no limite do 1D move | BLOCKED |
+| B11 OPERATIONAL_CHASE_RISK | regime_strength == extended | BLOCKED + DO_NOT_CHASE |
+| B12 CALL_IN_UPPER_RANGE | CALL em UPPER/NEAR_RESISTANCE sem CW | POOR |
+| B13 PUT_IN_LOWER_RANGE | PUT em LOWER/NEAR_SUPPORT sem PW | POOR |
+| Alertas | TRANSITION, divergência RP/VT | CAUTION |
 
-URL webhook: `https://web-production-00b33.up.railway.app/api/tv/quote`
+**Precedência do primary_block:** bloqueantes (B2/B4/B5/B9/B11) sobrepõem informativos (B1/B12/B13).
+
+### Calendar Risk Engine
+- Fontes: texto colado do SpotGamma (parser automático) + OPEX (3ª sexta calculado) + VIX exp (3ª sexta mês seguinte −30d calculado)
+- Severidade: CPI/FOMC/Payroll = 3 · PCE/PPI/GDP = 2 · Retail/Michigan = 1
+- Risco: EXTREME (score −3) / HIGH (−2) / MEDIUM (−1) / LOW (0)
+- HIGH/EXTREME → rebaixa GOOD→CAUTION (nunca bloqueia sozinho)
+- Badge no card Decisão + linha no overlay
+- Aviso `needs_update` quando cobertura < 7 dias
+
+**Junho/2026 no banco:**
+- 10/06: CPI (EXTREME)
+- 11/06: PPI (MEDIUM)
+- 17/06: FOMC + VIX expiration (EXTREME — mesma semana)
+- 19/06: OPEX (calculado)
+- 25/06: Core PCE (HIGH)
+
+### Volatility Premium Engine
+- `implied_rv = VIX − 3.5` (spread histórico do Brent)
+- `premium_state`: EXPENSIVE (RV1M < implied−2) / CHEAP (>implied+2) / FAIR
+- `rv_trend`: ACCELERATING (RV5D > RV1M+2) / COOLING / STABLE
+- EXPENSIVE → reasons + GOOD→CAUTION
+- Campos opcionais no Modo 2 (RV 1M %, RV 5D % — da tela SpotGamma)
+- Linha no box Linha Operacional
+
+### Flow Proxy Engine (Patch 2 adaptado)
+- Proxy honesto do HIRO — confirma direção, não antecipa
+- Histórico: `quote_history` (INSERT a cada webhook 1min, retenção 3 dias)
+- Janela: 30 min · mínimo 3 amostras (invisível sem histórico)
+- Estados: CONFIRMING_UP / FRAGILE_UP / CONFIRMING_DOWN / SQUEEZE_RISK / NEUTRAL
+- Contradição com a direção do trade → reasons + GOOD→CAUTION (nunca bloqueia)
+- Linha no box Linha Operacional
 
 ---
 
-## Lógica 0DTE EUA (Codex RBC)
+## Swing v2 — Edge Direcional (PENDENTE APLICAR)
 
-```
-Regime    → SPY vs Vol Trigger
-           ref_price < vol_trigger → NEGATIVE_GAMMA (frágil)
-           ref_price >= vol_trigger → POSITIVE_GAMMA (sustentado)
+**Arquivo:** `patch_swing_v2.py` — **baixado, NÃO aplicado ainda**
 
-NEGATIVE GAMMA:
-  CALL    → reclaim de VT/ZG com aceitação. Alvo: Call Wall.
-  PUT     → rejeição de VT ou aceitação abaixo. Alvos: combos próximos.
-  NO TRADE → SPY entre referência e VT sem direção clara.
+**3 correções:**
+1. `edge_summary` direcional: Skew e P/C espelhados por direção. Favorável = score 2 apenas. FAVORÁVEL exige 2+ fatores a favor, zero contra, e ao menos 1 fator direcional (Skew ou P/C) a favor
+2. Verdict integrado: APROVO = edge FAVORÁVEL + contrato ≥8. Edge NEUTRO → AGUARDAR mesmo com contrato 8/10
+3. Invalidação declarada: `PUT invalida se fechar ACIMA de $X` (spot ± 0.5 × move semanal esperado via IV)
 
-POSITIVE GAMMA:
-  CALL REVERSAL  → SPY perto do Vol Trigger (piso)
-  PUT REVERSAL   → SPY perto da Call Wall (teto)
-  CALL BREAKOUT  → SPY acima do C4, abaixo da Call Wall
-  NO TRADE       → meio da faixa
-
-Timing  → 9:30 observa | 9:45-10:00 entra | 12:30 sai obrigatório
-Prêmio  → alvo +75% | stop -50%
-Gate emocional → evento importante no dia → não opera
-Chase warning → movimento já aconteceu → não perseguir
+**Para aplicar:**
+```bash
+cd ~/RBC
+python3 patch_swing_v2.py us_swing_ibkr.py
+python3 us_swing_ibkr.py   # validar com TWS aberto — NVDA não deve aprovar CALL e PUT juntos
+git add us_swing_ibkr.py
+git commit -m "APROVADO: Swing v2 — edge direcional, verdict integrado, invalidacao"
+git push
 ```
 
----
-
-## Scanner Brasil v2.1
-
-- **Ativos:** PETR4, VALE3, BOVA11, PRIO3
-- **Capital:** R$2.000 (SMALL mode — só compra direta)
-- **Estratégia:** tendência curta + média alinhadas → COMPRA CALL ou COMPRA PUT
-- **Gates:** IV Rank, DTE (14-35 dias), liquidez, spread, theta, delta
-- **Janela:** 10:15–16:30 BRT
-- **Vencimento:** 14-35 dias
-
-### Lógica `explain_missing_conditions` (v2.1)
-- Se `estrategia_tipo == "REPROVO"` → retorna `🔴 REPROVO` imediatamente (fix 08/06)
-- Gate fechado → identifica qual check falhou especificamente (fix 08/06)
+**Próximo (Swing 3):** event risk FOMC/OPEX na janela DTE + tendência de preço do ativo
 
 ---
 
@@ -157,49 +187,57 @@ Chase warning → movimento já aconteceu → não perseguir
 | Rota | Método | Função |
 |---|---|---|
 | `/api/modo1` | POST | Processa PDF SpotGamma |
-| `/api/modo2` | POST | Análise de abertura |
+| `/api/modo2` | POST | Análise de abertura (cockpit completo) |
 | `/api/modo3` | POST | Análise operacional |
-| `/api/tv/quote` | POST/GET | Quote SPY/VIX TradingView |
+| `/api/tv/quote` | POST | Quote TradingView → market_quotes + quote_history |
+| `/api/tv/quote` | GET | Retorna último quote (fresh < 30min) |
+| `/api/calendar` | POST | Salva calendário SpotGamma (upsert) |
+| `/api/calendar` | GET | Retorna analyze_calendar_risk() |
 | `/api/webhook` | POST | Eventos TradingView (journal) |
 | `/api/parse-pm-pdf` | POST | PM Note PDF → journal |
 | `/api/modo5/latest` | GET | Último scan swing |
 
 ---
 
-## Patches aplicados (08/06/2026)
+## Patches aplicados (ordem cronológica)
 
-| Arquivo | Patch | Descrição |
-|---|---|---|
-| `rbc_br_scanner.py` | `patch_explain_fix.py` | explain_missing REPROVO early return |
-| `app.py` | `patch_modo1_plan.py` | Modo 1 regime-aware NEGATIVE_GAMMA |
-| `app.py` | `patch_tv_quote.py` | Endpoint /api/tv/quote (memória) |
-| `app.py` | `patch_market_quotes_pg.py` | market_quotes PostgreSQL |
-| `app.py` | `patch_put_targets_v2.py` | PUT TREND alvos próximos |
-| `app.py` | `patch_next_setup_v2.py` | next_setup cockpit |
-| `templates/index.html` | `patch_modo3_form.py` | Modo 3 simplificado |
-| `templates/index.html` | `patch_modo2_tv_btn.py` | Botão TradingView Modo 2 |
-| `templates/index.html` | `patch_tv_dedup.py` | Remove botão duplicado |
-| `templates/index.html` | `patch_put_targets_v2.py` | Chase warning oculta plano/strikes |
-| `templates/index.html` | `patch_next_setup_v2.py` | Bloco próximo setup |
+| Data | Arquivo(s) | Patch | Status |
+|---|---|---|---|
+| 08/06 | `rbc_br_scanner.py` | explain_missing REPROVO early return | ✅ |
+| 08/06 | `app.py` | patch_datetime_fix | ✅ |
+| 08/06 | `app.py` | patch_risk_pivot_v2 (Opção A) | ✅ |
+| 08/06 | `index.html` | patch_operational_display + fix_preview | ✅ |
+| 09/06 | `app.py` + `index.html` | patch_location_engine_v3 | ✅ |
+| 09/06 | `index.html` | patch_location_display_official | ✅ |
+| 09/06 | `app.py` + `index.html` | patch_anchor_engine_v2 (ABS/LARGE_GAMMA) | ✅ |
+| 10/06 | `app.py` + `index.html` | patch_hard_blocks_v2 (B1-B13) | ✅ |
+| 10/06 | `app.py` | patch_overlay_fix (precedência primary + frase chase) | ✅ |
+| 10/06 | `app.py` + `index.html` + `journal.py` | patch_calendar_risk (Patch 4) | ✅ |
+| 10/06 | `app.py` + `index.html` | patch_vol_premium | ✅ |
+| 11/06 | `app.py` + `index.html` + `journal.py` | patch_flow_proxy (Patch 2 adaptado) | ✅ |
+| 11/06 | `us_swing_ibkr.py` | **patch_swing_v2** | ⏳ PENDENTE |
 
 ---
 
 ## Pendências
 
-- [ ] Botão TradingView Modo 2 — "Erro ao buscar" (investigar CORS ou resposta)
-- [ ] Plano de Trade ainda aparece com ENTRADA/STOP em chase warning (verificar frontend)
-- [ ] `git config --global` — configurar nome/email do committer
-- [ ] `.gitignore` — adicionar backups `*_backup_*.py` e `*_backup_*.html`
+- [ ] **Swing v2:** aplicar `patch_swing_v2.py` + validar com TWS aberto
+- [ ] **Swing 3:** event risk FOMC/OPEX na janela DTE do contrato
+- [ ] **Flow Proxy:** validar em produção (dados reais amanhã 9:40+)
+- [ ] **Calendar:** colar calendário de julho no início do mês (sistema avisa quando necessário)
+- [ ] **Decision Score 0-10** (desbloqueia bloqueio por calendar)
+- [ ] **Journal Mistake Tags** (CHASE, MIDDLE_OF_RANGE, etc.)
+- [ ] **Brasil:** Bear Call Spread mostrando débito em vez de crédito
+- [ ] **Cosmético:** frase crua "Put Wall = suporte extremo" na ENTRADA
+- [ ] **git config --global** — configurar nome/email do committer
+- [ ] **Lição NVDA (11/06):** PUT 195P aberta +5.5% — decidir antes de 16/06 sobre FOMC 17/06 (realizar parcial, sair ou carregar consciente)
 
 ---
 
 ## Como usar este documento em novo chat
 
 ```
-Cole o resumo do início do chat + este arquivo completo.
-Comando para carregar: cat ~/RBC/RBC_ARCHITECTURE.md
-O Claude entra direto no nível certo sem mapear o código do zero.
-Patches 11/06: patch_ui_layout.py (largura global 860->1280px),
-patch_modo2_cockpit.py (Modo 2 cockpit: hero Acao Agora, alertas max 3, accordion).
-HIRO/TRACE: Etapa A standalone no repo (flow_context_engine.py); Etapas B/C pausadas — sem acesso ao HIRO/TRACE; Flow Proxy SPY×VIX cobre o papel.
+Cole este arquivo no início do chat.
+O Claude entra no nível certo sem mapear o código do zero.
+Comando para recarregar: cat ~/RBC/RBC_ARCHITECTURE.md
 ```
