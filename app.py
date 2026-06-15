@@ -2022,7 +2022,8 @@ def tradingview_webhook():
             cw_level  = float(row0.get("call_wall")   or 0)
             vt_level  = float(row0.get("vol_trigger") or 0)
 
-            if not (c4_level and c1_level and cw_level and vt_level):
+            # vol_trigger e call_wall sao obrigatorios — c4 e c1 sao opcionais
+            if not (cw_level and vt_level):
                 return jsonify({"error": "Niveis nao encontrados para %s. Processe o PDF no Modo 1 primeiro." % date}), 400
 
             # ── calculate_trade_path_from_levels ────────────────────
