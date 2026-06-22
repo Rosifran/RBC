@@ -1764,17 +1764,17 @@ def modo2():
         _spot_f = float(spot_now)
         _vt_f   = float(vol_trig)
         _dist_pct = round(abs(_spot_f - _vt_f) / _vt_f * 100, 2)
+        sg["score"] = sg.get("score") or {}
         if gamma_regime == "POSITIVE_GAMMA":
-            parsed["score"] = parsed.get("score") or {}
-            parsed["score"]["justification"] = (
+            sg["score"]["justification"] = (
                 f"Positive Gamma regime — SPY {_spot_f} acima do Vol Trigger {_vt_f} "
                 f"(+{_dist_pct}%). Dealers sustentam range. Reversoes nos extremos.")
         elif gamma_regime == "NEGATIVE_GAMMA":
-            parsed["score"]["justification"] = (
+            sg["score"]["justification"] = (
                 f"Negative Gamma regime — SPY {_spot_f} abaixo do Vol Trigger {_vt_f} "
                 f"(-{_dist_pct}%). Mercado fragil, dealers amplificam moves.")
         elif gamma_regime == "TRANSITION":
-            parsed["score"]["justification"] = (
+            sg["score"]["justification"] = (
                 f"Zona de transicao — SPY {_spot_f} perto do Vol Trigger {_vt_f} "
                 f"({_dist_pct}%). Aguardar aceitacao de lado.")
 
