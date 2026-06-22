@@ -183,19 +183,25 @@ def normalize_claude_output(parsed):
         # ── NEGATIVE GAMMA ────────────────────────────────────────────
         # CALL: só em reclaim do Vol Trigger / Zero Gamma
         # Não usar combos acima da Call Wall como entrada
+        # P3 fix: confirmacao principal acima do VT (nivel mais alto);
+        # ZG mencionado como suporte secundario somente se diferente do VT.
         vt_str = vol_trig or zero_g
         zg_str = zero_g or vol_trig
-        if vt_str and zg_str and vt_str != zg_str:
+        # proximo alvo acima do VT (combo ou 1D move), nao a Call Wall bruta
+        _tgts_neg = sorted([c for c in combos if vol_trig and c > float(vol_trig)])
+        _t1_neg   = _tgts_neg[0] if _tgts_neg else call_wall
+        _t2_neg   = _tgts_neg[1] if len(_tgts_neg) >= 2 else call_wall
+        _tgt_str  = f"{_t1_neg}, then {_t2_neg}" if _t1_neg and _t2_neg and _t1_neg != _t2_neg else str(_t1_neg or call_wall or "Call Wall")
+        if vt_str and zg_str and str(vt_str) != str(zg_str):
             parsed["plan"]["call_trigger"] = (
                 f"SPY reclaim {vt_str} with acceptance. "
-                f"Confirm above {zg_str}. "
-                f"Targets: {call_wall or 'Call Wall'}."
+                f"Confirm above {vt_str} (ZG {zg_str} = secondary support). "
+                f"Targets: {_tgt_str}."
             )
         elif vt_str:
             parsed["plan"]["call_trigger"] = (
                 f"SPY reclaim {vt_str} with acceptance. "
-                f"Target: {call_wall or 'Call Wall'}. "
-                f"Do not chase call above Call Wall."
+                f"Targets: {_tgt_str}."
             )
 
         # PUT: rejeição ou aceitação abaixo do Vol Trigger
@@ -1707,6 +1713,11 @@ def modo2():
         if hhmm < 945:
             timing_quality = "TOO_EARLY"
             early_entry_ok = False
+            # P4 fix: deixa claro que e horario, nao qualidade do setup
+            _now_str = f"{now_et.hour:02d}:{now_et.minute:02d} ET"
+            if parsed.get("score") and parsed["score"].get("justification"):
+                parsed["score"]["justification"] += (
+                    f" | HORARIO: {_now_str} — aguardar 9:45 ET para avaliar setup.")
         elif hhmm <= 1015:
             timing_quality = "OK"
             early_entry_ok = True
@@ -1747,6 +1758,26 @@ def modo2():
     _vt  = vol_trig
     _zg  = spy.get("zero_gamma") or vol_trig
     _cw  = call_wall
+    # P1 fix: sobrescreve justification com regime ATUAL (spot_now vs VT)
+    # O Modo 1 escreve com reference_price do PDF — pode estar desatualizado
+    if vol_trig and spot_now:
+        _spot_f = float(spot_now)
+        _vt_f   = float(vol_trig)
+        _dist_pct = round(abs(_spot_f - _vt_f) / _vt_f * 100, 2)
+        if gamma_regime == "POSITIVE_GAMMA":
+            parsed["score"] = parsed.get("score") or {}
+            parsed["score"]["justification"] = (
+                f"Positive Gamma regime — SPY {_spot_f} acima do Vol Trigger {_vt_f} "
+                f"(+{_dist_pct}%). Dealers sustentam range. Reversoes nos extremos.")
+        elif gamma_regime == "NEGATIVE_GAMMA":
+            parsed["score"]["justification"] = (
+                f"Negative Gamma regime — SPY {_spot_f} abaixo do Vol Trigger {_vt_f} "
+                f"(-{_dist_pct}%). Mercado fragil, dealers amplificam moves.")
+        elif gamma_regime == "TRANSITION":
+            parsed["score"]["justification"] = (
+                f"Zona de transicao — SPY {_spot_f} perto do Vol Trigger {_vt_f} "
+                f"({_dist_pct}%). Aguardar aceitacao de lado.")
+
     _pw  = put_wall
     _ref = spy.get("reference_price") or spot_now
 
@@ -1765,12 +1796,22 @@ def modo2():
             "context":      "NEGATIVE GAMMA — mercado frágil. Dealers amplificam moves.",
         }
     elif gamma_regime == "POSITIVE_GAMMA":
+        # P2/P5 fix: teto operacional = proximo nivel relevante acima do SPY,
+        # nao a Call Wall bruta (pode estar 50+ pts longe em 0DTE).
+        _all_up = sorted([c for c in ([move_1d_high] + list(combos) + ([float(_cw)] if _cw else []))
+                          if c and spot_now and float(c) > float(spot_now)])
+        _teto_op = _all_up[0] if _all_up else _cw   # primeiro nivel relevante acima
+        _teto_str = str(_teto_op) if _teto_op else str(_cw)
+        _cw_str   = str(_cw) if _cw else "Call Wall"
         next_setup = {
             "call_setup":   f"SPY retestar {_key_level} e segurar — entrada CALL REVERSAL perto do piso.",
-            "put_setup":    f"SPY se aproximar de {_cw} e rejeitar — entrada PUT REVERSAL perto do teto.",
-            "no_trade":     f"SPY no meio da faixa {_vt}–{_cw} — sem edge estrutural.",
+            "put_setup":    (f"SPY se aproximar de {_teto_str} e rejeitar — "
+                             f"entrada PUT REVERSAL perto do teto operacional."
+                             + (f" (Call Wall estrutural: {_cw_str})" if _teto_op != _cw else "")),
+            "no_trade":     f"SPY no meio da faixa {_vt}–{_teto_str} — sem edge estrutural.",
             "key_level":    _key_level,
-            "invalidation": f"Viés CALL perde força se SPY perder {_key_level}. Viés PUT perde força se SPY superar {_cw}.",
+            "invalidation": (f"Viés CALL perde força se SPY perder {_key_level}. "
+                             f"Viés PUT perde força se SPY superar {_teto_str}."),
             "context":      "POSITIVE GAMMA — dealers sustentam range. Reversões nos extremos.",
         }
     else:
