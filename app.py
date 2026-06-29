@@ -1760,19 +1760,33 @@ def modo2():
     _cw  = call_wall
     # P1 fix: sobrescreve justification com regime ATUAL (spot_now vs VT)
     # O Modo 1 escreve com reference_price do PDF — pode estar desatualizado
+    # Near VT: 0 <= dist_pts < 1.00 → acima do VT mas perto demais para Positive limpo
     if vol_trig and spot_now:
-        _spot_f = float(spot_now)
-        _vt_f   = float(vol_trig)
-        _dist_pct = round(abs(_spot_f - _vt_f) / _vt_f * 100, 2)
+        _spot_f   = float(spot_now)
+        _vt_f     = float(vol_trig)
+        _dist_pts = round(_spot_f - _vt_f, 2)
+        _dist_pct = round(abs(_dist_pts) / _vt_f * 100, 2)
+        _near_vt  = 0 <= _dist_pts < 1.00
         sg["score"] = sg.get("score") or {}
-        if gamma_regime == "POSITIVE_GAMMA":
+        if gamma_regime == "POSITIVE_GAMMA" and _near_vt:
+            sg["score"]["justification"] = (
+                f"POSITIVE GAMMA / NEAR VT — SPY {_spot_f} apenas {_dist_pts:+.2f} pt "
+                f"acima do Vol Trigger {_vt_f} ({_dist_pct}%). "
+                f"Aguardar aceitacao/fechamento acima do nivel para confirmar regime.")
+            sg["score"]["near_vt"] = True
+            sg["score"]["near_vt_dist_pts"] = _dist_pts
+        elif gamma_regime == "POSITIVE_GAMMA":
             sg["score"]["justification"] = (
                 f"Positive Gamma regime — SPY {_spot_f} acima do Vol Trigger {_vt_f} "
                 f"(+{_dist_pct}%). Dealers sustentam range. Reversoes nos extremos.")
+            sg["score"]["near_vt"] = False
+            sg["score"]["near_vt_dist_pts"] = _dist_pts
         elif gamma_regime == "NEGATIVE_GAMMA":
             sg["score"]["justification"] = (
                 f"Negative Gamma regime — SPY {_spot_f} abaixo do Vol Trigger {_vt_f} "
                 f"(-{_dist_pct}%). Mercado fragil, dealers amplificam moves.")
+            sg["score"]["near_vt"] = False
+            sg["score"]["near_vt_dist_pts"] = _dist_pts
         elif gamma_regime == "TRANSITION":
             sg["score"]["justification"] = (
                 f"Zona de transicao — SPY {_spot_f} perto do Vol Trigger {_vt_f} "
