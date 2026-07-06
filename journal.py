@@ -241,6 +241,110 @@ def get_calendar_events(from_date=None):
         return cur.fetchall()
 
 
+# ── Position Manager (Swing — compra de CALL ou PUT) ────────────────
+
+def init_positions():
+    with get_conn() as conn, conn.cursor() as cur:
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS positions (
+                id              SERIAL PRIMARY KEY,
+                ticker          VARCHAR(10) NOT NULL,
+                direction       VARCHAR(4)  NOT NULL,
+                strike          NUMERIC(10,2),
+                expiration      DATE,
+                dte_entry       INT,
+                entry_price     NUMERIC(10,4) NOT NULL,
+                entry_date      DATE DEFAULT CURRENT_DATE,
+                contracts       INT DEFAULT 1,
+                stop_price      NUMERIC(10,4),
+                target_1        NUMERIC(10,4),
+                target_2        NUMERIC(10,4),
+                invalid_level   NUMERIC(10,4),
+                invalid_note    TEXT,
+                tese_valida     BOOLEAN DEFAULT TRUE,
+                current_price   NUMERIC(10,4),
+                current_iv      NUMERIC(6,2),
+                status          VARCHAR(30) DEFAULT 'MANTER',
+                status_reason   TEXT,
+                flow_alert      TEXT,
+                tech_bias       VARCHAR(10),
+                closed          BOOLEAN DEFAULT FALSE,
+                close_price     NUMERIC(10,4),
+                close_date      DATE,
+                close_reason    VARCHAR(30),
+                pnl_pct         NUMERIC(8,2),
+                notes           TEXT,
+                created_at      TIMESTAMP DEFAULT NOW(),
+                updated_at      TIMESTAMP DEFAULT NOW()
+            )""")
+        conn.commit()
+
+def save_position(pos: dict) -> int:
+    init_positions()
+    entry = float(pos['entry_price'])
+    stop  = round(entry * 0.65, 4)
+    t1    = round(entry * 1.40, 4)
+    t2    = round(entry * 1.80, 4)
+    with get_conn() as conn, conn.cursor() as cur:
+        cur.execute("""
+            INSERT INTO positions
+              (ticker, direction, strike, expiration, dte_entry,
+               entry_price, contracts, stop_price, target_1, target_2,
+               invalid_level, invalid_note, flow_alert, tech_bias, notes)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            RETURNING id""",
+            (pos['ticker'], pos['direction'].upper(),
+             pos.get('strike'), pos.get('expiration'), pos.get('dte_entry'),
+             entry, pos.get('contracts', 1),
+             pos.get('stop_price', stop),
+             pos.get('target_1', t1),
+             pos.get('target_2', t2),
+             pos.get('invalid_level'), pos.get('invalid_note'),
+             pos.get('flow_alert'), pos.get('tech_bias'),
+             pos.get('notes')))
+        row_id = cur.fetchone()[0]
+        conn.commit()
+    return row_id
+
+def get_positions(include_closed=False):
+    init_positions()
+    with get_conn() as conn, conn.cursor(cursor_factory=RealDictCursor) as cur:
+        if include_closed:
+            cur.execute("SELECT * FROM positions ORDER BY created_at DESC")
+        else:
+            cur.execute("SELECT * FROM positions WHERE closed=FALSE ORDER BY created_at DESC")
+        return cur.fetchall()
+
+def update_position(pos_id: int, fields: dict):
+    init_positions()
+    fields['updated_at'] = datetime.now()
+    cols = ', '.join(f"{k} = %s" for k in fields)
+    vals = list(fields.values()) + [pos_id]
+    with get_conn() as conn, conn.cursor() as cur:
+        cur.execute(f"UPDATE positions SET {cols} WHERE id = %s", vals)
+        conn.commit()
+
+def close_position(pos_id: int, close_price: float, close_reason: str):
+    init_positions()
+    entry_price = None
+    with get_conn() as conn, conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute("SELECT entry_price FROM positions WHERE id = %s", (pos_id,))
+        row = cur.fetchone()
+        if row:
+            entry_price = float(row['entry_price'])
+    if not entry_price:
+        return
+    pnl = round((close_price - entry_price) / entry_price * 100, 2)
+    with get_conn() as conn, conn.cursor() as cur:
+        cur.execute("""
+            UPDATE positions SET closed=TRUE, close_price=%s, close_date=CURRENT_DATE,
+            close_reason=%s, pnl_pct=%s, status=%s, updated_at=NOW()
+            WHERE id=%s""",
+            (close_price, close_reason, pnl, close_reason, pos_id))
+        conn.commit()
+    return pnl
+
+
 # ── Quote History (Flow Proxy — SPY x VIX intraday) ─────────────────
 
 def init_quote_history():

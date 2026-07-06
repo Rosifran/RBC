@@ -1826,6 +1826,221 @@ ${(() => {
 <div id="panel-modo5" class="tab-panel">
   <p class="section-label">MODO 5</p>
   <h2 class="section-title">US Swing Options</h2>
+
+  <!-- Position Manager — posições abertas -->
+  <div id="positions-section" style="margin-bottom:16px;"></div>
+
+  <script>
+  // ── Position Manager ──────────────────────────────────────────────
+  const STATUS_COLOR = {
+    'MANTER':          '#16a34a',
+    'MONITORAR':       '#d97706',
+    'SAIR_POR_STOP':   '#dc2626',
+    'SAIR_POR_ALVO':   '#16a34a',
+    'SAIR_POR_TEMPO':  '#dc2626',
+    'SAIR_POR_INVALIDA': '#dc2626',
+  };
+  const STATUS_LABEL = {
+    'MANTER':          'MANTER',
+    'MONITORAR':       'MONITORAR',
+    'SAIR_POR_STOP':   'SAIR — STOP',
+    'SAIR_POR_ALVO':   'SAIR — ALVO',
+    'SAIR_POR_TEMPO':  'SAIR — TEMPO',
+    'SAIR_POR_INVALIDA': 'SAIR — INVALIDAÇÃO',
+  };
+
+  async function loadPositions() {
+    try {
+      const res  = await fetch('/api/positions');
+      const data = await res.json();
+      const sec  = document.getElementById('positions-section');
+      if (!data.ok || !data.positions || data.positions.length === 0) {
+        sec.innerHTML = '';
+        return;
+      }
+      let html = `<div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Posições Abertas</div>`;
+      for (const p of data.positions) {
+        const color  = STATUS_COLOR[p.status] || '#64748b';
+        const label  = STATUS_LABEL[p.status] || p.status;
+        const pnl    = p.pnl_pct != null ? (p.pnl_pct >= 0 ? `+${p.pnl_pct}%` : `${p.pnl_pct}%`) : '—';
+        const pnlClr = p.pnl_pct >= 0 ? '#16a34a' : '#dc2626';
+        html += `
+        <div style="background:#fff;border:0.5px solid #e2e8f0;border-left:4px solid ${color};border-radius:12px;padding:12px 14px;margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+            <div>
+              <span style="font-size:14px;font-weight:700;color:#1e293b;">${p.ticker}</span>
+              <span style="font-size:11px;color:${p.direction==='CALL'?'#16a34a':'#dc2626'};font-weight:600;margin-left:6px;">${p.direction}</span>
+              ${p.strike ? `<span style="font-size:11px;color:#64748b;margin-left:4px;">$${p.strike}</span>` : ''}
+              ${p.expiration ? `<span style="font-size:10px;color:#94a3b8;margin-left:4px;">· ${p.expiration}</span>` : ''}
+            </div>
+            <span style="font-size:11px;font-weight:700;color:${color};background:${color}18;padding:3px 10px;border-radius:8px;">${label}</span>
+          </div>
+          <div style="font-size:12px;color:#475569;line-height:1.6;">
+            Entrada <b>$${p.entry_price}</b>
+            ${p.current_price ? `· Atual <b style="color:${pnlClr};">$${p.current_price}</b> (${pnl})` : ''}
+            · Stop <b>$${p.stop_price}</b> · Alvo <b>$${p.target_1}</b>
+          </div>
+          ${p.status_reason ? `<div style="font-size:11px;color:#64748b;margin-top:4px;">${p.status_reason}</div>` : ''}
+          <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap;">
+            <input type="number" step="0.01" placeholder="Prêmio atual"
+              id="cp-${p.id}" style="width:110px;font-size:11px;padding:4px 8px;border:0.5px solid #e2e8f0;border-radius:6px;">
+            <label style="font-size:11px;color:#64748b;">
+              <input type="checkbox" id="tese-${p.id}" ${p.tese_valida ? 'checked' : ''}
+                style="margin-right:3px;">Tese válida
+            </label>
+            <button onclick="evaluatePosition(${p.id})"
+              style="font-size:11px;padding:4px 12px;background:#0f172a;color:#fff;border:none;border-radius:6px;cursor:pointer;">
+              Avaliar
+            </button>
+            <button onclick="closePosition(${p.id})"
+              style="font-size:11px;padding:4px 10px;background:#fff;color:#dc2626;border:0.5px solid #dc2626;border-radius:6px;cursor:pointer;">
+              Fechar
+            </button>
+          </div>
+        </div>`;
+      }
+      sec.innerHTML = html;
+    } catch(e) { console.error('loadPositions:', e); }
+  }
+
+  async function evaluatePosition(id) {
+    const cp    = parseFloat(document.getElementById(`cp-${id}`).value);
+    const tese  = document.getElementById(`tese-${id}`).checked;
+    const body  = { tese_valida: tese };
+    if (!isNaN(cp)) body.current_price = cp;
+    const res   = await fetch(`/api/positions/${id}/evaluate`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (data.ok) loadPositions();
+    else alert(data.error || 'Erro ao avaliar');
+  }
+
+  async function closePosition(id) {
+    const cp = parseFloat(document.getElementById(`cp-${id}`).value);
+    if (isNaN(cp)) { alert('Informe o prêmio atual para fechar.'); return; }
+    if (!confirm('Fechar posição?')) return;
+    const res = await fetch(`/api/positions/${id}`, {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ close: true, current_price: cp, close_reason: 'MANUAL' })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      alert(`Posição fechada. P&L: ${data.pnl_pct >= 0 ? '+' : ''}${data.pnl_pct}%`);
+      loadPositions();
+    }
+  }
+
+  async function registerPosition(data) {
+    const res = await fetch('/api/positions', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+    if (result.ok) { loadPositions(); return result.id; }
+    else { alert(result.error || 'Erro ao registrar'); return null; }
+  }
+  </script>
+
+  <!-- Formulário rápido de registro -->
+  <details style="margin-bottom:12px;border:0.5px solid #e2e8f0;border-radius:10px;padding:8px 12px;background:#fafafa;">
+    <summary style="font-size:12px;font-weight:600;color:#64748b;cursor:pointer;">+ Registrar nova posição</summary>
+    <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div>
+        <label style="font-size:10px;color:#64748b;font-weight:600;">TICKER *</label>
+        <input id="pos-ticker" type="text" placeholder="NVDA"
+          style="width:100%;box-sizing:border-box;font-size:12px;padding:6px 8px;border:0.5px solid #e2e8f0;border-radius:6px;margin-top:2px;">
+      </div>
+      <div>
+        <label style="font-size:10px;color:#64748b;font-weight:600;">DIREÇÃO *</label>
+        <select id="pos-dir"
+          style="width:100%;box-sizing:border-box;font-size:12px;padding:6px 8px;border:0.5px solid #e2e8f0;border-radius:6px;margin-top:2px;">
+          <option value="CALL">CALL</option>
+          <option value="PUT">PUT</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:10px;color:#64748b;font-weight:600;">STRIKE</label>
+        <input id="pos-strike" type="number" step="0.5" placeholder="210"
+          style="width:100%;box-sizing:border-box;font-size:12px;padding:6px 8px;border:0.5px solid #e2e8f0;border-radius:6px;margin-top:2px;">
+      </div>
+      <div>
+        <label style="font-size:10px;color:#64748b;font-weight:600;">VENCIMENTO</label>
+        <input id="pos-exp" type="date"
+          style="width:100%;box-sizing:border-box;font-size:12px;padding:6px 8px;border:0.5px solid #e2e8f0;border-radius:6px;margin-top:2px;">
+      </div>
+      <div>
+        <label style="font-size:10px;color:#64748b;font-weight:600;">PRÊMIO ENTRADA *</label>
+        <input id="pos-entry" type="number" step="0.01" placeholder="3.20"
+          style="width:100%;box-sizing:border-box;font-size:12px;padding:6px 8px;border:0.5px solid #e2e8f0;border-radius:6px;margin-top:2px;">
+      </div>
+      <div>
+        <label style="font-size:10px;color:#64748b;font-weight:600;">VIÉS TÉCNICO</label>
+        <select id="pos-tech"
+          style="width:100%;box-sizing:border-box;font-size:12px;padding:6px 8px;border:0.5px solid #e2e8f0;border-radius:6px;margin-top:2px;">
+          <option value="">—</option>
+          <option value="ALTA">ALTA</option>
+          <option value="BAIXA">BAIXA</option>
+          <option value="LATERAL">LATERAL</option>
+        </select>
+      </div>
+      <div style="grid-column:1/-1;">
+        <label style="font-size:10px;color:#64748b;font-weight:600;">INVALIDAÇÃO TÉCNICA (nível)</label>
+        <input id="pos-invalid" type="number" step="0.01" placeholder="ex: 207.50"
+          style="width:100%;box-sizing:border-box;font-size:12px;padding:6px 8px;border:0.5px solid #e2e8f0;border-radius:6px;margin-top:2px;">
+      </div>
+      <div style="grid-column:1/-1;">
+        <label style="font-size:10px;color:#64748b;font-weight:600;">NOTAS (opcional)</label>
+        <input id="pos-notes" type="text" placeholder="ex: fluxo CALL + suporte técnico em 198"
+          style="width:100%;box-sizing:border-box;font-size:12px;padding:6px 8px;border:0.5px solid #e2e8f0;border-radius:6px;margin-top:2px;">
+      </div>
+      <div style="grid-column:1/-1;display:flex;gap:8px;align-items:center;margin-top:4px;">
+        <button onclick="submitPosition()"
+          style="font-size:12px;padding:7px 18px;background:#0f172a;color:#fff;border:none;border-radius:8px;cursor:pointer;">
+          Registrar posição
+        </button>
+        <span id="pos-status" style="font-size:11px;color:#64748b;"></span>
+      </div>
+    </div>
+  </details>
+
+  <script>
+  async function submitPosition() {
+    const ticker = document.getElementById('pos-ticker').value.trim().toUpperCase();
+    const entry  = parseFloat(document.getElementById('pos-entry').value);
+    if (!ticker || isNaN(entry)) {
+      document.getElementById('pos-status').textContent = 'Ticker e prêmio são obrigatórios.';
+      return;
+    }
+    const data = {
+      ticker, entry_price: entry,
+      direction:     document.getElementById('pos-dir').value,
+      strike:        parseFloat(document.getElementById('pos-strike').value) || null,
+      expiration:    document.getElementById('pos-exp').value || null,
+      invalid_level: parseFloat(document.getElementById('pos-invalid').value) || null,
+      tech_bias:     document.getElementById('pos-tech').value || null,
+      notes:         document.getElementById('pos-notes').value || null,
+    };
+    if (data.expiration && data.strike) {
+      const exp  = new Date(data.expiration);
+      const hoje = new Date();
+      data.dte_entry = Math.round((exp - hoje) / 86400000);
+    }
+    document.getElementById('pos-status').textContent = 'Registrando...';
+    const id = await registerPosition(data);
+    if (id) {
+      document.getElementById('pos-status').textContent = `✅ Posição #${id} registrada`;
+      ['pos-ticker','pos-entry','pos-strike','pos-exp','pos-invalid','pos-notes']
+        .forEach(i => document.getElementById(i).value = '');
+    }
+  }
+  // carrega ao abrir a aba
+  document.addEventListener('DOMContentLoaded', loadPositions);
+  </script>
   <p class="section-sub">Scanner de opcoes swing 14-35 DTE via IBKR TWS. Rode o scanner de manha antes do pregao.</p>
 
   <div style="margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
@@ -2126,6 +2341,7 @@ ${(() => {
   }
 
   async function loadModo5() {
+    loadPositions();
     const el = document.getElementById('modo5-content');
     const ts = document.getElementById('modo5-timestamp');
     if (!el) return;

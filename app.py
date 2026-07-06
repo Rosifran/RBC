@@ -801,6 +801,193 @@ def analyze_flow_proxy(window_min=30):
     }
 
 
+def evaluate_position_status(pos: dict) -> dict:
+    """Position Manager — avalia status da posição aberta.
+    Regras dos cursos de opções integradas.
+    Não decide pelo trader — informa o estado real da posição."""
+    from datetime import date as _date
+    entry   = float(pos.get('entry_price') or 0)
+    current = float(pos.get('current_price') or 0)
+    stop    = float(pos.get('stop_price') or entry * 0.65)
+    t1      = float(pos.get('target_1') or entry * 1.40)
+    t2      = float(pos.get('target_2') or entry * 1.80)
+
+    # DTE restante
+    exp = pos.get('expiration')
+    dte_now = None
+    if exp:
+        try:
+            exp_date = exp if isinstance(exp, _date) else _date.fromisoformat(str(exp))
+            dte_now  = (exp_date - _date.today()).days
+        except Exception:
+            pass
+
+    tese_valida = bool(pos.get('tese_valida', True))
+    pnl_pct = round((current - entry) / entry * 100, 2) if entry and current else None
+
+    # ── Regras de saída (ordem de prioridade) ─────────────────────────
+
+    # 1. Stop financeiro (curso: "Stop quando chegar na ponta LONG")
+    if current and current <= stop:
+        return {
+            "status":  "SAIR_POR_STOP",
+            "reason":  f"Prêmio {current:.2f} atingiu stop financeiro {stop:.2f} (-35%). Sair agora.",
+            "urgency": "ALTA",
+            "pnl_pct": pnl_pct,
+        }
+
+    # 2. Alvo atingido
+    if current and current >= t2:
+        return {
+            "status":  "SAIR_POR_ALVO",
+            "reason":  f"Alvo 2 atingido ({t2:.2f}, +80%). Realizar lucro total.",
+            "urgency": "ALTA",
+            "pnl_pct": pnl_pct,
+        }
+    if current and current >= t1:
+        return {
+            "status":  "SAIR_POR_ALVO",
+            "reason":  f"Alvo 1 atingido ({t1:.2f}, +40%). Considerar realização total ou parcial.",
+            "urgency": "MEDIA",
+            "pnl_pct": pnl_pct,
+        }
+
+    # 3. Alerta parcial a +30% (curso: "Realizar com 30% de lucro")
+    partial_alert = None
+    if current and current >= entry * 1.30:
+        partial_alert = f"Prêmio +{pnl_pct:.0f}% — considerar realização parcial (curso: +30% é ponto de atenção)."
+
+    # 4. Invalidação técnica (você marcou)
+    if not tese_valida:
+        return {
+            "status":  "SAIR_POR_INVALIDA",
+            "reason":  pos.get('invalid_note') or "Tese técnica invalidada — nível rompido.",
+            "urgency": "ALTA",
+            "pnl_pct": pnl_pct,
+        }
+
+    # 5. Theta perigoso — últimos 7 DTE (curso: theta acelera nos últimos 30d)
+    if dte_now is not None and dte_now <= 7:
+        return {
+            "status":  "SAIR_POR_TEMPO",
+            "reason":  f"DTE restante: {dte_now}d — theta acelerando. Sair antes do vencimento.",
+            "urgency": "ALTA",
+            "pnl_pct": pnl_pct,
+        }
+
+    # 6. Monitorar — sinais de atenção sem urgência
+    monitor_reasons = []
+    if dte_now is not None and dte_now <= 14:
+        monitor_reasons.append(f"DTE {dte_now}d — theta crescendo (abaixo de 7d = sair).")
+    if current and pnl_pct and pnl_pct <= -20:
+        monitor_reasons.append(f"Posição {pnl_pct:.0f}% — próximo do stop. Tese ainda válida?")
+    if partial_alert:
+        monitor_reasons.append(partial_alert)
+
+    if monitor_reasons:
+        return {
+            "status":  "MONITORAR",
+            "reason":  " | ".join(monitor_reasons),
+            "urgency": "MEDIA",
+            "pnl_pct": pnl_pct,
+        }
+
+    # 7. Manter — tese válida, sem urgência
+    # (curso: "Sit quando perdedor na abertura mas tese válida")
+    reason = "Tese técnica válida."
+    if pnl_pct is not None:
+        reason += f" Posição {'+' if pnl_pct >= 0 else ''}{pnl_pct:.1f}%."
+    if dte_now is not None:
+        reason += f" {dte_now}d restantes."
+    return {
+        "status":  "MANTER",
+        "reason":  reason,
+        "urgency": "BAIXA",
+        "pnl_pct": pnl_pct,
+    }
+
+
+@app.route("/api/positions", methods=["POST"])
+def positions_post():
+    """Registra nova posição aberta."""
+    from journal import save_position
+    data = request.get_json(silent=True) or {}
+    required = ['ticker', 'direction', 'entry_price']
+    missing = [f for f in required if not data.get(f)]
+    if missing:
+        return jsonify({"ok": False, "error": f"Campos obrigatórios: {missing}"})
+    try:
+        pos_id = save_position(data)
+        return jsonify({"ok": True, "id": pos_id})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)})
+
+@app.route("/api/positions", methods=["GET"])
+def positions_get():
+    """Lista posições abertas."""
+    from journal import get_positions
+    include_closed = request.args.get('closed') == '1'
+    try:
+        rows = get_positions(include_closed=include_closed)
+        result = []
+        for r in rows:
+            d = dict(r)
+            for k, v in d.items():
+                if hasattr(v, 'isoformat'):
+                    d[k] = v.isoformat()
+            result.append(d)
+        return jsonify({"ok": True, "positions": result})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)})
+
+@app.route("/api/positions/<int:pos_id>", methods=["PUT"])
+def positions_update(pos_id):
+    """Atualiza prêmio atual, tese, IV ou fecha posição."""
+    from journal import update_position, close_position
+    data = request.get_json(silent=True) or {}
+    try:
+        if data.get('close'):
+            pnl = close_position(pos_id,
+                                  float(data['current_price']),
+                                  data.get('close_reason', 'MANUAL'))
+            return jsonify({"ok": True, "pnl_pct": pnl})
+        fields = {}
+        for f in ['current_price', 'current_iv', 'tese_valida',
+                  'invalid_note', 'tech_bias', 'notes']:
+            if f in data:
+                fields[f] = data[f]
+        if fields:
+            update_position(pos_id, fields)
+        return jsonify({"ok": True})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)})
+
+@app.route("/api/positions/<int:pos_id>/evaluate", methods=["POST"])
+def positions_evaluate(pos_id):
+    """Avalia status da posição com o prêmio atual informado."""
+    from journal import get_positions, update_position
+    data = request.get_json(silent=True) or {}
+    try:
+        positions = get_positions()
+        pos = next((dict(p) for p in positions if p['id'] == pos_id), None)
+        if not pos:
+            return jsonify({"ok": False, "error": "Posição não encontrada"})
+        if 'current_price' in data:
+            pos['current_price'] = data['current_price']
+            update_position(pos_id, {'current_price': data['current_price']})
+        if 'tese_valida' in data:
+            pos['tese_valida'] = data['tese_valida']
+            update_position(pos_id, {'tese_valida': data['tese_valida']})
+        result = evaluate_position_status(pos)
+        update_position(pos_id, {
+            'status':        result['status'],
+            'status_reason': result['reason'],
+        })
+        return jsonify({"ok": True, **result})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)})
+
+
 def analyze_vol_premium(vix_now, rv_1m, rv_5d, spread=3.5):
     """Volatility Premium — VIX vs Realized Vol (curso SpotGamma).
     implied_rv = VIX - spread historico. Compara com RV 1M e RV 5D."""
