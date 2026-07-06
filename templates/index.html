@@ -490,6 +490,7 @@
   <button class="tab-btn" onclick="switchTab('modo3', this)">Modo 3 · Operacional</button>
   <button class="tab-btn" onclick="switchTab('modo4', this); loadJournal(); loadPMNote();">Modo 4 · Journal</button>
   <button class="tab-btn" onclick="switchTab('modo5', this); loadModo5();">Modo 5 · Swing</button>
+  <button class="tab-btn" onclick="switchTab('modo6', this); loadModo6();">Modo 6 · Gamma</button>
 </div>
 
 <!-- ── MODO 1: PRÉ-MERCADO ── -->
@@ -2512,6 +2513,106 @@ ${(() => {
       loadJournal();
     } catch(e) {
       showError('journal', e.message);
+    }
+  }
+</script>
+
+<!-- ── MODO 6: INTRADAY GAMMA ── -->
+<div id="panel-modo6" class="tab-panel">
+  <p class="section-label">MODO 6</p>
+  <h2 class="section-title">Intraday Gamma</h2>
+  <p class="section-sub">Níveis de gamma intraday via IBKR TWS — estrutura de opções de hoje.</p>
+
+  <div style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+    <button onclick="loadModo6()" class="btn-primary" style="font-size:12px;padding:8px 16px;">↻ Atualizar</button>
+    <span id="m6-regime-badge"></span>
+    <span id="m6-timestamp" style="font-size:11px;color:#94a3b8;"></span>
+  </div>
+
+  <div id="m6-empty" style="display:none;padding:16px 20px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;font-size:13px;color:#64748b;line-height:1.5;">
+    Sem níveis hoje. Rode <code style="background:#e2e8f0;padding:1px 5px;border-radius:4px;font-family:monospace;">intraday_gamma.py</code> no Mac com o TWS aberto (mercado 9:30-16:00 ET).
+  </div>
+
+  <div class="sg-metrics" id="m6-metrics">
+    <div class="metric-card">
+      <p class="metric-label">Call Wall</p>
+      <p class="metric-val" id="m6-call-wall" style="color:#16a34a;">—</p>
+      <p class="metric-sub">Resistência de calls</p>
+    </div>
+    <div class="metric-card">
+      <p class="metric-label">Vol Trigger</p>
+      <p class="metric-val" id="m6-vol-trigger" style="color:#d97706;">—</p>
+      <p class="metric-sub">Gatilho de volatilidade</p>
+    </div>
+    <div class="metric-card">
+      <p class="metric-label">Zero Gamma</p>
+      <p class="metric-val" id="m6-zero-gamma" style="color:#2563eb;">—</p>
+      <p class="metric-sub">Nível de reversão</p>
+    </div>
+    <div class="metric-card">
+      <p class="metric-label">Put Wall</p>
+      <p class="metric-val" id="m6-put-wall" style="color:#dc2626;">—</p>
+      <p class="metric-sub">Suporte de puts</p>
+    </div>
+  </div>
+
+  <p id="m6-fonte" style="display:none;font-size:11px;color:#94a3b8;margin-top:16px;">Fonte: Modo 6 — IBKR Intraday</p>
+</div>
+
+<script>
+  async function loadModo6() {
+    const metricsEl = document.getElementById('m6-metrics');
+    const emptyEl   = document.getElementById('m6-empty');
+    const fonteEl   = document.getElementById('m6-fonte');
+    const tsEl      = document.getElementById('m6-timestamp');
+    const badgeEl   = document.getElementById('m6-regime-badge');
+
+    metricsEl.classList.remove('visible');
+    emptyEl.style.display = 'none';
+    fonteEl.style.display = 'none';
+    badgeEl.innerHTML     = '';
+    tsEl.textContent      = 'Carregando...';
+
+    try {
+      const res  = await fetch('/api/gamma-levels');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erro ao carregar gamma');
+
+      const lv = data.levels || {};
+      const hasLevels = lv.call_wall != null || lv.put_wall != null || lv.zero_gamma != null || lv.vol_trigger != null;
+
+      if (!hasLevels) {
+        emptyEl.style.display = '';
+        tsEl.textContent = '';
+        return;
+      }
+
+      const fmt = v => v != null ? v.toFixed(2) : '—';
+      document.getElementById('m6-call-wall').textContent   = fmt(lv.call_wall);
+      document.getElementById('m6-vol-trigger').textContent = fmt(lv.vol_trigger);
+      document.getElementById('m6-zero-gamma').textContent  = fmt(lv.zero_gamma);
+      document.getElementById('m6-put-wall').textContent    = fmt(lv.put_wall);
+
+      metricsEl.classList.add('visible');
+
+      let labelTs = data.date || '';
+      if (data.timestamp) {
+        const d   = new Date(data.timestamp);
+        const pad = n => String(n).padStart(2, '0');
+        labelTs   = `${pad(d.getDate())}/${pad(d.getMonth()+1)} ${pad(d.getHours())}:${pad(d.getMinutes())} ET`;
+      }
+      tsEl.textContent      = labelTs ? `Atualizado: ${labelTs}` : '';
+      fonteEl.textContent   = `Fonte: Modo 6 — IBKR Intraday${labelTs ? ' · ' + labelTs : ''}`;
+      fonteEl.style.display = '';
+
+      if (data.regime) {
+        const pos    = data.regime.includes('POSITIVE');
+        const fg     = pos ? '#16a34a' : '#dc2626';
+        const bg     = pos ? '#f0fdf4' : '#fef2f2';
+        badgeEl.innerHTML = `<span style="font-size:11px;font-weight:700;color:${fg};background:${bg};border:1px solid ${fg}40;padding:2px 10px;border-radius:20px;">${data.regime}</span>`;
+      }
+    } catch(e) {
+      tsEl.textContent = 'Erro: ' + e.message;
     }
   }
 </script>

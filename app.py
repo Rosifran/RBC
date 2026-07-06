@@ -2386,7 +2386,7 @@ def post_gamma_levels():
 
 @app.route("/api/gamma-levels", methods=["GET"])
 def get_gamma_levels():
-    from journal import get_snapshot_by_date, init_db
+    from journal import get_snapshot_by_date, get_market_quotes, init_db
     try:
         init_db()
         today = request.args.get("date") or date.today().isoformat()
@@ -2395,7 +2395,19 @@ def get_gamma_levels():
             k: float(row[k]) if row.get(k) is not None else None
             for k in ("call_wall", "put_wall", "zero_gamma", "vol_trigger")
         }
-        return jsonify({"date": today, "levels": levels})
+        spot, regime = None, None
+        try:
+            quotes = get_market_quotes()
+            spy_row = quotes.get("SPY", {})
+            if spy_row.get("price"):
+                spot = float(spy_row["price"])
+                zg = levels.get("zero_gamma")
+                if zg is not None:
+                    regime = "POSITIVE GAMMA" if spot > zg else "NEGATIVE GAMMA"
+        except Exception:
+            pass
+        ts = str(row["created_at"]) if row and row.get("created_at") else None
+        return jsonify({"date": today, "levels": levels, "spot": spot, "regime": regime, "timestamp": ts})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
