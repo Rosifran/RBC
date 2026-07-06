@@ -5,7 +5,7 @@ RBC — Risk Bridge Capital | Flask API
 import io
 import json
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 
 from dotenv import load_dotenv
 
@@ -2362,6 +2362,43 @@ def get_journal_route():
         return jsonify(rows)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+# ── Modo 6: Intraday Gamma levels via IBKR ───────────────────────────
+
+@app.route("/api/gamma-levels", methods=["POST"])
+def post_gamma_levels():
+    from journal import save_snapshot, init_db
+    try:
+        init_db()
+        data = request.get_json(silent=True) or {}
+        today = data.get("date") or date.today().isoformat()
+        levels = {
+            k: data[k]
+            for k in ("call_wall", "put_wall", "zero_gamma", "vol_trigger")
+            if data.get(k) is not None
+        }
+        if not levels:
+            return jsonify({"error": "No gamma levels provided"}), 400
+        row = save_snapshot({"date": today, **levels})
+        return jsonify({"ok": True, "date": str(row["date"]), "levels_saved": levels})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/gamma-levels", methods=["GET"])
+def get_gamma_levels():
+    from journal import get_snapshot_by_date, init_db
+    try:
+        init_db()
+        today = request.args.get("date") or date.today().isoformat()
+        row = get_snapshot_by_date(today)
+        levels = {
+            k: float(row[k]) if row.get(k) is not None else None
+            for k in ("call_wall", "put_wall", "zero_gamma", "vol_trigger")
+        }
+        return jsonify({"date": today, "levels": levels})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5050))
