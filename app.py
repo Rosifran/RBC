@@ -7,6 +7,22 @@ import json
 import os
 from datetime import datetime, timezone, date
 
+# ── Fuso oficial do sistema: America/New_York (mercado) ─────────────────
+# Servidor roda em UTC; "hoje" e horarios exibidos devem ser de NY.
+def _ny_tz():
+    try:
+        from zoneinfo import ZoneInfo
+        return ZoneInfo("America/New_York")
+    except Exception:
+        return None
+
+def ny_now():
+    tz = _ny_tz()
+    return datetime.now(tz) if tz else datetime.now()
+
+def ny_today():
+    return ny_now().date()
+
 from dotenv import load_dotenv
 
 import anthropic
@@ -474,7 +490,7 @@ def parse_pm_pdf():
     try:
         from journal import save_snapshot
         save_snapshot({
-            "date":               str(datetime.date.today()),
+            "date":               str(ny_today()),
             "pm_hiro":            parsed.get("pm_hiro"),
             "pm_vix_close":       parsed.get("pm_vix_close"),
             "pm_cor1m_close":     parsed.get("pm_cor1m_close"),
@@ -615,7 +631,7 @@ def _parse_sg_calendar(raw):
     import re
     from datetime import date as _date
     events, pend_date, pend_time = [], None, None
-    today = _date.today()
+    today = ny_today()
     for line in (raw or "").splitlines():
         line = line.strip()
         if not line:
@@ -818,7 +834,7 @@ def evaluate_position_status(pos: dict) -> dict:
     if exp:
         try:
             exp_date = exp if isinstance(exp, _date) else _date.fromisoformat(str(exp))
-            dte_now  = (exp_date - _date.today()).days
+            dte_now  = (exp_date - ny_today()).days
         except Exception:
             pass
 
@@ -1125,7 +1141,7 @@ def modo2():
         try:
             from journal import get_snapshot_by_date, init_db
             init_db()
-            _row = get_snapshot_by_date(date.today().isoformat())
+            _row = get_snapshot_by_date(ny_today().isoformat())
             if _row:
                 # Mesmo formato do parse_sg_data, p/ compatibilidade total
                 _spy6 = {
@@ -2331,7 +2347,7 @@ def post_gamma_levels():
     try:
         init_db()
         data = request.get_json(silent=True) or {}
-        today = data.get("date") or date.today().isoformat()
+        today = data.get("date") or ny_today().isoformat()
         levels = {
             k: data[k]
             for k in ("call_wall", "put_wall", "zero_gamma", "vol_trigger")
@@ -2352,7 +2368,7 @@ def get_gamma_levels():
     from journal import get_snapshot_by_date, get_market_quotes, init_db
     try:
         init_db()
-        today = request.args.get("date") or date.today().isoformat()
+        today = request.args.get("date") or ny_today().isoformat()
         row = get_snapshot_by_date(today)
         levels = {
             k: float(row[k]) if row.get(k) is not None else None
@@ -2369,7 +2385,16 @@ def get_gamma_levels():
                     regime = "POSITIVE GAMMA" if spot > zg else "NEGATIVE GAMMA"
         except Exception:
             pass
-        ts = str(row["created_at"]) if row and row.get("created_at") else None
+        ts = None
+        if row and row.get("created_at"):
+            _ca = row["created_at"]
+            try:
+                if _ca.tzinfo is None:
+                    _ca = _ca.replace(tzinfo=timezone.utc)
+                _tz = _ny_tz()
+                ts = _ca.astimezone(_tz).strftime("%d/%m %H:%M ET") if _tz else str(_ca)
+            except Exception:
+                ts = str(_ca)
         return jsonify({"date": today, "levels": levels, "spot": spot, "regime": regime, "timestamp": ts})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
