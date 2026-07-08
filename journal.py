@@ -94,6 +94,7 @@ def init_db():
                 ("pm_vol_comment",        "TEXT"),
                 ("next_events",           "TEXT"),
                 ("pm_levels_raw",         "TEXT"),
+                ("gamma_combos",          "TEXT"),
             ]
             for col, typ in new_cols:
                 cur.execute("ALTER TABLE trade_journal ADD COLUMN IF NOT EXISTS %s %s;" % (col, typ))
@@ -113,7 +114,8 @@ def save_snapshot(data):
         "max_spy","min_spy","trade_path","trade_quality",
         "vol_trigger_lost","vol_trigger_lost_time",
         "pm_note_summary","pm_hiro","pm_vix_close","pm_cor1m_close",
-        "pm_market_comment","pm_flow_comment","pm_vol_comment","next_events","pm_levels_raw"
+        "pm_market_comment","pm_flow_comment","pm_vol_comment","next_events","pm_levels_raw",
+        "gamma_combos"
     ]
     vals = {f: data.get(f) for f in fields if data.get(f) is not None}
     if "date" not in vals:

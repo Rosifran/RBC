@@ -1133,6 +1133,13 @@ def modo2():
                     "abs_gamma": None, "supports": [], "combos": [],
                     "imp_1d": None, "imp_5d": None,
                 }
+                try:
+                    import json as _json
+                    _rawc = _row.get("gamma_combos") if hasattr(_row, "get") else None
+                    if _rawc:
+                        _spy6["combos"] = sorted(float(x) for x in _json.loads(_rawc))
+                except Exception:
+                    pass
                 for _k in ("call_wall", "put_wall", "zero_gamma", "vol_trigger"):
                     try:
                         _v = _row.get(_k) if hasattr(_row, "get") else _row[_k]
@@ -2330,6 +2337,9 @@ def post_gamma_levels():
             for k in ("call_wall", "put_wall", "zero_gamma", "vol_trigger")
             if data.get(k) is not None
         }
+        if data.get("gamma_combos"):
+            import json as _json
+            levels["gamma_combos"] = _json.dumps(data["gamma_combos"])
         if not levels:
             return jsonify({"error": "No gamma levels provided"}), 400
         row = save_snapshot({"date": today, **levels})
