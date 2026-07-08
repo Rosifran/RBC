@@ -2112,6 +2112,53 @@ def modo2():
     return jsonify(ow)
 
 
+@app.route("/api/modo7/latest", methods=["GET"])
+def modo7_latest():
+    """Modo 7 — Flow Scanner: alertas de fluxo + veredito da Camada 2."""
+    try:
+        from journal import get_conn
+        from psycopg2.extras import RealDictCursor
+        import json as _json
+        with get_conn() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("SELECT MAX(scan_date) AS d FROM flow_alerts")
+                row = cur.fetchone()
+                if not row or not row["d"]:
+                    return jsonify({"error": "Nenhum scan de fluxo. Rode flow_scanner_ibkr.py."}), 404
+                cur.execute("""SELECT * FROM flow_alerts WHERE scan_date = %s
+                               ORDER BY created_at DESC""", (row["d"],))
+                rows = cur.fetchall()
+        seen, results = set(), []
+        for r in rows:
+            if r["ticker"] in seen:
+                continue
+            seen.add(r["ticker"])
+            try:
+                alerts = _json.loads(r.get("alerts_json") or "[]")
+            except Exception:
+                alerts = []
+            try:
+                camada2 = _json.loads(r.get("camada2_json") or "{}")
+            except Exception:
+                camada2 = {}
+            results.append({
+                "ticker": r["ticker"],
+                "spot": float(r["spot"]) if r.get("spot") is not None else None,
+                "scan_date": str(r["scan_date"]),
+                "scan_time": r.get("scan_time"),
+                "dominant_direction": r.get("dominant_dir"),
+                "confidence": r.get("confidence"),
+                "note": r.get("note"),
+                "alerts": alerts,
+                "camada2": camada2,
+            })
+        _rank = {"APROVO_ONDINHA": 0, "AGUARDAR": 1}
+        results.sort(key=lambda x: _rank.get((x.get("camada2") or {}).get("verdict"), 2))
+        return jsonify({"scan_date": str(row["d"]), "results": results})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route("/api/modo5/latest", methods=["GET"])
 def modo5_latest():
     """Retorna o resultado mais recente do scanner Modo 5 via PostgreSQL."""

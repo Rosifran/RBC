@@ -490,6 +490,7 @@
   <button class="tab-btn" onclick="switchTab('modo3', this)">Modo 3 · Operacional</button>
   <button class="tab-btn" onclick="switchTab('modo4', this); loadJournal(); loadPMNote();">Modo 4 · Journal</button>
   <button class="tab-btn" onclick="switchTab('modo5', this); loadModo5();">Modo 5 · Swing</button>
+  <button class="tab-btn" onclick="switchTab('modo7', this); loadModo7();">Modo 7 · Flow</button>
   <button class="tab-btn" onclick="switchTab('modo6', this); loadModo6();">Modo 6 · Gamma</button>
 </div>
 
@@ -1823,6 +1824,49 @@ ${(() => {
     </div>
   </div>
 </div>
+
+<div id="panel-modo7" class="tab-panel">
+  <p class="section-label">MODO 7</p>
+  <h2 style="margin:4px 0 6px;">Flow Scanner</h2>
+  <p style="font-size:13px;color:#64748b;margin:0 0 12px;">Atividade incomum de opções (IBKR) · prêmio até $3.00 · confirmação técnica Camada 2.</p>
+  <button class="tab-btn" onclick="loadModo7()" style="margin-bottom:10px;">↻ Atualizar</button>
+  <span id="m7-timestamp" style="font-size:11px;color:#94a3b8;margin-left:8px;"></span>
+  <div id="m7-content"><p style="font-size:12px;color:#94a3b8;">Clique em Atualizar para carregar.</p></div>
+</div>
+
+<script>
+function loadModo7() {
+  const el = document.getElementById('m7-content');
+  const ts = document.getElementById('m7-timestamp');
+  el.innerHTML = '<p style="font-size:12px;color:#94a3b8;">Carregando...</p>';
+  fetch('/api/modo7/latest').then(r => r.json()).then(data => {
+    if (data.error) { el.innerHTML = '<p style="font-size:12px;color:#94a3b8;">' + data.error + '</p>'; return; }
+    ts.textContent = 'Scan: ' + (data.scan_date || '');
+    const icon = v => v === 'APROVO_ONDINHA' ? '🟢' : v === 'AGUARDAR' ? '🟡' : v === 'REPROVO_TECNICA' ? '🔴' : '⚪';
+    let html = '';
+    (data.results || []).forEach(r => {
+      const c2 = r.camada2 || {};
+      const v = c2.verdict || 'SEM_CAMADA2';
+      const alerts = (r.alerts || []).filter(a => !a.caution_flag);
+      const linhas = alerts.slice(0, 3).map(a =>
+        a.direction + ' ' + a.strike + ' exp ' + a.expiration + ' (' + a.dte + 'd) · Vol ' +
+        (a.volume || 0).toLocaleString() + ' · ' +
+        (a.volume_oi_ratio ? a.volume_oi_ratio + 'x OI' : 'OI n/d') +
+        ' · Ask $' + (a.ask || 0).toFixed(2)
+      ).join('<br>');
+      html += '<div style="border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-bottom:10px;">'
+        + '<div style="display:flex;justify-content:space-between;align-items:center;">'
+        + '<strong>' + icon(v) + ' ' + r.ticker + ' · ' + (r.dominant_direction || '?') + ' · $' + (r.spot != null ? r.spot : '—') + '</strong>'
+        + '<span style="font-size:11px;color:#64748b;">' + v + (c2.score != null ? ' · ' + c2.score + '/10' : '') + '</span>'
+        + '</div>'
+        + '<div style="font-size:12px;color:#334155;margin-top:6px;">' + (linhas || 'sem alertas limpos') + '</div>'
+        + (c2.note ? '<div style="font-size:11px;color:#94a3b8;margin-top:6px;">' + c2.note + '</div>' : '')
+        + '</div>';
+    });
+    el.innerHTML = html || '<p style="font-size:12px;color:#94a3b8;">Sem alertas hoje.</p>';
+  }).catch(e => { el.innerHTML = '<p style="font-size:12px;color:#ef4444;">Erro: ' + e + '</p>'; });
+}
+</script>
 
 <div id="panel-modo5" class="tab-panel">
   <p class="section-label">MODO 5</p>
