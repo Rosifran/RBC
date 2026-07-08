@@ -2363,7 +2363,13 @@ def post_gamma_levels():
             _GAMMA_CACHE["profile"] = data["gex_profile"]
             _GAMMA_CACHE["spot"]    = data.get("spot")
             _GAMMA_CACHE["date"]    = today
-            _GAMMA_CACHE["ts"]      = datetime.now().strftime("%H:%M")
+            try:
+                from zoneinfo import ZoneInfo
+                _GAMMA_CACHE["ts"] = datetime.now(ZoneInfo("America/New_York")).strftime("%H:%M")
+            except Exception:
+                _GAMMA_CACHE["ts"] = datetime.now().strftime("%H:%M")
+            _GAMMA_CACHE["zg_status"] = data.get("zero_gamma_status")
+            _GAMMA_CACHE["vt_status"] = data.get("vol_trigger_status")
         if not levels:
             return jsonify({"error": "No gamma levels provided"}), 400
         row = save_snapshot({"date": today, **levels})

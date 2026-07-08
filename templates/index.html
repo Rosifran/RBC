@@ -2597,6 +2597,18 @@ ${(() => {
           + '</div>';
       }
       box.innerHTML = html;
+      // ZG/VT: quando sem numero, mostra o status (acima/abaixo do range)
+      setTimeout(() => {
+        const zgEl = document.getElementById('m6-zero-gamma');
+        if (zgEl && zgEl.textContent.trim() === '—' && d.zg_status) {
+          zgEl.innerHTML = '<span style="font-size:13px;">' +
+            (d.zg_status === 'ACIMA_DO_RANGE' ? '↑ acima do range' : '↓ abaixo do range') + '</span>';
+        }
+        const vtEl = document.getElementById('m6-vol-trigger');
+        if (vtEl && vtEl.textContent.trim() === '—' && d.vt_status) {
+          vtEl.innerHTML = '<span style="font-size:13px;">' + d.vt_status + '</span>';
+        }
+      }, 700);
     } catch(e) { console.error('gexProfile:', e); }
   }
 
