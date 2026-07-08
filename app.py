@@ -1780,88 +1780,16 @@ def modo2():
         if is_put and float(t2) >= float(t1):
             t2 = round(float(t1) - 2, 2)
 
-    # ── Context bias: cruza PM Note da noite com PDF da manhã ────────────
+    # ── Context bias: PM Note DESATIVADO (sem acesso SpotGamma) ──────────
+    # Bloco original removido: lia PM Notes antigos do journal e injetava
+    # contexto velho na decisao. Motor opera neutro; contexto vem dos
+    # dados vivos (IBKR/Modo 6).
     context_bias        = "neutral_context"
     context_warning     = ""
     pm_context_date     = None
     pm_hiro_ctx         = None
     pm_vix_ctx          = None
     pm_cor1m_ctx        = None
-
-    try:
-        from journal import get_journal
-        rows = get_journal(limit=5)
-        pm_row = None
-        for row in rows:
-            if row.get("pm_hiro") or row.get("pm_vix_close") or row.get("pm_cor1m_close"):
-                pm_row = row
-                break
-
-        if pm_row:
-            pm_hiro_ctx   = (pm_row.get("pm_hiro") or "").lower()
-            pm_vix_ctx    = pm_row.get("pm_vix_close")
-            pm_cor1m_ctx  = pm_row.get("pm_cor1m_close")
-            pm_context_date = str(pm_row.get("date", ""))
-
-            bearish_signals = 0
-            bullish_signals = 0
-
-            if any(w in pm_hiro_ctx for w in ["bearish", "negative", "bear", "selling"]):
-                bearish_signals += 2
-            elif any(w in pm_hiro_ctx for w in ["bullish", "positive", "bull", "buying"]):
-                bullish_signals += 2
-
-            if pm_vix_ctx and float(pm_vix_ctx) > 18:
-                bearish_signals += 1
-            elif pm_vix_ctx and float(pm_vix_ctx) < 15:
-                bullish_signals += 1
-
-            if pm_cor1m_ctx and float(pm_cor1m_ctx) >= 6.0:
-                bearish_signals += 2
-            elif pm_cor1m_ctx and float(pm_cor1m_ctx) < 4.0:
-                bullish_signals += 1
-
-            if bearish_signals >= 3:
-                context_bias = "bearish_context"
-            elif bullish_signals >= 3:
-                context_bias = "bullish_context"
-            elif bearish_signals > 0 and bullish_signals > 0:
-                context_bias = "mixed_context"
-            else:
-                context_bias = "neutral_context"
-
-            warnings = []
-            if context_bias == "bearish_context":
-                if decision in ("CALL REVERSAL", "CALL BREAKOUT SMALL"):
-                    warnings.append(
-                        f"PM Note bearish (HIRO {pm_hiro_ctx}) + COR1M {pm_cor1m_ctx} "
-                        f"— CALL requer confirmacao adicional. Tamanho reduzido.")
-                elif decision in ("PUT TREND", "PUT REVERSAL"):
-                    warnings.append(f"PM Note bearish confirma PUT. Contexto alinhado.")
-                if pm_cor1m_ctx and float(pm_cor1m_ctx) >= 6.0:
-                    warnings.append(
-                        f"⚠ COR1M {pm_cor1m_ctx} acima do risk barrier 6.0 "
-                        f"— risco de volatility spasm.")
-                if pm_vix_ctx and float(pm_vix_ctx) > 16:
-                    warnings.append(
-                        f"⚠ VIX ontem {pm_vix_ctx} elevado — opcoes mais caras hoje.")
-            elif context_bias == "bullish_context":
-                if decision in ("PUT TREND", "PUT REVERSAL"):
-                    warnings.append(
-                        f"PM Note bullish (HIRO {pm_hiro_ctx}) — "
-                        f"PUT requer confirmacao. Contexto diverge.")
-                elif decision in ("CALL REVERSAL", "CALL BREAKOUT SMALL"):
-                    warnings.append(f"PM Note bullish confirma CALL. Contexto alinhado.")
-            elif context_bias == "mixed_context":
-                warnings.append("PM Note sinais mistos — reduzir tamanho, aguardar confirmacao.")
-
-            warnings.append(
-                "Suporte 0DTE de ontem nao carrega para hoje — usar apenas niveis do PDF atual.")
-            context_warning = " | ".join(warnings)
-
-    except Exception as ctx_err:
-        context_bias    = "neutral_context"
-        context_warning = f"PM Note nao disponivel: {ctx_err}"
 
     # ── Gap & Timing Filter ─────────────────────────────────────────────
     # Alerta de timing — nao muda a decisao principal
