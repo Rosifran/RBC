@@ -125,6 +125,7 @@ def save_snapshot(data):
     cols   = ", ".join(vals.keys())
     params = ", ".join(["%("+k+")s" for k in vals.keys()])
     update = ", ".join([k+"=EXCLUDED."+k for k in vals.keys() if k != "date"])
+    update += ", created_at=NOW()"  # renova timestamp a cada atualizacao
 
     sql = "INSERT INTO trade_journal ("+cols+") VALUES ("+params+") ON CONFLICT (date) DO UPDATE SET "+update+" RETURNING id, date;"
 
