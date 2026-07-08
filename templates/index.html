@@ -2597,9 +2597,7 @@ ${(() => {
 
       let labelTs = data.date || '';
       if (data.timestamp) {
-        const d   = new Date(data.timestamp);
-        const pad = n => String(n).padStart(2, '0');
-        labelTs   = `${pad(d.getDate())}/${pad(d.getMonth()+1)} ${pad(d.getHours())}:${pad(d.getMinutes())} ET`;
+        labelTs = data.timestamp;  // ja vem formatado do backend em ET
       }
       tsEl.textContent      = labelTs ? `Atualizado: ${labelTs}` : '';
       fonteEl.textContent   = `Fonte: Modo 6 — IBKR Intraday${labelTs ? ' · ' + labelTs : ''}`;
