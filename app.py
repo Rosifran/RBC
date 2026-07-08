@@ -1127,9 +1127,17 @@ def modo2():
             init_db()
             _row = get_snapshot_by_date(date.today().isoformat())
             if _row:
-                _spy6 = {"symbol": "SPY"}
+                # Mesmo formato do parse_sg_data, p/ compatibilidade total
+                _spy6 = {
+                    "symbol": "SPY", "ticker": "SPY",
+                    "abs_gamma": None, "supports": [], "combos": [],
+                    "imp_1d": None, "imp_5d": None,
+                }
                 for _k in ("call_wall", "put_wall", "zero_gamma", "vol_trigger"):
-                    _v = _row.get(_k)
+                    try:
+                        _v = _row.get(_k) if hasattr(_row, "get") else _row[_k]
+                    except Exception:
+                        _v = None
                     _spy6[_k] = float(_v) if _v is not None else None
                 if any(_spy6[_k] is not None for _k in
                        ("call_wall", "put_wall", "vol_trigger", "zero_gamma")):
