@@ -1120,6 +1120,23 @@ def modo2():
 
     sg = parse_sg_data(data["sg_raw"])
 
+    # ── Fallback Modo 6: sem string SpotGamma, usa niveis do journal (IBKR) ──
+    if not (sg.get("SPY") or sg.get("$SPY")):
+        try:
+            from journal import get_snapshot_by_date, init_db
+            init_db()
+            _row = get_snapshot_by_date(date.today().isoformat())
+            if _row:
+                _spy6 = {"symbol": "SPY"}
+                for _k in ("call_wall", "put_wall", "zero_gamma", "vol_trigger"):
+                    _v = _row.get(_k)
+                    _spy6[_k] = float(_v) if _v is not None else None
+                if any(_spy6[_k] is not None for _k in
+                       ("call_wall", "put_wall", "vol_trigger", "zero_gamma")):
+                    sg = {"SPY": _spy6}
+        except Exception:
+            pass
+
     ow = opening_watch(
         vix_open, vix_now, hiro, spot_open, spot_now,
         sg_data=sg, capital=capital,
