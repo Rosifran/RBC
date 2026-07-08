@@ -817,8 +817,10 @@ def opening_watch(vix_open, vix_now, hiro_direction, spot_open,
 
     # ── Spot vs níveis SpotGamma ──────────────────────────────────────
     if spy:
-        above_zg = spot_now > spy.get('zero_gamma', 0)
-        above_vt = spot_now > spy.get('vol_trigger', 0)
+        _zg = spy.get('zero_gamma')
+        _vt = spy.get('vol_trigger')
+        above_zg = _zg is not None and spot_now > float(_zg)
+        above_vt = _vt is not None and spot_now > float(_vt)
         if above_zg and above_vt:
             signals.append(('✅', 'Spot acima do ZG e Vol Trigger',
                              'Zona de gamma positivo confirmada. Dealers compram baixa.'))
