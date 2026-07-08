@@ -2417,6 +2417,27 @@ def post_gamma_levels():
                 _GAMMA_CACHE["ts"] = datetime.now().strftime("%H:%M")
             _GAMMA_CACHE["zg_status"] = data.get("zero_gamma_status")
             _GAMMA_CACHE["vt_status"] = data.get("vol_trigger_status")
+            # Persiste no PG: sobrevive a deploys (cache em memoria zera)
+            try:
+                from journal import get_conn
+                import json as _json
+                _payload = _json.dumps({k: _GAMMA_CACHE.get(k) for k in
+                    ("profile", "spot", "date", "ts", "zg_status", "vt_status")},
+                    default=str)
+                with get_conn() as _c:
+                    with _c.cursor() as _cur:
+                        _cur.execute("""CREATE TABLE IF NOT EXISTS gamma_profile_cache (
+                            date DATE PRIMARY KEY,
+                            payload TEXT,
+                            updated_at TIMESTAMP DEFAULT NOW())""")
+                        _cur.execute("""INSERT INTO gamma_profile_cache (date, payload, updated_at)
+                            VALUES (%s, %s, NOW())
+                            ON CONFLICT (date) DO UPDATE
+                            SET payload = EXCLUDED.payload, updated_at = NOW()""",
+                            (today, _payload))
+                    _c.commit()
+            except Exception:
+                pass
         if not levels:
             return jsonify({"error": "No gamma levels provided"}), 400
         row = save_snapshot({"date": today, **levels})
@@ -2426,6 +2447,21 @@ def post_gamma_levels():
 
 @app.route("/api/gamma-profile", methods=["GET"])
 def get_gamma_profile():
+    if not _GAMMA_CACHE.get("profile"):
+        # Cache zerou (deploy). Recarrega o perfil de hoje do PG.
+        try:
+            from journal import get_conn
+            import json as _json
+            with get_conn() as _c:
+                with _c.cursor() as _cur:
+                    _cur.execute(
+                        "SELECT payload FROM gamma_profile_cache WHERE date = %s",
+                        (ny_today().isoformat(),))
+                    _row = _cur.fetchone()
+            if _row and _row[0]:
+                _GAMMA_CACHE.update(_json.loads(_row[0]))
+        except Exception:
+            pass
     return jsonify({"ok": bool(_GAMMA_CACHE.get("profile")), **_GAMMA_CACHE})
 
 
