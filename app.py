@@ -2341,6 +2341,9 @@ def get_journal_route():
 
 # ── Modo 6: Intraday Gamma levels via IBKR ───────────────────────────
 
+_GAMMA_CACHE = {}
+
+
 @app.route("/api/gamma-levels", methods=["POST"])
 def post_gamma_levels():
     from journal import save_snapshot, init_db
@@ -2356,12 +2359,22 @@ def post_gamma_levels():
         if data.get("gamma_combos"):
             import json as _json
             levels["gamma_combos"] = _json.dumps(data["gamma_combos"])
+        if data.get("gex_profile"):
+            _GAMMA_CACHE["profile"] = data["gex_profile"]
+            _GAMMA_CACHE["spot"]    = data.get("spot")
+            _GAMMA_CACHE["date"]    = today
+            _GAMMA_CACHE["ts"]      = datetime.now().strftime("%H:%M")
         if not levels:
             return jsonify({"error": "No gamma levels provided"}), 400
         row = save_snapshot({"date": today, **levels})
         return jsonify({"ok": True, "date": str(row["date"]), "levels_saved": levels})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route("/api/gamma-profile", methods=["GET"])
+def get_gamma_profile():
+    return jsonify({"ok": bool(_GAMMA_CACHE.get("profile")), **_GAMMA_CACHE})
+
 
 @app.route("/api/gamma-levels", methods=["GET"])
 def get_gamma_levels():
