@@ -2620,8 +2620,16 @@ function loadModo7() {
       const maxAbs = Math.max(...rows.map(x => Math.abs(x.gex_vol)), 1);
       let flip = null;
       const asc = [...rows].sort((a,b) => a.strike - b.strike);
-      for (let i = 1; i < asc.length; i++)
-        if (asc[i-1].gex_vol < 0 && asc[i].gex_vol >= 0) { flip = asc[i].strike; break; }
+      // Piso de ruido (0.5% do maior |GEX|) + interpolacao — igual ao backend
+      const piso = Math.max(...asc.map(x => Math.abs(x.gex_vol)), 0) * 0.005;
+      const sig = asc.filter(x => Math.abs(x.gex_vol) > piso);
+      for (let i = 1; i < sig.length; i++)
+        if (sig[i-1].gex_vol < 0 && sig[i].gex_vol >= 0) {
+          const x0 = sig[i-1].strike, x1 = sig[i].strike;
+          const y0 = sig[i-1].gex_vol, y1 = sig[i].gex_vol;
+          flip = y1 !== y0 ? Math.round((x0 + (0 - y0) * (x1 - x0) / (y1 - y0)) * 10) / 10 : x1;
+          break;
+        }
       const battle = rows.reduce((m,x) => Math.abs(x.gex_vol) > Math.abs(m.gex_vol) ? x : m, rows[0]);
       const lado = flip ? (d.spot < flip ? 'PUT' : 'CALL') : '—';
       let html = '<div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Perfil GEX — fluxo de hoje · ' + (d.ts || '') + ' ET</div>';
