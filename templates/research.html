@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RBC · Modo 8 — Equity Research</title>
+<style>
+  :root{
+    --verde:#3d5a24; --verde-esc:#2e4519; --verde-claro:#eef3e7;
+    --buy:#2e7d32; --hold:#b58900; --sell:#c62828;
+    --cinza:#666; --linha:#e3e3e3;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#1d1d1d;background:#fff}
+  header{background:var(--verde);color:#fff;padding:14px 28px;display:flex;justify-content:space-between;align-items:baseline}
+  header .brand b{font-size:20px;letter-spacing:.5px}
+  header .brand span{opacity:.85;font-size:14px;margin-left:8px}
+  header .data{font-family:ui-monospace,Menlo,monospace;font-size:13px;opacity:.9}
+  nav{border-bottom:1px solid var(--linha);padding:0 28px}
+  nav a{display:inline-block;padding:14px 2px;margin-right:26px;color:#444;text-decoration:none;font-size:15px}
+  nav a.ativo{color:var(--verde-esc);font-weight:600;border-bottom:3px solid var(--verde)}
+  main{max-width:1080px;margin:0 auto;padding:26px 28px 60px}
+  .eyebrow{font-size:11px;letter-spacing:.14em;color:var(--cinza);text-transform:uppercase}
+  h1{margin:4px 0 4px;font-size:26px}
+  .sub{color:var(--cinza);font-size:14px;margin-bottom:18px}
+  .barra{display:flex;gap:10px;align-items:center;margin:14px 0 20px;flex-wrap:wrap}
+  button{background:var(--verde);color:#fff;border:0;border-radius:6px;padding:10px 16px;font-size:14px;cursor:pointer}
+  button.sec{background:#fff;color:var(--verde-esc);border:1px solid var(--verde)}
+  button:disabled{opacity:.55;cursor:wait}
+  .status{font-size:13px;color:var(--cinza);font-family:ui-monospace,Menlo,monospace}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--cinza);border-bottom:2px solid var(--verde);padding:8px 8px}
+  td{padding:10px 8px;border-bottom:1px solid var(--linha)}
+  tr.clicavel{cursor:pointer}
+  tr.clicavel:hover{background:var(--verde-claro)}
+  .num{text-align:right;font-variant-numeric:tabular-nums}
+  .tag{display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;color:#fff}
+  .tag.BUY{background:var(--buy)} .tag.HOLD{background:var(--hold)} .tag.SELL{background:var(--sell)} .tag.ND{background:#999}
+  .card{border:1px solid var(--linha);border-radius:10px;padding:18px 20px;margin-top:22px;display:none}
+  .card h2{margin:0 0 2px;font-size:19px}
+  .card .preco{font-family:ui-monospace,Menlo,monospace;color:var(--cinza);font-size:13px;margin-bottom:14px}
+  .pilares{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+  .pilar{background:var(--verde-claro);border-radius:8px;padding:10px 12px}
+  .pilar .rot{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--verde-esc)}
+  .pilar .val{font-size:24px;font-weight:700;color:var(--verde-esc)}
+  .trilho{height:5px;background:#d9e3cc;border-radius:3px;margin-top:6px}
+  .trilho i{display:block;height:5px;background:var(--verde);border-radius:3px}
+  .flag{color:var(--sell);font-size:13px;margin:4px 0}
+  .tese{background:#fafaf7;border-left:4px solid var(--verde);padding:12px 14px;font-size:14px;line-height:1.55;margin-top:12px}
+  footer{border-top:1px solid var(--linha);margin-top:40px;padding:14px 28px;font-size:12px;color:var(--cinza)}
+  @media(max-width:720px){.pilares{grid-template-columns:repeat(2,1fr)}main{padding:20px 14px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand"><b>RBC</b><span>· Risk Bridge Capital</span></div>
+  <div class="data" id="hoje"></div>
+</header>
+
+<nav>
+  <a href="/">← Modos 1-7</a>
+  <a class="ativo" href="/research">Modo 8 · Research</a>
+</nav>
+
+<main>
+  <div class="eyebrow">Modo 8</div>
+  <h1>Equity Research — Mid Caps Industriais</h1>
+  <div class="sub">Fundamentos oficiais (SEC EDGAR) · scoring vs. pares · rating e preço-alvo. Nomes fora do radar da mídia, com opções operáveis.</div>
+
+  <div class="barra">
+    <button id="btnUpdate" onclick="atualizar()">Atualizar fundamentos</button>
+    <button class="sec" onclick="rodarScreener()">Rodar screener</button>
+    <span class="status" id="status">—</span>
+  </div>
+
+  <div style="margin:16px 0;padding:14px;border:1px solid #d9e2d0;border-radius:10px;background:#f8faf6;">
+    <b>Ticker Lookup</b>
+    <div style="margin-top:8px;display:flex;gap:8px;align-items:center;">
+      <input id="tickerLookup" placeholder="Ex: TSLA, AAPL, NVDA" style="padding:10px;border:1px solid #cbd5e1;border-radius:8px;width:220px;">
+      <button class="sec" onclick="lookupTicker()">Buscar ticker</button>
+    </div>
+    <div id="lookupBox" style="display:none;margin-top:12px;font-size:14px;"></div>
+  </div>
+
+  <div id="screenerBox" style="display:none;margin:18px 0;padding:14px;border:1px solid #d9e2d0;border-radius:10px;background:#f8faf6;font-size:14px;"></div>
+
+  <table id="tabela">
+    <thead><tr>
+      <th>Ticker</th><th>Empresa</th><th>Rating</th>
+      <th class="num">Score</th><th class="num">Preço</th><th class="num">Alvo</th>
+      <th class="num">Upside</th><th class="num">EV/EBITDA</th><th class="num">ND/EBITDA</th>
+    </tr></thead>
+    <tbody id="linhas"><tr><td colspan="9" style="color:var(--cinza)">Nenhuma rodada carregada — clique em Atualizar fundamentos.</td></tr></tbody>
+  </table>
+
+  <div class="card" id="card">
+    <h2 id="cTitulo"></h2>
+    <div class="preco" id="cPreco"></div>
+    <div class="pilares" id="cPilares"></div>
+    <div id="cFlags"></div>
+    <div class="tese" id="cTese" style="display:none"></div>
+  </div>
+</main>
+
+<footer>Ferramenta educacional de organização de análise. Não é recomendação de compra ou venda. Confirme preços e prêmios reais no IBKR antes de qualquer decisão.</footer>
+
+<script>
+document.getElementById('hoje').textContent =
+  new Date().toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
+
+const $ = id => document.getElementById(id);
+const fmt = (v,dec=1,suf='') => v==null ? '—' : v.toFixed(dec)+suf;
+const usd = v => v==null ? '—' : '$'+v.toFixed(2);
+
+async function carregar(){
+  try{
+    const r = await fetch('/api/research/ratings');
+    const j = await r.json();
+    if(j.job && j.job.running){
+      $('status').textContent = 'Coletando EDGAR... recarrego em 15s';
+      $('linhas').innerHTML =
+        '<tr><td colspan="9" style="color:var(--cinza)">Atualizando fundamentos. A tabela antiga foi ocultada para evitar confusão.</td></tr>';
+      setTimeout(carregar, 15000);
+      return;
+    } else if(j.job && j.job.error){
+      $('status').textContent = 'Erro: '+j.job.error;
+    } else if(j.updated){
+      $('status').textContent = 'Última rodada: '+new Date(j.updated).toLocaleString('pt-BR');
+    }
+    if(j.report && j.report.length) render(j.report);
+  }catch(e){ $('status').textContent = 'Falha ao carregar: '+e; }
+}
+
+function render(rep){
+  $('linhas').innerHTML = rep.map(r => `
+    <tr class="clicavel" onclick='abrirCard(${JSON.stringify(r).replace(/'/g,"&#39;")})'>
+      <td><b>${r.ticker}</b></td><td>${r.name||''}</td>
+      <td><span class="tag ${r.rating==='N/D'?'ND':r.rating}">${r.rating}</span></td>
+      <td class="num">${fmt(r.composite,0)}</td>
+      <td class="num">${usd(r.price)}</td>
+      <td class="num">${usd(r.target)}</td>
+      <td class="num">${r.upside_pct==null?'—':(r.upside_pct>0?'+':'')+r.upside_pct.toFixed(1)+'%'}</td>
+      <td class="num">${fmt(r.ev_ebitda,1,'x')}</td>
+      <td class="num">${fmt(r.nd_ebitda,1,'x')}</td>
+    </tr>`).join('');
+}
+
+function abrirCard(r){
+  $('card').style.display='block';
+  $('cTitulo').innerHTML = `${r.ticker} — ${r.name||''} <span class="tag ${r.rating}">${r.rating}</span>`;
+  $('cPreco').textContent =
+    `Preço ${usd(r.price)} · Alvo ${usd(r.target)} · ROE ${r.roe==null?'—':(r.roe*100).toFixed(1)+'%'} · Margem op ${r.op_margin==null?'—':(r.op_margin*100).toFixed(1)+'%'} · Receita YoY ${r.rev_yoy==null?'—':(r.rev_yoy*100).toFixed(1)+'%'} · FCF yield ${r.fcf_yield==null?'—':(r.fcf_yield*100).toFixed(1)+'%'}`;
+  const nomes = {quality:'Qualidade',growth:'Crescimento',balance:'Balanço',valuation:'Valuation'};
+  $('cPilares').innerHTML = Object.entries(nomes).map(([k,rot])=>{
+    const v = r.pillars ? r.pillars[k] : null;
+    return `<div class="pilar"><div class="rot">${rot}</div>
+      <div class="val">${v==null?'—':v.toFixed(0)}</div>
+      <div class="trilho"><i style="width:${v||0}%"></i></div></div>`;
+  }).join('');
+  $('cFlags').innerHTML = (r.red_flags||[]).map(f=>`<div class="flag">🚩 ${f}</div>`).join('');
+  if(r.thesis){ $('cTese').style.display='block'; $('cTese').textContent = r.thesis; }
+  else $('cTese').style.display='none';
+  $('card').scrollIntoView({behavior:'smooth'});
+}
+
+async function atualizar(){
+  $('btnUpdate').disabled = true;
+  $('status').textContent = 'Iniciando coleta...';
+  try{
+    const r = await fetch('/api/research/update',{method:'POST',
+      headers:{'Content-Type':'application/json'}, body:'{}'});
+    const j = await r.json();
+    $('status').textContent = j.message || j.error || '';
+    setTimeout(carregar, 15000);
+  }catch(e){ $('status').textContent = 'Erro: '+e; }
+  finally{ $('btnUpdate').disabled = false; }
+}
+
+async function rodarScreener(){
+  $('status').textContent = 'Rodando screener...';
+  try{
+    const r = await fetch('/api/research/screener',{method:'POST',
+      headers:{'Content-Type':'application/json'}, body:'{}'});
+    const j = await r.json();
+
+    if(j.ok){
+      const passed = j.universe.filter(x => x.pass);
+
+      $('status').textContent =
+        `Research Universe: ${passed.length} de ${j.universe.length} empresas`;
+
+      $('screenerBox').style.display = 'block';
+      $('screenerBox').innerHTML = `
+        <b>Research Universe aprovado:</b><br>
+        ${passed.map(x => x.ticker).join(', ')}
+        <br><br>
+        <span style="color:#64748b">
+          Agora clique em <b>Atualizar fundamentos</b> para gerar ratings desse universo.
+          A tabela antiga foi limpa para evitar confusão.
+        </span>
+      `;
+
+      $('linhas').innerHTML =
+        '<tr><td colspan="9" style="color:var(--cinza)">Screener rodado. Clique em Atualizar fundamentos para gerar ratings do universo aprovado.</td></tr>';
+    } else {
+      $('status').textContent = 'Erro: '+j.error;
+    }
+  }catch(e){ $('status').textContent = 'Erro: '+e; }
+}
+async function lookupTicker(){
+  const ticker = $('tickerLookup').value.trim().toUpperCase();
+  if(!ticker){
+    $('lookupBox').style.display = 'block';
+    $('lookupBox').innerHTML = 'Digite um ticker.';
+    return;
+  }
+
+  $('lookupBox').style.display = 'block';
+  $('lookupBox').innerHTML = 'Buscando fundamentos de '+ticker+'...';
+
+  try{
+    const r = await fetch('/api/research/lookup',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ticker})
+    });
+    const j = await r.json();
+
+    if(!j.ok){
+      $('lookupBox').innerHTML = 'Erro: '+j.error;
+      return;
+    }
+
+    const m = j.metrics || {};
+    const market = j.market || {};
+
+    $('lookupBox').innerHTML = `
+      <b>${j.ticker} — ${j.name}</b><br>
+      <span style="color:#64748b">${j.note}</span><br><br>
+
+      <b>Preço:</b> ${usd(market.price)} ·
+      <b>Market cap:</b> ${market.mcap ? '$'+(market.mcap/1e9).toFixed(1)+'B' : '—'} ·
+      <b>Analistas:</b> ${market.analysts ?? '—'}<br>
+
+      <b>Receita TTM:</b> ${m.revenue_ttm ? '$'+(m.revenue_ttm/1e9).toFixed(1)+'B' : '—'} ·
+      <b>EBITDA TTM:</b> ${m.ebitda_ttm ? '$'+(m.ebitda_ttm/1e9).toFixed(1)+'B' : '—'} ·
+      <b>FCF TTM:</b> ${m.fcf_ttm ? '$'+(m.fcf_ttm/1e9).toFixed(1)+'B' : '—'}<br>
+
+      <b>ROE:</b> ${m.roe==null?'—':(m.roe*100).toFixed(1)+'%'} ·
+      <b>ROIC:</b> ${m.roic==null?'—':(m.roic*100).toFixed(1)+'%'} ·
+      <b>Margem op:</b> ${m.op_margin==null?'—':(m.op_margin*100).toFixed(1)+'%'}<br>
+
+      <b>EV/EBITDA:</b> ${fmt(m.ev_ebitda,1,'x')} ·
+      <b>P/E:</b> ${fmt(m.pe,1,'x')} ·
+      <b>ND/EBITDA:</b> ${fmt(m.nd_ebitda,1,'x')}<br><br>
+
+      <b>Status:</b> Outside Research Universe — sem BUY/HOLD/SELL.<br>
+      <span style="color:#64748b">${j.options_note}</span>
+    `;
+  }catch(e){
+    $('lookupBox').innerHTML = 'Erro: '+e;
+  }
+}
+
+
+carregar();
+</script>
+</body>
+</html>

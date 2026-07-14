@@ -122,6 +122,10 @@ from rbc_0dte_scanner import (
 
 app = Flask(__name__, template_folder="templates")
 
+# Modo 8 · Equity Research
+from research_routes import research_bp
+app.register_blueprint(research_bp)
+
 
 @app.route("/health")
 def health():
