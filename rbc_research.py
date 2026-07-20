@@ -493,21 +493,18 @@ def run_screener(tickers=None, check_options=True):
                         {"oi": 0, "spread": None})
             row["option_oi"] = liq["oi"]
             row["option_spread"] = liq["spread"]
-
-            # Opções NÃO removem a empresa do Research Universe.
-            # Elas só classificam se o ticker é operável via opções.
-            if liq["oi"] == 0 and liq["spread"] is None:
-                row["options_status"] = "NEEDS_IBKR_CHECK"
-                row["options_reason"] = "Yahoo sem dados de opções — conferir no IBKR"
-            elif liq["oi"] < SCREEN["min_option_oi"]:
-                row["options_status"] = "NOT_TRADABLE"
-                row["options_reason"] = f"OI opções {liq['oi']} < {SCREEN['min_option_oi']}"
-            elif liq["spread"] and liq["spread"] > SCREEN["max_option_spread"]:
-                row["options_status"] = "NOT_TRADABLE"
-                row["options_reason"] = f"spread {liq['spread']*100:.0f}% > {SCREEN['max_option_spread']*100:.0f}%"
+            sem_dados = (liq["oi"] == 0 and liq["spread"] is None)
+            if sem_dados:
+                # Falha do Yahoo, nao iliquidez comprovada: aprova com aviso.
+                row["reasons"].append("opcoes: Yahoo sem dados - conferir liquidez no IBKR")
             else:
-                row["options_status"] = "TRADABLE"
-                row["options_reason"] = "opções dentro dos filtros mínimos"
+                if liq["oi"] < SCREEN["min_option_oi"]:
+                    row["pass"] = False
+                    row["reasons"].append(f"OI opcoes {liq['oi']} < {SCREEN['min_option_oi']}")
+                if liq["spread"] and liq["spread"] > SCREEN["max_option_spread"]:
+                    # Spread do Yahoo fora do pregao e obsoleto: aviso, nao veto.
+                    # Checagem real de spread e no IBKR, no strike da operacao.
+                    row["reasons"].append(f"aviso: spread Yahoo {liq['spread']*100:.0f}% - conferir no IBKR")
         results.append(row)
     return results
 
