@@ -2222,7 +2222,7 @@ def modo3():
         iv           = round(vix / 100, 4)
         rf           = float(data.get("rf", 0.0527))
         hours_to_exp = float(data.get("hours_to_exp", 4.0))
-        capital      = float(data.get("capital", 50000))
+        capital      = float(data.get("capital", 10000))
         premium_paid = float(data["premium_paid"]) if data.get("premium_paid") else None
         contracts    = int(data.get("contracts", 1))
     except (ValueError, TypeError) as e:
@@ -2243,6 +2243,30 @@ def modo3():
 
     if "error" in result:
         return jsonify(result), 422
+
+    # ── RBC LOG: grava sinal do Modo 3 ────────────────────────────
+    try:
+        from rbc_log import log_signal
+        _g    = result.get("gate") or {}
+        _cand = (result.get("candidates") or [{}])[0]
+        _sz   = result.get("sizing") or {}
+        log_signal(
+            modulo       = "0DTE",
+            ticker       = "SPY",
+            gate_status  = "ABERTO" if _g.get("gate_open") else "FECHADO",
+            estrategia   = f"COMPRA {str(_cand.get('type','')).upper()}".strip(),
+            strike       = _cand.get("strike", ""),
+            vencimento   = "",
+            bid          = "",
+            ask          = "",
+            iv_rank      = "",
+            delta        = _cand.get("delta", ""),
+            contratos_sugeridos = contracts,
+            custo_estimado      = _sz.get("recommended", ""),
+            motivo_gate  = f"web teorico={_cand.get('price','')} best_side={result.get('best_side','')}",
+        )
+    except Exception as _le:
+        print(f"[log] aviso modo3: {_le}", flush=True)
 
     return jsonify(result)
 
@@ -2365,7 +2389,6 @@ def tradingview_webhook():
         row = save_snapshot(update)
         return jsonify({"ok": True, "event": event, "date": str(row["date"]), "update": {k:v for k,v in update.items() if k != "date"}})
     except Exception as e:
-        import traceback; traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
 

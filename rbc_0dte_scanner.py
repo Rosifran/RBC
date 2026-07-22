@@ -579,7 +579,7 @@ def score_side(spot, data, env, iv, rf, hours_to_exp, option_type, key_levels):
 
 # ── Risk Gate 0DTE ────────────────────────────────────────────────────
 
-def risk_gate_check(spot, data, env, capital=50000, best_side='CALL'):
+def risk_gate_check(spot, data, env, capital=10000, best_side='CALL'):
     """
     Risk gate com timezone ET real e critério de distância
     dependente do lado escolhido (CALL ou PUT).
@@ -640,7 +640,7 @@ def risk_gate_check(spot, data, env, capital=50000, best_side='CALL'):
 # ── Análise principal SPY 0DTE ────────────────────────────────────────
 
 def analyze_spy_0dte(sg_data, spot_spy, iv=0.15, rf=0.053,
-                     hours_to_exp=4.0, capital=50000,
+                     hours_to_exp=4.0, capital=10000,
                      premium_paid=None, contracts=1):
     """
     Análise completa para 0DTE no SPY.
@@ -726,7 +726,7 @@ def analyze_spy_0dte(sg_data, spot_spy, iv=0.15, rf=0.053,
 # ── Módulo: Primeiros 30 minutos ─────────────────────────────────────
 
 def opening_watch(vix_open, vix_now, hiro_direction, spot_open,
-                  spot_now, sg_data, capital=50000, mq_data=None):
+                  spot_now, sg_data, capital=10000, mq_data=None):
     """
     Monitora os primeiros 30 minutos (9:30–10:00 ET).
     Você alimenta os dados que vê no TradingView e SpotGamma.
@@ -1393,6 +1393,46 @@ def main():
             print("  (usando dados SpotGamma de exemplo)")
 
     sg_data = parse_sg_data(raw_input)
+
+    # ── PONTE MODO 6: usa gamma proprio se disponivel ────────────
+    try:
+        import json as _json, glob as _glob, os as _os
+        from datetime import datetime as _dt
+        _today = _dt.now().strftime("%Y-%m-%d")
+        _snaps = sorted(_glob.glob(_os.path.expanduser(
+            f"~/RBC/gamma_snapshots/{_today}_*.json")))
+        if _snaps:
+            with open(_snaps[-1]) as _f:
+                _s = _json.load(_f)
+            _vol = _s.get("vol", {})
+            _oi  = _s.get("oi", {})
+            _zg  = _vol.get("zero_gamma") or _oi.get("zero_gamma")
+            _vt  = _vol.get("vol_trigger") or _oi.get("vol_trigger")
+            _ag  = _s.get("abs_gamma_vol") or _s.get("abs_gamma_oi")
+            if _zg and _vt and _ag:
+                try:
+                    _imp = float(IV) / (252 ** 0.5)
+                except Exception:
+                    _imp = 0.0063
+                sg_data["SPY"] = {
+                    "symbol": "SPY", "ticker": "SPY",
+                    "call_wall":   _vol.get("call_wall"),
+                    "put_wall":    _vol.get("put_wall"),
+                    "vol_trigger": _vt,
+                    "abs_gamma":   _ag,
+                    "supports":    [],
+                    "combos":      [],
+                    "imp_1d":      round(_imp, 4),
+                    "imp_5d":      round(_imp * (5 ** 0.5), 4),
+                    "zero_gamma":  _zg,
+                    "_fonte":      f"MODO6 {_os.path.basename(_snaps[-1])}",
+                }
+                print(f"\n  ✅ Gamma proprio (Modo 6): {_os.path.basename(_snaps[-1])}")
+                print(f"     CW {_vol.get('call_wall')} | PW {_vol.get('put_wall')} | "
+                      f"VT {_vt} | ZG {_zg} | AbsG {_ag} | imp1d {_imp*100:.2f}%")
+    except Exception as _be:
+        print(f"  [ponte] aviso: {_be}")
+
     spy_ref = sg_data.get('SPY', {})
 
     # MQ removido em v1.5-beta — sem prompts
@@ -1485,8 +1525,8 @@ def main():
         IV           = round(vix_val / 100, 4)
         hours_input  = input("  Horas até expiração [4.0]: ").strip()
         HOURS_TO_EXP = float(hours_input) if hours_input else 4.0
-        cap_input    = input("  Capital total [50000]    : ").strip()
-        CAPITAL      = float(cap_input) if cap_input else 50000.0
+        cap_input    = input("  Capital total [10000]    : ").strip()
+        CAPITAL      = float(cap_input) if cap_input else 10000.0
         prem_input   = input("  Prêmio pago (Enter=pular) : ").strip()
         PREMIUM      = float(prem_input) if prem_input else None
         contr_input  = input("  Contratos [1]            : ").strip()
@@ -1511,6 +1551,34 @@ def main():
         print(f"\n  Erro: {result['error']}")
     else:
         print_report(result)
+
+        # ── RBC LOG: grava sinal automaticamente ──────────────────
+        try:
+            from rbc_log import log_signal
+            _g    = result.get('gate') or {}
+            _cand = (result.get('candidates') or [{}])[0]
+            _sz   = result.get('sizing') or {}
+            _open = _g.get('gate_open', False)
+            _sid  = log_signal(
+                modulo       = "0DTE",
+                ticker       = "SPY",
+                gate_status  = "ABERTO" if _open else "FECHADO",
+                estrategia   = f"COMPRA {str(_cand.get('type','')).upper()}".strip(),
+                strike       = _cand.get('strike', ''),
+                vencimento   = result.get('date', '')[:10] if isinstance(result.get('date'), str) else '',
+                bid          = '',
+                ask          = '',
+                iv_rank      = '',
+                delta        = _cand.get('delta', ''),
+                contratos_sugeridos = CONTRACTS,
+                custo_estimado      = _sz.get('recommended', ''),
+                motivo_gate  = f"teorico={_cand.get('price','')} best_side={result.get('best_side','')}",
+            )
+            if _sid:
+                print(f"\n  📝 Sinal registrado: {_sid}")
+        except Exception as _le:
+            print(f"\n  [log] aviso: {_le}")
+
 
         if mq_spy and result.get('candidates'):
             best = result['candidates'][0]
