@@ -2737,9 +2737,9 @@ function loadModo7() {
       // cabecalho
       const bat = prof.length ? prof.reduce((m,x) => Math.abs(x.gex_vol) > Math.abs(m.gex_vol) ? x : m, prof[0]) : null;
       const vtf = num(dp.flow_vol_trigger);
-      const lado = vtf ? (spot < vtf ? 'PUT' : 'CALL') : '—';
+      const lado = vtf ? (spot < vtf - 0.30 ? 'PUT' : spot > vtf + 0.30 ? 'CALL' : 'NA LINHA') : '—';
       hdr.innerHTML = '<b style="font-size:15px;">SPY ' + spot.toFixed(2) + '</b> · ' + (dp.ts || '') + ' ET'
-        + ' · Lado: <b style="color:' + (lado==='PUT'?'#dc2626':'#16a34a') + '">' + lado + '</b>'
+        + ' · Lado: <b style="color:' + (lado==='PUT'?'#dc2626':lado==='CALL'?'#16a34a':'#d97706') + '">' + lado + '</b>'
         + (vtf ? ' · VT fluxo <b>' + vtf.toFixed(2) + '</b>' : '')
         + (bat ? ' · Batalha <b>' + bat.strike + '</b> (' + (bat.gex_vol>0?'+':'') + bat.gex_vol + 'M)' : '');
 
