@@ -449,7 +449,7 @@ def main():
 if __name__ == "__main__":
     if "--auto" in sys.argv or "--watch" in sys.argv:
         import time
-        print("MODO AUTO: roda a cada 15 min durante o pregao (9:30-16:00 ET). Ctrl+C para parar.")
+        print("MODO AUTO: roda a cada 5 min durante o pregao (9:30-16:00 ET). Ctrl+C para parar.")
         while True:
             now = datetime.now()
             if now.weekday() < 5 and (9, 30) <= (now.hour, now.minute) <= (16, 0):
@@ -457,7 +457,7 @@ if __name__ == "__main__":
                     main()
                 except Exception as e:
                     print(f"Run falhou: {e} — tento de novo em 15 min")
-                time.sleep(15 * 60)
+                time.sleep(5 * 60)
             else:
                 print(f"{now:%H:%M} — fora do pregao, aguardando...", end="\r")
                 time.sleep(60)
