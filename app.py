@@ -1276,7 +1276,7 @@ def modo2():
             return 'LARGE_GAMMA'
         return 'COMBO/LEVEL'
 
-    def analyze_trade_location(spot, levels, near, s, rp=None, m1h=None, m1l=None):
+    def analyze_trade_location(spot, levels, near, s, rp=None, m1h=None, m1l=None, direction=None):
         """Location Engine — curso SpotGamma.
         Posicao do spot no micro-range entre os niveis reais do dia.
         Informativo: nao decide, nao altera o motor."""
@@ -1325,8 +1325,20 @@ def modo2():
         # DANGEROUS sobrepoe tudo: colado em wall = zona de armadilha,
         # nao de entrada (CALL atrasado na CW / PUT atrasado na PW).
         _z = loc["location_zone"]
-        if loc["is_near_call_wall"] or loc["is_near_put_wall"]:
+        _dir = (direction or "").upper()
+        _is_c = "CALL" in _dir
+        _is_p = "PUT"  in _dir
+        # Armadilha = entrada A FAVOR colada na parede (CALL na CW / PUT na PW).
+        # Reversao = entrada CONTRA na parede oposta (PUT na CW / CALL na PW) = valida.
+        _trap = (loc["is_near_call_wall"] and (_is_c or not _dir)) or \
+                (loc["is_near_put_wall"]  and (_is_p or not _dir))
+        _rev  = (loc["is_near_call_wall"] and _is_p) or \
+                (loc["is_near_put_wall"]  and _is_c)
+        if _trap and not _rev:
             loc["location_quality"] = "DANGEROUS"
+        elif _rev:
+            loc["location_quality"] = "STRONG"
+            loc["reversal_setup"]   = True
         elif _z in ("NEAR_SUPPORT", "NEAR_RESISTANCE"):
             loc["location_quality"] = "STRONG"   # perto de nivel decisivo comum
         elif _z in ("LOWER_RANGE", "UPPER_RANGE"):
@@ -1660,9 +1672,6 @@ def modo2():
         _loc_levels.append(float(move_1d_high))
     if move_1d_low:
         _loc_levels.append(float(move_1d_low))
-    location = analyze_trade_location(
-        spot_now, _loc_levels, near_level, spy,
-        rp=risk_pivot, m1h=move_1d_high, m1l=move_1d_low)
 
     # ── Anchor Engine (curso SpotGamma) ───────────────────────────────
     anchors = find_trade_anchors(
@@ -1791,6 +1800,13 @@ def modo2():
     if operational_note:
         hard_rules.append(f"⚠ {operational_note}")
     # ── Warnings do Location Engine (apos camada operacional) ─────────
+    # Localizacao calculada APOS decision — precisa da direcao do trade
+    # para distinguir armadilha (a favor na parede) de reversao (contra).
+    location = analyze_trade_location(
+        spot_now, _loc_levels, near_level, spy,
+        rp=risk_pivot, m1h=move_1d_high, m1l=move_1d_low,
+        direction=decision)
+
     if location:
         if location.get("location_warning"):
             hard_rules.append(f"⚠ LOCATION: {location['location_warning']}")
