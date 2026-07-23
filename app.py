@@ -1166,6 +1166,33 @@ def modo2():
                     except Exception:
                         _v = None
                     _spy6[_k] = float(_v) if _v is not None else None
+                # FLUXO do dia tem prioridade sobre estrutura (OI de ontem).
+                # Le do PG (nao do cache em memoria) — sobrevive a restart do servico.
+                _flow = {}
+                try:
+                    from journal import get_conn
+                    import json as _json2
+                    with get_conn() as _fc:
+                        with _fc.cursor() as _fcur:
+                            _fcur.execute(
+                                "SELECT payload FROM gamma_profile_cache WHERE date = %s",
+                                (ny_today().isoformat(),))
+                            _frow = _fcur.fetchone()
+                    if _frow and _frow[0]:
+                        _flow = _json2.loads(_frow[0]) or {}
+                except Exception:
+                    _flow = {}
+                if not _flow:
+                    _flow = _GAMMA_CACHE or {}
+                _fmap = {"call_wall": "flow_call_wall", "put_wall": "flow_put_wall",
+                         "zero_gamma": "flow_zero_gamma", "vol_trigger": "flow_vol_trigger"}
+                for _k, _fk in _fmap.items():
+                    _fv = _flow.get(_fk)
+                    if _fv is not None:
+                        try:
+                            _spy6[_k] = float(_fv)
+                        except (TypeError, ValueError):
+                            pass
                 if any(_spy6[_k] is not None for _k in
                        ("call_wall", "put_wall", "vol_trigger", "zero_gamma")):
                     sg = {"SPY": _spy6}
