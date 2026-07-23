@@ -1,1 +1,1 @@
-2/3 alinhados -> CALL
+2/3 alinhados -> PUT

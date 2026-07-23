@@ -1912,10 +1912,10 @@ def modo2():
             if parsed.get("score") and parsed["score"].get("justification"):
                 parsed["score"]["justification"] += (
                     f" | HORARIO: {_now_str} — aguardar 9:45 ET para avaliar setup.")
-        elif hhmm <= 1015:
+        elif hhmm <= 1100:
             timing_quality = "OK"
             early_entry_ok = True
-        elif hhmm <= 1045:
+        elif hhmm <= 1130:
             timing_quality = "CAUTION"
             early_entry_ok = True
         else:
