@@ -695,6 +695,25 @@
 
 <!-- ── MODO 3: OPERACIONAL ── -->
 <div id="panel-modo3" class="tab-panel">
+  <p class="section-label">Modo 3 · Radar</p>
+  <h2 class="section-title">Radar de Níveis</h2>
+  <p class="section-sub">Monitor de aproximação — não decide, não bloqueia. Mostra onde o preço está em relação a cada nível e qual strike observar.</p>
+
+  <div style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+    <button onclick="loadRadar()" class="btn-primary" style="font-size:12px;padding:8px 16px;">↻ Atualizar</button>
+    <span id="radar-idade" style="font-size:11px;"></span>
+  </div>
+
+  <div id="radar-header" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;font-size:12px;line-height:1.7;margin-bottom:14px;">
+    Carregando...
+  </div>
+
+  <div id="radar-tabela" style="overflow-x:auto;"></div>
+
+  <div id="radar-migracao" style="margin-top:14px;background:#fff;border:0.5px solid #e2e8f0;border-radius:10px;padding:12px 14px;font-size:12px;line-height:1.8;"></div>
+
+  <div class="divider" style="margin:28px 0;"></div>
+
   <p class="section-label">Modo 3</p>
   <h2 class="section-title">Análise Operacional</h2>
   <p class="section-sub">Checklist de execução 0DTE — herda decisão do Modo 2. Informe prêmio e strike após o fill.</p>
@@ -773,6 +792,7 @@
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('panel-' + id).classList.add('active');
     btn.classList.add('active');
+    if (id === 'modo3' && typeof loadRadar === 'function') loadRadar();
   }
 
   // ── Helpers ──
@@ -2609,6 +2629,121 @@ function loadModo7() {
 </div>
 
 <script>
+  // ── RADAR DE NIVEIS (Modo 3) ─────────────────────────────────────
+  async function loadRadar() {
+    const hdr = document.getElementById('radar-header');
+    const tbl = document.getElementById('radar-tabela');
+    const mig = document.getElementById('radar-migracao');
+    const idd = document.getElementById('radar-idade');
+    if (!hdr) return;
+    try {
+      const [rp, rl] = await Promise.all([
+        fetch('/api/gamma-profile'), fetch('/api/gamma-levels')
+      ]);
+      const dp = await rp.json();
+      const dl = await rl.json();
+      const lv = dl.levels || {};
+      const spot = Number(dp.spot || lv.spot || 0);
+      if (!spot) { hdr.innerHTML = 'Sem dados. Rode <code>intraday_gamma.py</code>.'; return; }
+
+      const prof = dp.profile || [];
+      const gexAt = k => {
+        const r = prof.find(x => Math.round(x.strike) === Math.round(k));
+        return r ? r.gex_vol : null;
+      };
+      const num = v => (v === null || v === undefined || v === '') ? null : Number(v);
+
+      // niveis: [valor, rotulo, setup-se-chegar]
+      const N = [];
+      const push = (v, lab, setup) => { const n = num(v); if (n) N.push([n, lab, setup]); };
+      push(dp.flow_call_wall,   'CALL WALL · fluxo',  'PUT reversal');
+      push(dp.flow_put_wall,    'PUT WALL · fluxo',   'CALL reversal');
+      push(dp.flow_vol_trigger, 'VOL TRIGGER · fluxo', spot < num(dp.flow_vol_trigger) ? 'CALL — recupera regime' : 'PUT — perde regime');
+      push(dp.flow_zero_gamma,  'ZERO GAMMA · fluxo', 'reversao de regime');
+      push(lv.call_wall,        'CALL WALL · estrut', 'PUT reversal');
+      push(lv.put_wall,         'PUT WALL · estrut',  'CALL reversal');
+      push(lv.vol_trigger,      'VOL TRIGGER · estrut', spot < num(lv.vol_trigger) ? 'CALL — recupera regime' : 'PUT — perde regime');
+      push(lv.zero_gamma,       'ZERO GAMMA · estrut', 'reversao de regime');
+      try {
+        const combos = typeof lv.gamma_combos === 'string' ? JSON.parse(lv.gamma_combos) : (lv.gamma_combos || []);
+        combos.forEach(c => push(c, 'COMBO', '—'));
+      } catch (e) {}
+
+      N.sort((a,b) => Math.abs(a[0]-spot) - Math.abs(b[0]-spot));
+
+      let h = '<table style="width:100%;border-collapse:collapse;font-size:12px;">';
+      h += '<tr style="text-align:left;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:.05em;">'
+         + '<th style="padding:6px 8px;">Nivel</th><th>Tipo</th><th>Dist.</th><th>%</th>'
+         + '<th>GEX</th><th>Se chegar la</th><th>Strikes (ATM ±1)</th></tr>';
+      for (const [v, lab, setup] of N) {
+        const d = v - spot;
+        const perto = Math.abs(d) <= 0.5;
+        const g = gexAt(v);
+        const atm = Math.round(v);
+        h += '<tr style="border-top:1px solid #f1f5f9;' + (perto ? 'background:#fffbeb;font-weight:600;' : '') + '">'
+          + '<td style="padding:7px 8px;">' + v.toFixed(2) + '</td>'
+          + '<td style="color:#64748b;">' + lab + '</td>'
+          + '<td style="color:' + (d>=0?'#16a34a':'#dc2626') + ';">' + (d>=0?'+':'') + d.toFixed(2) + '</td>'
+          + '<td style="color:#94a3b8;">' + (d>=0?'+':'') + (d/spot*100).toFixed(2) + '%</td>'
+          + '<td style="color:' + (g===null?'#cbd5e1':(g>=0?'#16a34a':'#dc2626')) + ';">' + (g===null?'—':(g>0?'+':'')+g+'M') + '</td>'
+          + '<td style="color:#475569;">' + setup + '</td>'
+          + '<td style="font-family:monospace;">' + (atm-1) + ' / <b>' + atm + '</b> / ' + (atm+1) + '</td>'
+          + '</tr>';
+      }
+      h += '</table>';
+      tbl.innerHTML = h;
+
+      // cabecalho
+      const bat = prof.length ? prof.reduce((m,x) => Math.abs(x.gex_vol) > Math.abs(m.gex_vol) ? x : m, prof[0]) : null;
+      const vtf = num(dp.flow_vol_trigger);
+      const lado = vtf ? (spot < vtf ? 'PUT' : 'CALL') : '—';
+      hdr.innerHTML = '<b style="font-size:15px;">SPY ' + spot.toFixed(2) + '</b> · ' + (dp.ts || '') + ' ET'
+        + ' · Lado: <b style="color:' + (lado==='PUT'?'#dc2626':'#16a34a') + '">' + lado + '</b>'
+        + (vtf ? ' · VT fluxo <b>' + vtf.toFixed(2) + '</b>' : '')
+        + (bat ? ' · Batalha <b>' + bat.strike + '</b> (' + (bat.gex_vol>0?'+':'') + bat.gex_vol + 'M)' : '');
+
+      // migracao + velocidade
+      const ps = num(dp.prev_spot);
+      let m = '';
+      if (ps) {
+        const dsp = spot - ps;
+        m += '<b style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;">Movimento vs run das ' + (dp.prev_ts||'') + '</b><br>';
+        m += 'SPY: ' + ps.toFixed(2) + ' → ' + spot.toFixed(2) + ' <b style="color:' + (dsp>=0?'#16a34a':'#dc2626') + '">('
+           + (dsp>=0?'+':'') + dsp.toFixed(2) + ' pts)</b><br>';
+        const wall = (cur, prev, name) => {
+          const c = num(cur), p = num(prev);
+          if (!c || !p) return '';
+          const d = c - p;
+          const t = d > 0 ? 'subindo' : (d < 0 ? 'descendo' : 'estavel');
+          return name + ': ' + p + ' → ' + c + ' (' + t + ')<br>';
+        };
+        m += wall(dp.flow_put_wall,  dp.prev_put_wall,  'Put Wall fluxo');
+        m += wall(dp.flow_call_wall, dp.prev_call_wall, 'Call Wall fluxo');
+        m += wall(dp.flow_vol_trigger, dp.prev_vol_trigger, 'Vol Trigger fluxo');
+      } else {
+        m = '<span style="color:#94a3b8;">Primeiro run do dia — sem comparacao.</span>';
+      }
+      mig.innerHTML = m;
+
+      // idade do dado
+      if (dp.ts) {
+        const now = new Date();
+        const et = new Date(now.toLocaleString('en-US', {timeZone: 'America/New_York'}));
+        const [hh, mm] = dp.ts.split(':').map(Number);
+        let age = (et.getHours()*60 + et.getMinutes()) - (hh*60 + mm);
+        if (age < 0) age += 1440;
+        idd.innerHTML = 'Dado de ' + dp.ts + ' ET — <b style="color:' + (age > 10 ? '#dc2626' : '#16a34a') + '">'
+          + age + ' min atras</b>';
+      }
+    } catch (e) {
+      hdr.innerHTML = 'Erro ao carregar radar: ' + e.message;
+    }
+  }
+  setInterval(() => {
+    const p = document.getElementById('panel-modo3');
+    if (p && p.classList.contains('active')) loadRadar();
+  }, 60000);
+
   async function loadGexProfile() {
     try {
       const r = await fetch('/api/gamma-profile');

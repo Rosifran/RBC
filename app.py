@@ -2485,6 +2485,12 @@ def post_gamma_levels():
                 _GAMMA_CACHE["ts"] = datetime.now(ZoneInfo("America/New_York")).strftime("%H:%M")
             except Exception:
                 _GAMMA_CACHE["ts"] = datetime.now().strftime("%H:%M")
+            _GAMMA_CACHE["prev_ts"] = data.get("prev_ts")
+            _GAMMA_CACHE["prev_spot"] = data.get("prev_spot")
+            _GAMMA_CACHE["prev_put_wall"] = data.get("prev_put_wall")
+            _GAMMA_CACHE["prev_call_wall"] = data.get("prev_call_wall")
+            _GAMMA_CACHE["prev_zero_gamma"] = data.get("prev_zero_gamma")
+            _GAMMA_CACHE["prev_vol_trigger"] = data.get("prev_vol_trigger")
             _GAMMA_CACHE["flow_call_wall"]   = data.get("flow_call_wall")
             _GAMMA_CACHE["flow_put_wall"]    = data.get("flow_put_wall")
             _GAMMA_CACHE["flow_zero_gamma"]  = data.get("flow_zero_gamma")
@@ -2497,7 +2503,9 @@ def post_gamma_levels():
                 import json as _json
                 _payload = _json.dumps({k: _GAMMA_CACHE.get(k) for k in
                     ("profile", "spot", "date", "ts", "zg_status", "vt_status",
-                     "flow_call_wall", "flow_put_wall", "flow_zero_gamma", "flow_vol_trigger")},
+                     "flow_call_wall", "flow_put_wall", "flow_zero_gamma", "flow_vol_trigger",
+                     "prev_ts", "prev_spot", "prev_put_wall", "prev_call_wall",
+                     "prev_zero_gamma", "prev_vol_trigger")},
                     default=str)
                 with get_conn() as _c:
                     with _c.cursor() as _cur:

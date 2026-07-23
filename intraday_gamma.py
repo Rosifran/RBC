@@ -324,6 +324,7 @@ def main():
     }
 
     # compara com o snapshot anterior DO MESMO DIA
+    _prev_info = {}
     prev_files = sorted(glob.glob(f"{snap_dir}/{today_str}_*.json"))
     if prev_files:
         with open(prev_files[-1]) as f:
@@ -339,6 +340,14 @@ def main():
         print(delta(snapshot["vol"]["put_wall"],  prev["vol"]["put_wall"],  "Put Wall (fluxo) "))
         print(delta(snapshot["vol"]["call_wall"], prev["vol"]["call_wall"], "Call Wall (fluxo)"))
         print(delta(snapshot["vol"]["zero_gamma"],prev["vol"]["zero_gamma"],"Zero Gamma (fluxo)"))
+        _prev_info = {
+            "prev_ts":        prev_time,
+            "prev_spot":      prev["spot"],
+            "prev_put_wall":  prev["vol"]["put_wall"],
+            "prev_call_wall": prev["vol"]["call_wall"],
+            "prev_zero_gamma":prev["vol"]["zero_gamma"],
+            "prev_vol_trigger":prev["vol"].get("vol_trigger"),
+        }
         spot_d = snapshot["spot"] - prev["spot"]
         print(f"    SPY: {prev['spot']} → {snapshot['spot']}  ({'+' if spot_d>=0 else ''}{spot_d:.2f})")
         print("\n  Leitura: Put Wall subindo = suporte subindo = vies call.")
@@ -376,6 +385,7 @@ def main():
                 "flow_put_wall":    snapshot["vol"]["put_wall"],
                 "flow_zero_gamma":  snapshot["vol"]["zero_gamma"],
                 "flow_vol_trigger": snapshot["vol"]["vol_trigger"],
+                **_prev_info,
                 "regime": snapshot["regime"],
                 "coverage_pct": round(coverage, 0),
                 "gex_profile": [
