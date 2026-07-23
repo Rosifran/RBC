@@ -2655,8 +2655,8 @@ function loadModo7() {
         const isPut  = rit.veredito.indexOf('PUT') >= 0;
         const isCall = rit.veredito.indexOf('CALL') >= 0;
         const cor  = isPut ? '#dc2626' : (isCall ? '#16a34a' : '#d97706');
-        const bg   = isPut ? '#fef2f2' : (isCall ? '#f0fdf4' : '#fffbeb');
-        const brd  = isPut ? '#fecaca' : (isCall ? '#bbf7d0' : '#fde68a');
+        const bg   = '#fff';   // cartao sobrio v2
+        const brd  = '#e2e8f0';
         const mark = ok => ok
           ? '<span style="color:' + cor + ';font-weight:700;">&#9679;</span> '
           : '<span style="color:#cbd5e1;">&#9675;</span> ';
@@ -2673,7 +2673,7 @@ function loadModo7() {
             + rit.batalha_dist + ' pts</div>';
         dh += '<div>' + mark(vMig) + 'MIGRACAO: Put Wall fluxo <b>' + rit.migracao + '</b></div>';
         if (rit.veredito_mudou && rit.veredito_anterior) {
-          dh += '<div style="margin-top:8px;padding-top:8px;border-top:1px solid ' + brd
+          dh += '<div style="margin-top:8px;padding-top:8px;border-top:1px solid #e2e8f0'
               + ';color:#dc2626;font-weight:700;">&#9888; VEREDITO MUDOU: "'
               + rit.veredito_anterior + '" &rarr; "' + rit.veredito
               + '" — reavaliar posicao</div>';

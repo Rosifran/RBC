@@ -377,8 +377,10 @@ def main():
                             "SUBINDO" if pw_v > _pw_prev else "ESTAVEL")
             except Exception:
                 pass
-        _lado = ("PUT" if _flip and spot < _flip else
-                 "CALL" if _flip and spot > _flip else "INDEFINIDO")
+        ZONA_VT = 0.30  # pts — dentro da faixa, toque nao e aceitacao: LADO nao vota
+        _lado = ("PUT" if _flip and spot < _flip - ZONA_VT else
+                 "CALL" if _flip and spot > _flip + ZONA_VT else
+                 "NA LINHA" if _flip else "INDEFINIDO")
         _vp = sum([_lado == "PUT",  _btl_g < 0, _mig == "DESCENDO"])
         _vc = sum([_lado == "CALL", _btl_g > 0, _mig == "SUBINDO"])
         if _vp >= 2 and _vp > _vc:
@@ -406,7 +408,8 @@ def main():
             "veredito_mudou": _mudou,
         }
         print("\n  " + "-"*12 + f" RITUAL {datetime.now():%H:%M} ET " + "-"*12)
-        _ld = 'ABAIXO' if _lado=='PUT' else ('ACIMA' if _lado=='CALL' else 'sem flip')
+        _ld = ('ABAIXO' if _lado=='PUT' else 'ACIMA' if _lado=='CALL' else
+               f'NA LINHA (dentro de +-{ZONA_VT})' if _lado=='NA LINHA' else 'sem flip')
         print(f"  1. LADO:     SPY {spot:.2f} {_ld} do VT fluxo {_flip if _flip else '-'} -> {_lado}")
         print(f"  2. BATALHA:  maior |GEX| = {_btl_s:.0f} ({_btl_g/1e6:+.0f}M) a {abs(spot-_btl_s):.1f} pts")
         print(f"  3. MIGRACAO: Put Wall fluxo {_mig}")
