@@ -7,22 +7,6 @@ import json
 import os
 from datetime import datetime, timezone, date
 
-# ── Fuso oficial do sistema: America/New_York (mercado) ─────────────────
-# Servidor roda em UTC; "hoje" e horarios exibidos devem ser de NY.
-def _ny_tz():
-    try:
-        from zoneinfo import ZoneInfo
-        return ZoneInfo("America/New_York")
-    except Exception:
-        return None
-
-def ny_now():
-    tz = _ny_tz()
-    return datetime.now(tz) if tz else datetime.now()
-
-def ny_today():
-    return ny_now().date()
-
 from dotenv import load_dotenv
 
 import anthropic
@@ -121,10 +105,6 @@ from rbc_0dte_scanner import (
 )
 
 app = Flask(__name__, template_folder="templates")
-
-# Modo 8 · Equity Research
-from research_routes import research_bp
-app.register_blueprint(research_bp)
 
 
 @app.route("/health")
@@ -494,7 +474,7 @@ def parse_pm_pdf():
     try:
         from journal import save_snapshot
         save_snapshot({
-            "date":               str(ny_today()),
+            "date":               str(datetime.date.today()),
             "pm_hiro":            parsed.get("pm_hiro"),
             "pm_vix_close":       parsed.get("pm_vix_close"),
             "pm_cor1m_close":     parsed.get("pm_cor1m_close"),
@@ -635,7 +615,7 @@ def _parse_sg_calendar(raw):
     import re
     from datetime import date as _date
     events, pend_date, pend_time = [], None, None
-    today = ny_today()
+    today = _date.today()
     for line in (raw or "").splitlines():
         line = line.strip()
         if not line:
@@ -838,7 +818,7 @@ def evaluate_position_status(pos: dict) -> dict:
     if exp:
         try:
             exp_date = exp if isinstance(exp, _date) else _date.fromisoformat(str(exp))
-            dte_now  = (exp_date - ny_today()).days
+            dte_now  = (exp_date - _date.today()).days
         except Exception:
             pass
 
@@ -1145,26 +1125,11 @@ def modo2():
         try:
             from journal import get_snapshot_by_date, init_db
             init_db()
-            _row = get_snapshot_by_date(ny_today().isoformat())
+            _row = get_snapshot_by_date(date.today().isoformat())
             if _row:
-                # Mesmo formato do parse_sg_data, p/ compatibilidade total
-                _spy6 = {
-                    "symbol": "SPY", "ticker": "SPY",
-                    "abs_gamma": None, "supports": [], "combos": [],
-                    "imp_1d": None, "imp_5d": None,
-                }
-                try:
-                    import json as _json
-                    _rawc = _row.get("gamma_combos") if hasattr(_row, "get") else None
-                    if _rawc:
-                        _spy6["combos"] = sorted(float(x) for x in _json.loads(_rawc))
-                except Exception:
-                    pass
+                _spy6 = {"symbol": "SPY"}
                 for _k in ("call_wall", "put_wall", "zero_gamma", "vol_trigger"):
-                    try:
-                        _v = _row.get(_k) if hasattr(_row, "get") else _row[_k]
-                    except Exception:
-                        _v = None
+                    _v = _row.get(_k)
                     _spy6[_k] = float(_v) if _v is not None else None
                 if any(_spy6[_k] is not None for _k in
                        ("call_wall", "put_wall", "vol_trigger", "zero_gamma")):
@@ -1807,16 +1772,88 @@ def modo2():
         if is_put and float(t2) >= float(t1):
             t2 = round(float(t1) - 2, 2)
 
-    # ── Context bias: PM Note DESATIVADO (sem acesso SpotGamma) ──────────
-    # Bloco original removido: lia PM Notes antigos do journal e injetava
-    # contexto velho na decisao. Motor opera neutro; contexto vem dos
-    # dados vivos (IBKR/Modo 6).
+    # ── Context bias: cruza PM Note da noite com PDF da manhã ────────────
     context_bias        = "neutral_context"
     context_warning     = ""
     pm_context_date     = None
     pm_hiro_ctx         = None
     pm_vix_ctx          = None
     pm_cor1m_ctx        = None
+
+    try:
+        from journal import get_journal
+        rows = get_journal(limit=5)
+        pm_row = None
+        for row in rows:
+            if row.get("pm_hiro") or row.get("pm_vix_close") or row.get("pm_cor1m_close"):
+                pm_row = row
+                break
+
+        if pm_row:
+            pm_hiro_ctx   = (pm_row.get("pm_hiro") or "").lower()
+            pm_vix_ctx    = pm_row.get("pm_vix_close")
+            pm_cor1m_ctx  = pm_row.get("pm_cor1m_close")
+            pm_context_date = str(pm_row.get("date", ""))
+
+            bearish_signals = 0
+            bullish_signals = 0
+
+            if any(w in pm_hiro_ctx for w in ["bearish", "negative", "bear", "selling"]):
+                bearish_signals += 2
+            elif any(w in pm_hiro_ctx for w in ["bullish", "positive", "bull", "buying"]):
+                bullish_signals += 2
+
+            if pm_vix_ctx and float(pm_vix_ctx) > 18:
+                bearish_signals += 1
+            elif pm_vix_ctx and float(pm_vix_ctx) < 15:
+                bullish_signals += 1
+
+            if pm_cor1m_ctx and float(pm_cor1m_ctx) >= 6.0:
+                bearish_signals += 2
+            elif pm_cor1m_ctx and float(pm_cor1m_ctx) < 4.0:
+                bullish_signals += 1
+
+            if bearish_signals >= 3:
+                context_bias = "bearish_context"
+            elif bullish_signals >= 3:
+                context_bias = "bullish_context"
+            elif bearish_signals > 0 and bullish_signals > 0:
+                context_bias = "mixed_context"
+            else:
+                context_bias = "neutral_context"
+
+            warnings = []
+            if context_bias == "bearish_context":
+                if decision in ("CALL REVERSAL", "CALL BREAKOUT SMALL"):
+                    warnings.append(
+                        f"PM Note bearish (HIRO {pm_hiro_ctx}) + COR1M {pm_cor1m_ctx} "
+                        f"— CALL requer confirmacao adicional. Tamanho reduzido.")
+                elif decision in ("PUT TREND", "PUT REVERSAL"):
+                    warnings.append(f"PM Note bearish confirma PUT. Contexto alinhado.")
+                if pm_cor1m_ctx and float(pm_cor1m_ctx) >= 6.0:
+                    warnings.append(
+                        f"⚠ COR1M {pm_cor1m_ctx} acima do risk barrier 6.0 "
+                        f"— risco de volatility spasm.")
+                if pm_vix_ctx and float(pm_vix_ctx) > 16:
+                    warnings.append(
+                        f"⚠ VIX ontem {pm_vix_ctx} elevado — opcoes mais caras hoje.")
+            elif context_bias == "bullish_context":
+                if decision in ("PUT TREND", "PUT REVERSAL"):
+                    warnings.append(
+                        f"PM Note bullish (HIRO {pm_hiro_ctx}) — "
+                        f"PUT requer confirmacao. Contexto diverge.")
+                elif decision in ("CALL REVERSAL", "CALL BREAKOUT SMALL"):
+                    warnings.append(f"PM Note bullish confirma CALL. Contexto alinhado.")
+            elif context_bias == "mixed_context":
+                warnings.append("PM Note sinais mistos — reduzir tamanho, aguardar confirmacao.")
+
+            warnings.append(
+                "Suporte 0DTE de ontem nao carrega para hoje — usar apenas niveis do PDF atual.")
+            context_warning = " | ".join(warnings)
+
+    except Exception as ctx_err:
+        context_bias    = "neutral_context"
+        context_warning = f"PM Note nao disponivel: {ctx_err}"
 
     # ── Gap & Timing Filter ─────────────────────────────────────────────
     # Alerta de timing — nao muda a decisao principal
@@ -2116,53 +2153,6 @@ def modo2():
     return jsonify(ow)
 
 
-@app.route("/api/modo7/latest", methods=["GET"])
-def modo7_latest():
-    """Modo 7 — Flow Scanner: alertas de fluxo + veredito da Camada 2."""
-    try:
-        from journal import get_conn
-        from psycopg2.extras import RealDictCursor
-        import json as _json
-        with get_conn() as conn:
-            with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                cur.execute("SELECT MAX(scan_date) AS d FROM flow_alerts")
-                row = cur.fetchone()
-                if not row or not row["d"]:
-                    return jsonify({"error": "Nenhum scan de fluxo. Rode flow_scanner_ibkr.py."}), 404
-                cur.execute("""SELECT * FROM flow_alerts WHERE scan_date = %s
-                               ORDER BY created_at DESC""", (row["d"],))
-                rows = cur.fetchall()
-        seen, results = set(), []
-        for r in rows:
-            if r["ticker"] in seen:
-                continue
-            seen.add(r["ticker"])
-            try:
-                alerts = _json.loads(r.get("alerts_json") or "[]")
-            except Exception:
-                alerts = []
-            try:
-                camada2 = _json.loads(r.get("camada2_json") or "{}")
-            except Exception:
-                camada2 = {}
-            results.append({
-                "ticker": r["ticker"],
-                "spot": float(r["spot"]) if r.get("spot") is not None else None,
-                "scan_date": str(r["scan_date"]),
-                "scan_time": r.get("scan_time"),
-                "dominant_direction": r.get("dominant_dir"),
-                "confidence": r.get("confidence"),
-                "note": r.get("note"),
-                "alerts": alerts,
-                "camada2": camada2,
-            })
-        _rank = {"APROVO_ONDINHA": 0, "AGUARDAR": 1}
-        results.sort(key=lambda x: _rank.get((x.get("camada2") or {}).get("verdict"), 2))
-        return jsonify({"scan_date": str(row["d"]), "results": results})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
 @app.route("/api/modo5/latest", methods=["GET"])
 def modo5_latest():
     """Retorna o resultado mais recente do scanner Modo 5 via PostgreSQL."""
@@ -2222,7 +2212,7 @@ def modo3():
         iv           = round(vix / 100, 4)
         rf           = float(data.get("rf", 0.0527))
         hours_to_exp = float(data.get("hours_to_exp", 4.0))
-        capital      = float(data.get("capital", 10000))
+        capital      = float(data.get("capital", 50000))
         premium_paid = float(data["premium_paid"]) if data.get("premium_paid") else None
         contracts    = int(data.get("contracts", 1))
     except (ValueError, TypeError) as e:
@@ -2243,30 +2233,6 @@ def modo3():
 
     if "error" in result:
         return jsonify(result), 422
-
-    # ── RBC LOG: grava sinal do Modo 3 ────────────────────────────
-    try:
-        from rbc_log import log_signal
-        _g    = result.get("gate") or {}
-        _cand = (result.get("candidates") or [{}])[0]
-        _sz   = result.get("sizing") or {}
-        log_signal(
-            modulo       = "0DTE",
-            ticker       = "SPY",
-            gate_status  = "ABERTO" if _g.get("gate_open") else "FECHADO",
-            estrategia   = f"COMPRA {str(_cand.get('type','')).upper()}".strip(),
-            strike       = _cand.get("strike", ""),
-            vencimento   = "",
-            bid          = "",
-            ask          = "",
-            iv_rank      = "",
-            delta        = _cand.get("delta", ""),
-            contratos_sugeridos = contracts,
-            custo_estimado      = _sz.get("recommended", ""),
-            motivo_gate  = f"web teorico={_cand.get('price','')} best_side={result.get('best_side','')}",
-        )
-    except Exception as _le:
-        print(f"[log] aviso modo3: {_le}", flush=True)
 
     return jsonify(result)
 
@@ -2389,6 +2355,7 @@ def tradingview_webhook():
         row = save_snapshot(update)
         return jsonify({"ok": True, "event": event, "date": str(row["date"]), "update": {k:v for k,v in update.items() if k != "date"}})
     except Exception as e:
+        import traceback; traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
 
@@ -2415,61 +2382,18 @@ def get_journal_route():
 
 # ── Modo 6: Intraday Gamma levels via IBKR ───────────────────────────
 
-_GAMMA_CACHE = {}
-
-
 @app.route("/api/gamma-levels", methods=["POST"])
 def post_gamma_levels():
     from journal import save_snapshot, init_db
     try:
         init_db()
         data = request.get_json(silent=True) or {}
-        today = data.get("date") or ny_today().isoformat()
+        today = data.get("date") or date.today().isoformat()
         levels = {
             k: data[k]
             for k in ("call_wall", "put_wall", "zero_gamma", "vol_trigger")
             if data.get(k) is not None
         }
-        if data.get("gamma_combos"):
-            import json as _json
-            levels["gamma_combos"] = _json.dumps(data["gamma_combos"])
-        if data.get("gex_profile"):
-            _GAMMA_CACHE["profile"] = data["gex_profile"]
-            _GAMMA_CACHE["spot"]    = data.get("spot")
-            _GAMMA_CACHE["date"]    = today
-            try:
-                from zoneinfo import ZoneInfo
-                _GAMMA_CACHE["ts"] = datetime.now(ZoneInfo("America/New_York")).strftime("%H:%M")
-            except Exception:
-                _GAMMA_CACHE["ts"] = datetime.now().strftime("%H:%M")
-            _GAMMA_CACHE["flow_call_wall"]   = data.get("flow_call_wall")
-            _GAMMA_CACHE["flow_put_wall"]    = data.get("flow_put_wall")
-            _GAMMA_CACHE["flow_zero_gamma"]  = data.get("flow_zero_gamma")
-            _GAMMA_CACHE["flow_vol_trigger"] = data.get("flow_vol_trigger")
-            _GAMMA_CACHE["zg_status"] = data.get("zero_gamma_status")
-            _GAMMA_CACHE["vt_status"] = data.get("vol_trigger_status")
-            # Persiste no PG: sobrevive a deploys (cache em memoria zera)
-            try:
-                from journal import get_conn
-                import json as _json
-                _payload = _json.dumps({k: _GAMMA_CACHE.get(k) for k in
-                    ("profile", "spot", "date", "ts", "zg_status", "vt_status",
-                     "flow_call_wall", "flow_put_wall", "flow_zero_gamma", "flow_vol_trigger")},
-                    default=str)
-                with get_conn() as _c:
-                    with _c.cursor() as _cur:
-                        _cur.execute("""CREATE TABLE IF NOT EXISTS gamma_profile_cache (
-                            date DATE PRIMARY KEY,
-                            payload TEXT,
-                            updated_at TIMESTAMP DEFAULT NOW())""")
-                        _cur.execute("""INSERT INTO gamma_profile_cache (date, payload, updated_at)
-                            VALUES (%s, %s, NOW())
-                            ON CONFLICT (date) DO UPDATE
-                            SET payload = EXCLUDED.payload, updated_at = NOW()""",
-                            (today, _payload))
-                    _c.commit()
-            except Exception:
-                pass
         if not levels:
             return jsonify({"error": "No gamma levels provided"}), 400
         row = save_snapshot({"date": today, **levels})
@@ -2477,32 +2401,12 @@ def post_gamma_levels():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route("/api/gamma-profile", methods=["GET"])
-def get_gamma_profile():
-    if not _GAMMA_CACHE.get("profile"):
-        # Cache zerou (deploy). Recarrega o perfil de hoje do PG.
-        try:
-            from journal import get_conn
-            import json as _json
-            with get_conn() as _c:
-                with _c.cursor() as _cur:
-                    _cur.execute(
-                        "SELECT payload FROM gamma_profile_cache WHERE date = %s",
-                        (ny_today().isoformat(),))
-                    _row = _cur.fetchone()
-            if _row and _row[0]:
-                _GAMMA_CACHE.update(_json.loads(_row[0]))
-        except Exception:
-            pass
-    return jsonify({"ok": bool(_GAMMA_CACHE.get("profile")), **_GAMMA_CACHE})
-
-
 @app.route("/api/gamma-levels", methods=["GET"])
 def get_gamma_levels():
     from journal import get_snapshot_by_date, get_market_quotes, init_db
     try:
         init_db()
-        today = request.args.get("date") or ny_today().isoformat()
+        today = request.args.get("date") or date.today().isoformat()
         row = get_snapshot_by_date(today)
         levels = {
             k: float(row[k]) if row.get(k) is not None else None
@@ -2519,16 +2423,7 @@ def get_gamma_levels():
                     regime = "POSITIVE GAMMA" if spot > zg else "NEGATIVE GAMMA"
         except Exception:
             pass
-        ts = None
-        if row and row.get("created_at"):
-            _ca = row["created_at"]
-            try:
-                if _ca.tzinfo is None:
-                    _ca = _ca.replace(tzinfo=timezone.utc)
-                _tz = _ny_tz()
-                ts = _ca.astimezone(_tz).strftime("%d/%m %H:%M ET") if _tz else str(_ca)
-            except Exception:
-                ts = str(_ca)
+        ts = str(row["created_at"]) if row and row.get("created_at") else None
         return jsonify({"date": today, "levels": levels, "spot": spot, "regime": regime, "timestamp": ts})
     except Exception as e:
         return jsonify({"error": str(e)}), 500

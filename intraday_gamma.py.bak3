@@ -31,12 +31,12 @@ from ib_insync import IB, Stock, Option
 TWS_HOST = "127.0.0.1"
 TWS_PORT = 7497        # TWS live = 7496 | TWS paper = 7497 | Gateway live = 4001
 CLIENT_ID = 61          # qualquer numero nao usado por outro app
-STRIKES_RANGE = 40      # quantos strikes acima/abaixo do spot (largo p/ pegar ZG em dias profundos)
+STRIKES_RANGE = 25      # quantos strikes acima/abaixo do spot
 # ──────────────────────────────────────────────────────────────────────────
 
 
 def main():
-    expiry_arg = sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("--") else None
+    expiry_arg = sys.argv[1] if len(sys.argv) > 1 and sys.argv[1] != "--auto" else None
 
     ib = IB()
     print(f"Conectando ao TWS em {TWS_HOST}:{TWS_PORT} ...")
@@ -95,18 +95,8 @@ def main():
     print(f"{len(contracts)} contratos qualificados. Puxando greeks + OI + volume ...")
 
     # genericTickList "101" = OI de opcoes (tick 27 call OI / 28 put OI)
-    # Coleta em LOTES p/ respeitar o limite de linhas de market data do TWS (~100)
-    BATCH = 90
-    tickers = []
-    n_lotes = (len(contracts) + BATCH - 1) // BATCH
-    for bi in range(0, len(contracts), BATCH):
-        lote = contracts[bi:bi + BATCH]
-        lote_tk = [ib.reqMktData(c, "101", False, False) for c in lote]
-        ib.sleep(6)  # da tempo dos greeks chegarem
-        for c in lote:
-            ib.cancelMktData(c)
-        tickers.extend(lote_tk)
-        print(f"  lote {bi // BATCH + 1}/{n_lotes}: {len(lote)} contratos coletados")
+    tickers = [ib.reqMktData(c, "101", False, False) for c in contracts]
+    ib.sleep(6)  # da tempo dos greeks chegarem
 
     # ── Monta tabela por strike ───────────────────────────────────────────
     data = {}   # strike -> {call_gamma, call_oi, call_vol, put_gamma, put_oi, put_vol}
@@ -190,16 +180,12 @@ def main():
         call_wall = max(rows, key=lambda r: r[key])["strike"]
         put_wall = min(rows, key=lambda r: r[key])["strike"]
 
-        # Piso de significancia: ignora ruido < 0.5% do maior |GEX| do perfil
-        _piso = max((abs(r[key]) for r in rows), default=0) * 0.005
-        _sig = [r for r in rows if abs(r[key]) > _piso]
-
         cum = 0
         zero_gamma = None
         zero_gamma_status = None
         prev_cum, prev_strike = None, None
 
-        for r in _sig:
+        for r in rows:
             cum += r[key]
             if prev_cum is not None and prev_cum < 0 <= cum:
                 zero_gamma = prev_strike + (r["strike"] - prev_strike) * (-prev_cum) / (cum - prev_cum)
@@ -210,7 +196,27 @@ def main():
 
         if zero_gamma is None:
             total = sum(r[key] for r in rows)
-            zero_gamma_status = "ACIMA_DO_RANGE" if total < 0 else "ABAIXO_DO_RANGE"
+            max_extrap = 25.0
+            first_s, last_s = rows[0]["strike"], rows[-1]["strike"]
+            if total < 0:
+                zero_gamma_status = "ACIMA_DO_RANGE"
+                dx = last_s - rows[-2]["strike"]
+                slope = rows[-1][key] / dx if dx else 0
+                if slope > 0:
+                    zg_est = last_s + (-total) / slope
+                else:
+                    zg_est = last_s + max_extrap
+                zero_gamma = round(min(zg_est, last_s + max_extrap), 1)
+            else:
+                zero_gamma_status = "ABAIXO_DO_RANGE"
+                dx = rows[1]["strike"] - first_s
+                slope = rows[0][key] / dx if dx else 0
+                cum_first = rows[0][key]
+                if slope > 0:
+                    zg_est = first_s - cum_first / slope
+                else:
+                    zg_est = first_s - max_extrap
+                zero_gamma = round(max(zg_est, first_s - max_extrap), 1)
 
         return call_wall, put_wall, zero_gamma, zero_gamma_status
 
@@ -219,16 +225,13 @@ def main():
         Retorna número só se o GEX local muda de negativo para positivo.
         Sem flip local = None + status SEM_FLIP_LOCAL.
         """
-        # Ignora greeks nao coletados (0) e ruido < 0.5% do maior |GEX|
-        _piso = max((abs(r[key]) for r in rows), default=0) * 0.005
-        data = [r for r in rows if abs(r[key]) > _piso]
-        for i in range(1, len(data)):
-            prev_val = data[i - 1][key]
-            curr_val = data[i][key]
+        for i in range(1, len(rows)):
+            prev_val = rows[i - 1][key]
+            curr_val = rows[i][key]
 
             if prev_val < 0 <= curr_val:
-                prev_strike = data[i - 1]["strike"]
-                curr_strike = data[i]["strike"]
+                prev_strike = rows[i - 1]["strike"]
+                curr_strike = rows[i]["strike"]
 
                 if curr_val != prev_val:
                     vt = prev_strike + (curr_strike - prev_strike) * (-prev_val) / (curr_val - prev_val)
@@ -245,7 +248,11 @@ def main():
     cw_oi, pw_oi, zg_oi, zg_oi_status = levels(rows, "gex_oi")
     cw_v, pw_v, zg_v, zg_v_status = levels(rows, "gex_vol")
     vt_oi, vt_oi_status = find_vol_trigger(rows, "gex_oi")
+    if vt_oi is None and zg_oi is not None:
+        vt_oi, vt_oi_status = zg_oi, "APROX_ZG"
     vt_v, vt_v_status = find_vol_trigger(rows, "gex_vol")
+    if vt_v is None and zg_v is not None:
+        vt_v, vt_v_status = zg_v, "APROX_ZG"
 
     total_gex_oi = sum(r["gex_oi"] for r in rows)
     if zg_oi_status == "ACIMA_DO_RANGE":
@@ -319,8 +326,6 @@ def main():
             "vol_trigger_status": vt_v_status,
         },
         "regime": regime,
-        "abs_gamma_oi":  max(rows, key=lambda r: abs(r["gex_oi"]))["strike"] if rows else None,
-        "abs_gamma_vol": max(rows, key=lambda r: abs(r["gex_vol"]))["strike"] if rows else None,
     }
 
     # compara com o snapshot anterior DO MESMO DIA
@@ -366,25 +371,10 @@ def main():
                 "call_wall": snapshot["oi"]["call_wall"],
                 "put_wall": snapshot["oi"]["put_wall"],
                 "zero_gamma": snapshot["oi"]["zero_gamma"],
-                "vol_trigger": snapshot["oi"]["vol_trigger"],
-                "vol_trigger_status": snapshot["oi"]["vol_trigger_status"],
-                "zero_gamma_status": snapshot["oi"]["zero_gamma_status"],
-                "gamma_combos": sorted(
-                    r["strike"] for r in
-                    sorted(rows, key=lambda r: -abs(r["gex_oi"]))[:6]),
-                "flow_call_wall":   snapshot["vol"]["call_wall"],
-                "flow_put_wall":    snapshot["vol"]["put_wall"],
-                "flow_zero_gamma":  snapshot["vol"]["zero_gamma"],
-                "flow_vol_trigger": snapshot["vol"]["vol_trigger"],
+                "vol_trigger": snapshot["oi"].get("vol_trigger"),
+                "vol_trigger": snapshot["oi"]["zero_gamma"] if not isinstance(snapshot["oi"]["zero_gamma"], str) else None,
                 "regime": snapshot["regime"],
                 "coverage_pct": round(coverage, 0),
-                "gex_profile": [
-                    {"strike": r["strike"],
-                     "gex_oi":  round(r["gex_oi"]  / 1e6, 1),
-                     "gex_vol": round(r["gex_vol"] / 1e6, 1)}
-                    for r in rows
-                    if abs(r["strike"] - snapshot["spot"]) <= 10
-                ],
             }
             req = urllib.request.Request(
                 "https://web-production-00b33.up.railway.app/api/gamma-levels",
@@ -395,51 +385,6 @@ def main():
         except Exception as e:
             print(f"  Push falhou: {e}")
 
-    # ── RITUAL: as 3 perguntas do intraday ──────────────────────────
-    try:
-        import json as _j, glob as _g, os as _os
-        # 1. LADO: spot vs VT oficial do fluxo (find_vol_trigger, com filtro de ruido)
-        _flip = vt_v
-        # 2. BATALHA: maior |GEX| do fluxo
-        _btl = max(rows, key=lambda r: abs(r["gex_vol"]))
-        _btl_s, _btl_g = _btl["strike"], _btl["gex_vol"]
-        # 3. MIGRACAO: Put Wall do fluxo vs snapshot anterior
-        _files = sorted(_g.glob(_os.path.join("gamma_snapshots", "*.json")))
-        _mig = "sem base"
-        if len(_files) >= 2:
-            try:
-                _prev = _j.load(open(_files[-2]))
-                _pw_prev = (_prev.get("vol") or {}).get("put_wall")
-                if _pw_prev and pw_v:
-                    _mig = ("DESCENDO" if pw_v < _pw_prev else
-                            "SUBINDO" if pw_v > _pw_prev else "ESTAVEL")
-            except Exception:
-                pass
-        _lado = ("PUT" if _flip and spot < _flip else
-                 "CALL" if _flip and spot > _flip else "INDEFINIDO")
-        _vp = sum([_lado == "PUT",  _btl_g < 0, _mig == "DESCENDO"])
-        _vc = sum([_lado == "CALL", _btl_g > 0, _mig == "SUBINDO"])
-        if _vp >= 2 and _vp > _vc:
-            _verd = f"{_vp}/3 alinhados -> PUT"
-        elif _vc >= 2 and _vc > _vp:
-            _verd = f"{_vc}/3 alinhados -> CALL"
-        else:
-            _verd = "dividido -> SEM EDGE, aguardar"
-        print("\n  " + "-"*12 + f" RITUAL {datetime.now():%H:%M} ET " + "-"*12)
-        _ld = 'ABAIXO' if _lado=='PUT' else ('ACIMA' if _lado=='CALL' else 'sem flip')
-        print(f"  1. LADO:     SPY {spot:.2f} {_ld} do VT fluxo {_flip if _flip else '-'} -> {_lado}")
-        print(f"  2. BATALHA:  maior |GEX| = {_btl_s:.0f} ({_btl_g/1e6:+.0f}M) a {abs(spot-_btl_s):.1f} pts")
-        print(f"  3. MIGRACAO: Put Wall fluxo {_mig}")
-        print(f"  VEREDITO: {_verd}")
-        _os.makedirs("gamma_snapshots", exist_ok=True)
-        _vf = _os.path.join("gamma_snapshots", "last_verdict.txt")
-        _last = open(_vf).read().strip() if _os.path.exists(_vf) else None
-        if _last and _last != _verd:
-            print(f"  !! VEREDITO MUDOU: '{_last}' -> '{_verd}' — reavaliar posicao!")
-        open(_vf, "w").write(_verd)
-    except Exception as _re:
-        print(f"  Ritual indisponivel: {_re}")
-
     print("\n  Interpretacao rapida:")
     print("  - Acima do Zero Gamma: dealers estabilizam (range).")
     print("  - Abaixo do Zero Gamma: dealers amplificam (trend).")
@@ -447,7 +392,7 @@ def main():
 
 
 if __name__ == "__main__":
-    if "--auto" in sys.argv or "--watch" in sys.argv:
+    if "--auto" in sys.argv:
         import time
         print("MODO AUTO: roda a cada 15 min durante o pregao (9:30-16:00 ET). Ctrl+C para parar.")
         while True:

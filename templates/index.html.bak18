@@ -490,9 +490,8 @@
   <button class="tab-btn" onclick="switchTab('modo3', this)">Modo 3 · Operacional</button>
   <button class="tab-btn" onclick="switchTab('modo4', this); loadJournal(); loadPMNote();">Modo 4 · Journal</button>
   <button class="tab-btn" onclick="switchTab('modo5', this); loadModo5();">Modo 5 · Swing</button>
-  <button class="tab-btn" onclick="switchTab('modo6', this); loadModo6();">Modo 6 · Gamma</button>
   <button class="tab-btn" onclick="switchTab('modo7', this); loadModo7();">Modo 7 · Flow</button>
-  <button class="tab-btn" onclick="window.location.href='/research'">Modo 8 · Research</button>
+  <button class="tab-btn" onclick="switchTab('modo6', this); loadModo6();">Modo 6 · Gamma</button>
 </div>
 
 <!-- ── MODO 1: PRÉ-MERCADO ── -->
@@ -2583,25 +2582,21 @@ function loadModo7() {
       <p class="metric-label">Call Wall</p>
       <p class="metric-val" id="m6-call-wall" style="color:#16a34a;">—</p>
       <p class="metric-sub">Resistência de calls</p>
-      <p style="font-size:10px;color:#94a3b8;margin-top:6px;padding-top:6px;border-top:1px solid #f1f5f9;">FLUXO HOJE <b id="flow-call-wall" style="color:#16a34a;font-size:12px;">—</b></p>
     </div>
     <div class="metric-card">
       <p class="metric-label">Vol Trigger</p>
       <p class="metric-val" id="m6-vol-trigger" style="color:#d97706;">—</p>
       <p class="metric-sub">Gatilho de volatilidade</p>
-      <p style="font-size:10px;color:#94a3b8;margin-top:6px;padding-top:6px;border-top:1px solid #f1f5f9;">FLUXO HOJE <b id="flow-vol-trigger" style="color:#d97706;font-size:12px;">—</b></p>
     </div>
     <div class="metric-card">
       <p class="metric-label">Zero Gamma</p>
       <p class="metric-val" id="m6-zero-gamma" style="color:#2563eb;">—</p>
       <p class="metric-sub">Nível de reversão</p>
-      <p style="font-size:10px;color:#94a3b8;margin-top:6px;padding-top:6px;border-top:1px solid #f1f5f9;">FLUXO HOJE <b id="flow-zero-gamma" style="color:#2563eb;font-size:12px;">—</b></p>
     </div>
     <div class="metric-card">
       <p class="metric-label">Put Wall</p>
       <p class="metric-val" id="m6-put-wall" style="color:#dc2626;">—</p>
       <p class="metric-sub">Suporte de puts</p>
-      <p style="font-size:10px;color:#94a3b8;margin-top:6px;padding-top:6px;border-top:1px solid #f1f5f9;">FLUXO HOJE <b id="flow-put-wall" style="color:#dc2626;font-size:12px;">—</b></p>
     </div>
   </div>
 
@@ -2625,16 +2620,8 @@ function loadModo7() {
       const maxAbs = Math.max(...rows.map(x => Math.abs(x.gex_vol)), 1);
       let flip = null;
       const asc = [...rows].sort((a,b) => a.strike - b.strike);
-      // Piso de ruido (0.5% do maior |GEX|) + interpolacao — igual ao backend
-      const piso = Math.max(...asc.map(x => Math.abs(x.gex_vol)), 0) * 0.005;
-      const sig = asc.filter(x => Math.abs(x.gex_vol) > piso);
-      for (let i = 1; i < sig.length; i++)
-        if (sig[i-1].gex_vol < 0 && sig[i].gex_vol >= 0) {
-          const x0 = sig[i-1].strike, x1 = sig[i].strike;
-          const y0 = sig[i-1].gex_vol, y1 = sig[i].gex_vol;
-          flip = y1 !== y0 ? Math.round((x0 + (0 - y0) * (x1 - x0) / (y1 - y0)) * 10) / 10 : x1;
-          break;
-        }
+      for (let i = 1; i < asc.length; i++)
+        if (asc[i-1].gex_vol < 0 && asc[i].gex_vol >= 0) { flip = asc[i].strike; break; }
       const battle = rows.reduce((m,x) => Math.abs(x.gex_vol) > Math.abs(m.gex_vol) ? x : m, rows[0]);
       const lado = flip ? (d.spot < flip ? 'PUT' : 'CALL') : '—';
       let html = '<div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Perfil GEX — fluxo de hoje · ' + (d.ts || '') + ' ET</div>';
@@ -2702,20 +2689,6 @@ function loadModo7() {
       document.getElementById('m6-vol-trigger').textContent = fmt(lv.vol_trigger);
       document.getElementById('m6-zero-gamma').textContent  = fmt(lv.zero_gamma);
       document.getElementById('m6-put-wall').textContent    = fmt(lv.put_wall);
-
-      // ── Níveis de FLUXO (volume de hoje) — vêm de /api/gamma-profile ──
-      try {
-        const rf = await fetch('/api/gamma-profile');
-        const df = await rf.json();
-        const setF = (id, v) => {
-          const el = document.getElementById(id);
-          if (el) el.textContent = (v != null && v !== '') ? Number(v).toFixed(2) : '—';
-        };
-        setF('flow-call-wall',   df.flow_call_wall);
-        setF('flow-vol-trigger', df.flow_vol_trigger);
-        setF('flow-zero-gamma',  df.flow_zero_gamma);
-        setF('flow-put-wall',    df.flow_put_wall);
-      } catch (e) { /* fluxo indisponivel — cards seguem com estrutura */ }
 
       metricsEl.classList.add('visible');
 

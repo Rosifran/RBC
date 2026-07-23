@@ -1,0 +1,22 @@
+[
+  {
+    "ticker": "AMD,UBER,PLTR",
+    "direction": "CALL",
+    "spot": NaN,
+    "error": "Sem contratos validos",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "NORMAL"
+    }
+  },
+  {
+    "ticker": "AMD,UBER,PLTR",
+    "direction": "PUT",
+    "spot": NaN,
+    "error": "Sem contratos validos",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "NORMAL"
+    }
+  }
+]

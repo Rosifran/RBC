@@ -64,11 +64,6 @@ DEFAULT_TICKERS = [
     "XLF", "XLE", "XBI", "XOP", "ARKK", "SMH", "GLD", "TLT",
     # Mais acessíveis / alto volume de opções
     "F", "T", "SNAP", "RIVN", "WBD", "INTC",
-    # Expansão — preço baixo/médio, opções líquidas, prêmio acessível
-    "NIO", "LCID", "AAL", "UAL", "CCL", "NCLH", "DKNG", "PLUG", "CHPT",
-    "MARA", "RIOT", "CLF", "FCX", "VALE", "GOLD", "KGC", "NU", "GRAB",
-    "PINS", "RBLX", "LYFT", "PATH", "AI", "IONQ", "RKLB", "JOBY", "ACHR",
-    "BABA",
 ]
 
 # Filtros de atividade incomum
@@ -81,8 +76,6 @@ DELTA_MAX = 0.55            # não é deep ITM
 SPREAD_MAX_PCT = 20.0       # liquidez mínima
 DTE_MIN = 7
 DTE_MAX = 45
-PREMIUM_MAX = 3.00          # teto do premio (ask) — 1 contrato ate ~$300
-PREMIUM_MIN = 0.10          # piso — abaixo disso e loteria/iliquido
 
 # ── Imports IBKR ──────────────────────────────────────────────────────
 try:
@@ -154,8 +147,6 @@ def detect_unusual_flow(calls: list, puts: list,
             if DTE_MIN > dte or dte > DTE_MAX:         continue
             spd = _spread_pct(bid, ask)
             if spd > SPREAD_MAX_PCT:        continue
-            # Premio acessivel: 1 contrato de compra seca dentro do orcamento
-            if not ask or ask > PREMIUM_MAX or ask < PREMIUM_MIN: continue
 
             # Acumula por vencimento para detectar rolagem/estrutura
             exp = c.get("expiration", "")
@@ -388,22 +379,19 @@ def save_flow_pg(result: dict) -> None:
                     confidence   VARCHAR(10),
                     note         TEXT,
                     alerts_json  TEXT,
-                    camada2_json TEXT,
                     created_at   TIMESTAMP DEFAULT NOW()
                 )""")
-            cur.execute("ALTER TABLE flow_alerts ADD COLUMN IF NOT EXISTS camada2_json TEXT")
             cur.execute("""
                 INSERT INTO flow_alerts
                   (ticker, spot, scan_date, scan_time,
-                   dominant_dir, confidence, note, alerts_json, camada2_json)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+                   dominant_dir, confidence, note, alerts_json)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s)""",
                 (result["ticker"], result.get("spot"),
                  result["scan_date"], result.get("scan_time"),
                  result["flow_summary"]["dominant_direction"],
                  result["flow_summary"]["confidence"],
                  result["flow_summary"]["note"],
-                 json.dumps(result["alerts"], default=str),
-                 json.dumps(result.get("camada2") or {}, default=str)))
+                 json.dumps(result["alerts"], default=str)))
             conn.commit()
     except Exception as e:
         print(f"  Aviso: não foi possível salvar no banco — {e}")
@@ -476,7 +464,6 @@ def main():
     print(f"  Tickers: {', '.join(args.tickers)}")
     print(f"  Filtros: Vol ≥ {VOL_OI_MIN_RATIO}x OI · ≥{VOL_MIN_CONTRACTS} contratos")
     print(f"           Delta {DELTA_MIN}–{DELTA_MAX} · DTE {DTE_MIN}–{DTE_MAX}d")
-    print(f"           Premio ${PREMIUM_MIN:.2f}–${PREMIUM_MAX:.2f} por contrato (1 ct ≈ ate ${PREMIUM_MAX*100:.0f})")
     print("  ⚠ Flow = ATENÇÃO, não oportunidade.")
     print("    Flow nasce da cadeia de opções, não do volume da ação.")
     print("    Depois: análise técnica + contrato aceitável.")
@@ -507,25 +494,8 @@ def main():
                 print(f"  {ticker}: sem cadeia de opções — pulando")
                 continue
             result = detect_unusual_flow(calls, puts, spot, ticker)
-
-            # ── Camada 2: confirmacao tecnica (elo p/ APROVO_ONDINHA) ──
-            fs2 = result.get("flow_summary", {})
-            if result["alerts"] and fs2.get("dominant_direction") in ("CALL", "PUT"):
-                try:
-                    from camada2_tecnica import analyze_technical
-                    result["camada2"] = analyze_technical(
-                        ib, ticker, fs2["dominant_direction"])
-                except Exception as _e:
-                    result["camada2"] = {"verdict": "ERRO", "note": str(_e)}
-
             results.append(result)
             print_flow_result(result)
-            if result.get("camada2"):
-                try:
-                    from camada2_tecnica import print_tecnica
-                    print_tecnica(ticker, result["camada2"])
-                except Exception:
-                    pass
 
             # Salva histórico próprio SEMPRE (base para detecção relativa futura)
             save_flow_history(ticker, spot, calls, puts, result["alerts"])

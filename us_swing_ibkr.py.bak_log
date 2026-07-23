@@ -773,32 +773,6 @@ def main():
             results.append(r)
             print_result(r)
 
-            # ── RBC LOG: grava sinal automaticamente ──────────────
-            try:
-                from rbc_log import log_signal
-                if "error" not in r and r.get("top_contracts"):
-                    _c  = r["top_contracts"][0]
-                    _cf = _c.get("capital_fit") or {}
-                    _sid = log_signal(
-                        modulo       = "SWING",
-                        ticker       = r.get("ticker", ""),
-                        gate_status  = _c.get("verdict", ""),
-                        estrategia   = f"COMPRA {str(_c.get('direction','')).upper()}".strip(),
-                        strike       = _c.get("strike", ""),
-                        vencimento   = _c.get("expiration", ""),
-                        bid          = _c.get("bid", ""),
-                        ask          = _c.get("ask", ""),
-                        iv_rank      = _c.get("iv_pct", ""),
-                        delta        = _c.get("delta", ""),
-                        contratos_sugeridos = 1,
-                        custo_estimado      = round(float(_c.get("entry_price", 0)) * 100, 2),
-                        motivo_gate  = f"score={_c.get('score','')} cf={_cf.get('capital_status','')} dte={_c.get('dte','')}",
-                    )
-                    if _sid:
-                        print(f"  📝 Sinal registrado: {_sid}")
-            except Exception as _le:
-                print(f"  [log] aviso: {_le}")
-
     ib.disconnect()
     save_results(results)
 

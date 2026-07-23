@@ -1,0 +1,38 @@
+[
+  {
+    "ticker": "NVDA",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "AAPL",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "QQQ",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  }
+]

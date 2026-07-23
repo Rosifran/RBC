@@ -1,0 +1,3434 @@
+[
+  {
+    "ticker": "NVDA",
+    "direction": "CALL",
+    "spot": 204.32,
+    "scanned": 5,
+    "overall_verdict": "AGUARDAR",
+    "overall_note": "Contrato 9/10 mas SEM edge direcional \u2014 aguardar definicao.",
+    "invalid_level": 198.36,
+    "invalid_note": "CALL invalida se NVDA fechar ABAIXO de $198.36",
+    "edge": {
+      "verdict": "EDGE NEUTRO",
+      "note": "1/4 a favor (1 direcional), 0 contra CALL \u2014 sem edge claro, aguardar confirmacao",
+      "aprovados": 1,
+      "incompletos": 1,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 3.9,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": 2.8,
+          "signal": "Skew +2.8% \u2014 leve pressao baixista",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.4,
+          "signal": "P/C 0.4 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "NVDA",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 215.0,
+        "right": "C",
+        "bid": 4.6,
+        "ask": 4.65,
+        "last": 4.65,
+        "close": 2.46,
+        "mid": 4.62,
+        "volume": 3082,
+        "open_interest": 0,
+        "iv_pct": 41.7,
+        "delta": 0.342,
+        "gamma": 0.01717,
+        "theta": -0.1802,
+        "price_ref": 4.65,
+        "spot": 204.32,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 1.1,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.34 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 1.1% excelente",
+          "liquidity": "Vol 3,082 / OI 0 aceitavel",
+          "iv_event": "IV 42% razoavel"
+        },
+        "entry_price": 4.65,
+        "stop_price": 3.02,
+        "target_1": 6.51,
+        "target_2": 8.37,
+        "capital_fit": {
+          "contract_cost": 465.0,
+          "risk_at_stop": 162.75,
+          "cost_bucket": "ACCEPTABLE",
+          "capital_status": "APROVO_CAPITAL",
+          "reason": "custo $465 acima da faixa ideal, filtros ok; delta 0.34 fora da faixa 0.35-0.55",
+          "preferred_structure": "LONG_OPTION",
+          "rosi_note": "Contrato aceit\u00e1vel, mas risco em d\u00f3lar j\u00e1 exige convic\u00e7\u00e3o maior."
+        }
+      },
+      {
+        "ticker": "NVDA",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 205.0,
+        "right": "C",
+        "bid": 8.55,
+        "ask": 8.65,
+        "last": 8.6,
+        "close": 5.1,
+        "mid": 8.6,
+        "volume": 5645,
+        "open_interest": 0,
+        "iv_pct": 42.4,
+        "delta": 0.519,
+        "gamma": 0.01832,
+        "theta": -0.2029,
+        "price_ref": 8.65,
+        "spot": 204.32,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 1.2,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.52 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 1.2% excelente",
+          "liquidity": "Vol 5,645 / OI 0 aceitavel",
+          "iv_event": "IV 42% razoavel"
+        },
+        "entry_price": 8.65,
+        "stop_price": 5.62,
+        "target_1": 12.11,
+        "target_2": 15.57,
+        "capital_fit": {
+          "contract_cost": 865.0,
+          "risk_at_stop": 302.75,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $865 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      },
+      {
+        "ticker": "NVDA",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 210.0,
+        "right": "C",
+        "bid": 6.35,
+        "ask": 6.45,
+        "last": 6.44,
+        "close": 3.6,
+        "mid": 6.4,
+        "volume": 4938,
+        "open_interest": 0,
+        "iv_pct": 41.9,
+        "delta": 0.429,
+        "gamma": 0.01822,
+        "theta": -0.1947,
+        "price_ref": 6.45,
+        "spot": 204.32,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 1.6,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.43 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 1.6% excelente",
+          "liquidity": "Vol 4,938 / OI 0 aceitavel",
+          "iv_event": "IV 42% razoavel"
+        },
+        "entry_price": 6.45,
+        "stop_price": 4.19,
+        "target_1": 9.03,
+        "target_2": 11.61,
+        "capital_fit": {
+          "contract_cost": 645.0,
+          "risk_at_stop": 225.75,
+          "cost_bucket": "EXPENSIVE",
+          "capital_status": "MONITORAR",
+          "reason": "custo $645 na faixa $500-$700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato bom tecnicamente, mas caro para compra direta com 1 contrato."
+        }
+      }
+    ],
+    "timestamp": "2026-07-08 15:14 ET",
+    "ticker_profile": {
+      "movement_profile": "FAST",
+      "premium_profile": "EXPENSIVE"
+    }
+  },
+  {
+    "ticker": "NVDA",
+    "direction": "PUT",
+    "spot": 204.26,
+    "scanned": 5,
+    "overall_verdict": "AGUARDAR",
+    "overall_note": "Contrato 9/10 mas SEM edge direcional \u2014 aguardar definicao.",
+    "invalid_level": 210.35,
+    "invalid_note": "PUT invalida se NVDA fechar ACIMA de $210.35",
+    "edge": {
+      "verdict": "EDGE NEUTRO",
+      "note": "1/4 a favor (1 direcional), 1 contra PUT \u2014 sem edge claro, aguardar confirmacao",
+      "aprovados": 1,
+      "incompletos": 1,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 4.8,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": 2.8,
+          "signal": "Skew +2.8% \u2014 leve pressao baixista",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.4,
+          "signal": "P/C 0.4 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "NVDA",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 200.0,
+        "right": "P",
+        "bid": 6.4,
+        "ask": 6.5,
+        "last": 6.45,
+        "close": 9.59,
+        "mid": 6.45,
+        "volume": 1558,
+        "open_interest": 0,
+        "iv_pct": 43.0,
+        "delta": -0.393,
+        "gamma": 0.01758,
+        "theta": -0.1786,
+        "price_ref": 6.5,
+        "spot": 204.26,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 1.6,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.39 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 1.6% excelente",
+          "liquidity": "Vol 1,558 / OI 0 aceitavel",
+          "iv_event": "IV 43% razoavel"
+        },
+        "entry_price": 6.5,
+        "stop_price": 4.23,
+        "target_1": 9.1,
+        "target_2": 11.7,
+        "capital_fit": {
+          "contract_cost": 650.0,
+          "risk_at_stop": 227.5,
+          "cost_bucket": "EXPENSIVE",
+          "capital_status": "MONITORAR",
+          "reason": "custo $650 na faixa $500-$700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato bom tecnicamente, mas caro para compra direta com 1 contrato."
+        }
+      },
+      {
+        "ticker": "NVDA",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 195.0,
+        "right": "P",
+        "bid": 4.6,
+        "ask": 4.7,
+        "last": 4.65,
+        "close": 7.07,
+        "mid": 4.65,
+        "volume": 1334,
+        "open_interest": 0,
+        "iv_pct": 43.6,
+        "delta": -0.308,
+        "gamma": 0.01579,
+        "theta": -0.1612,
+        "price_ref": 4.7,
+        "spot": 204.26,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 2.2,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.31 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 2.2% excelente",
+          "liquidity": "Vol 1,334 / OI 0 aceitavel",
+          "iv_event": "IV 44% razoavel"
+        },
+        "entry_price": 4.7,
+        "stop_price": 3.06,
+        "target_1": 6.58,
+        "target_2": 8.46,
+        "capital_fit": {
+          "contract_cost": 470.0,
+          "risk_at_stop": 164.5,
+          "cost_bucket": "ACCEPTABLE",
+          "capital_status": "APROVO_CAPITAL",
+          "reason": "custo $470 acima da faixa ideal, filtros ok; delta 0.31 fora da faixa 0.35-0.55",
+          "preferred_structure": "LONG_OPTION",
+          "rosi_note": "Contrato aceit\u00e1vel, mas risco em d\u00f3lar j\u00e1 exige convic\u00e7\u00e3o maior."
+        }
+      },
+      {
+        "ticker": "NVDA",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 205.0,
+        "right": "P",
+        "bid": 8.7,
+        "ask": 8.8,
+        "last": 8.85,
+        "close": 12.6,
+        "mid": 8.75,
+        "volume": 316,
+        "open_interest": 0,
+        "iv_pct": 42.4,
+        "delta": -0.485,
+        "gamma": 0.0186,
+        "theta": -0.1788,
+        "price_ref": 8.8,
+        "spot": 204.26,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 1.1,
+        "score": 8,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.48 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 1.1% excelente",
+          "liquidity": "Vol 316 / OI 0 baixa liquidez",
+          "iv_event": "IV 42% razoavel"
+        },
+        "entry_price": 8.8,
+        "stop_price": 5.72,
+        "target_1": 12.32,
+        "target_2": 15.84,
+        "capital_fit": {
+          "contract_cost": 880.0,
+          "risk_at_stop": 308.0,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $880 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      }
+    ],
+    "timestamp": "2026-07-08 15:14 ET",
+    "ticker_profile": {
+      "movement_profile": "FAST",
+      "premium_profile": "EXPENSIVE"
+    }
+  },
+  {
+    "ticker": "AAPL",
+    "direction": "CALL",
+    "spot": 313.93,
+    "scanned": 7,
+    "overall_verdict": "REPROVO",
+    "overall_note": "Edge contra CALL \u2014 contrato bom nao salva direcao ruim.",
+    "invalid_level": 307.75,
+    "invalid_note": "CALL invalida se AAPL fechar ABAIXO de $307.75",
+    "edge": {
+      "verdict": "EDGE DESFAVORAVEL",
+      "note": "0 fator(es) contra CALL \u2014 evitar entrada",
+      "aprovados": 0,
+      "incompletos": 1,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 0.3,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": 3.0,
+          "signal": "Skew +3.0% \u2014 leve pressao baixista",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 1.0,
+          "signal": "P/C 1.0 \u2014 neutro",
+          "score": 2
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "AAPL",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 310.0,
+        "right": "C",
+        "bid": 11.6,
+        "ask": 12.0,
+        "last": 11.93,
+        "close": 10.01,
+        "mid": 11.8,
+        "volume": 3580,
+        "open_interest": 0,
+        "iv_pct": 29.2,
+        "delta": 0.596,
+        "gamma": 0.01687,
+        "theta": -0.2167,
+        "price_ref": 12.0,
+        "spot": 313.93,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 3.4,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.60 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 3.4% excelente",
+          "liquidity": "Vol 3,580 / OI 0 aceitavel",
+          "iv_event": "IV 29% razoavel"
+        },
+        "entry_price": 12.0,
+        "stop_price": 7.8,
+        "target_1": 16.8,
+        "target_2": 21.6,
+        "capital_fit": {
+          "contract_cost": 1200.0,
+          "risk_at_stop": 420.0,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $1200 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      },
+      {
+        "ticker": "AAPL",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 320.0,
+        "right": "C",
+        "bid": 6.55,
+        "ask": 6.8,
+        "last": 6.55,
+        "close": 5.5,
+        "mid": 6.67,
+        "volume": 2595,
+        "open_interest": 0,
+        "iv_pct": 28.2,
+        "delta": 0.421,
+        "gamma": 0.01752,
+        "theta": -0.2038,
+        "price_ref": 6.8,
+        "spot": 313.93,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 3.7,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.42 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 3.7% excelente",
+          "liquidity": "Vol 2,595 / OI 0 aceitavel",
+          "iv_event": "IV 28% razoavel"
+        },
+        "entry_price": 6.8,
+        "stop_price": 4.42,
+        "target_1": 9.52,
+        "target_2": 12.24,
+        "capital_fit": {
+          "contract_cost": 680.0,
+          "risk_at_stop": 238.0,
+          "cost_bucket": "EXPENSIVE",
+          "capital_status": "MONITORAR",
+          "reason": "custo $680 na faixa $500-$700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato bom tecnicamente, mas caro para compra direta com 1 contrato."
+        }
+      },
+      {
+        "ticker": "AAPL",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 315.0,
+        "right": "C",
+        "bid": 8.9,
+        "ask": 9.15,
+        "last": 9.0,
+        "close": 7.53,
+        "mid": 9.03,
+        "volume": 356,
+        "open_interest": 0,
+        "iv_pct": 28.7,
+        "delta": 0.509,
+        "gamma": 0.01762,
+        "theta": -0.2141,
+        "price_ref": 9.15,
+        "spot": 313.93,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 2.8,
+        "score": 8,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.51 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 2.8% excelente",
+          "liquidity": "Vol 356 / OI 0 baixa liquidez",
+          "iv_event": "IV 29% razoavel"
+        },
+        "entry_price": 9.15,
+        "stop_price": 5.95,
+        "target_1": 12.81,
+        "target_2": 16.47,
+        "capital_fit": {
+          "contract_cost": 915.0,
+          "risk_at_stop": 320.25,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $915 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      }
+    ],
+    "timestamp": "2026-07-08 15:15 ET",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "EXPENSIVE"
+    }
+  },
+  {
+    "ticker": "AAPL",
+    "direction": "PUT",
+    "spot": 313.97,
+    "scanned": 7,
+    "overall_verdict": "AGUARDAR",
+    "overall_note": "Contrato 8/10 mas SEM edge direcional \u2014 aguardar definicao.",
+    "invalid_level": 320.51,
+    "invalid_note": "PUT invalida se AAPL fechar ACIMA de $320.51",
+    "edge": {
+      "verdict": "EDGE NEUTRO",
+      "note": "1/4 a favor (1 direcional), 0 contra PUT \u2014 sem edge claro, aguardar confirmacao",
+      "aprovados": 1,
+      "incompletos": 1,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 2.0,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": 3.0,
+          "signal": "Skew +3.0% \u2014 leve pressao baixista",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 1.0,
+          "signal": "P/C 1.0 \u2014 neutro",
+          "score": 2
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "AAPL",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 310.0,
+        "right": "P",
+        "bid": 6.85,
+        "ask": 7.05,
+        "last": 7.0,
+        "close": 8.52,
+        "mid": 6.95,
+        "volume": 377,
+        "open_interest": 0,
+        "iv_pct": 29.2,
+        "delta": -0.407,
+        "gamma": 0.01704,
+        "theta": -0.187,
+        "price_ref": 7.05,
+        "spot": 313.97,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 2.9,
+        "score": 8,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.41 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 2.9% excelente",
+          "liquidity": "Vol 377 / OI 0 baixa liquidez",
+          "iv_event": "IV 29% razoavel"
+        },
+        "entry_price": 7.05,
+        "stop_price": 4.58,
+        "target_1": 9.87,
+        "target_2": 12.69,
+        "capital_fit": {
+          "contract_cost": 705.0,
+          "risk_at_stop": 246.75,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $705 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      },
+      {
+        "ticker": "AAPL",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 315.0,
+        "right": "P",
+        "bid": 9.0,
+        "ask": 9.3,
+        "last": 9.15,
+        "close": 11.06,
+        "mid": 9.15,
+        "volume": 55,
+        "open_interest": 0,
+        "iv_pct": 28.7,
+        "delta": -0.494,
+        "gamma": 0.01784,
+        "theta": -0.1844,
+        "price_ref": 9.3,
+        "spot": 313.97,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 3.3,
+        "score": 8,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.49 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 3.3% excelente",
+          "liquidity": "Vol 55 / OI 0 baixa liquidez",
+          "iv_event": "IV 29% razoavel"
+        },
+        "entry_price": 9.3,
+        "stop_price": 6.05,
+        "target_1": 13.02,
+        "target_2": 16.74,
+        "capital_fit": {
+          "contract_cost": 930.0,
+          "risk_at_stop": 325.5,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $930 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      },
+      {
+        "ticker": "AAPL",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 320.0,
+        "right": "P",
+        "bid": 11.6,
+        "ask": 12.1,
+        "last": 12.62,
+        "close": 14.05,
+        "mid": 11.85,
+        "volume": 141,
+        "open_interest": 0,
+        "iv_pct": 28.2,
+        "delta": -0.584,
+        "gamma": 0.0178,
+        "theta": -0.1743,
+        "price_ref": 12.1,
+        "spot": 313.97,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 4.2,
+        "score": 8,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.58 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 4.2% excelente",
+          "liquidity": "Vol 141 / OI 0 baixa liquidez",
+          "iv_event": "IV 28% razoavel"
+        },
+        "entry_price": 12.1,
+        "stop_price": 7.87,
+        "target_1": 16.94,
+        "target_2": 21.78,
+        "capital_fit": {
+          "contract_cost": 1210.0,
+          "risk_at_stop": 423.5,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $1210 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      }
+    ],
+    "timestamp": "2026-07-08 15:15 ET",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "EXPENSIVE"
+    }
+  },
+  {
+    "ticker": "META",
+    "direction": "CALL",
+    "spot": 601.45,
+    "error": "Sem contratos validos",
+    "ticker_profile": {
+      "movement_profile": "FAST",
+      "premium_profile": "EXPENSIVE"
+    }
+  },
+  {
+    "ticker": "META",
+    "direction": "PUT",
+    "spot": 601.2,
+    "error": "Sem contratos validos",
+    "ticker_profile": {
+      "movement_profile": "FAST",
+      "premium_profile": "EXPENSIVE"
+    }
+  },
+  {
+    "ticker": "AMZN",
+    "direction": "CALL",
+    "spot": 242.3,
+    "error": "Sem contratos validos",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "EXPENSIVE"
+    }
+  },
+  {
+    "ticker": "AMZN",
+    "direction": "PUT",
+    "spot": 242.26,
+    "error": "Sem contratos validos",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "EXPENSIVE"
+    }
+  },
+  {
+    "ticker": "AMD",
+    "direction": "CALL",
+    "spot": 514.76,
+    "scanned": 12,
+    "overall_verdict": "AGUARDAR",
+    "overall_note": "Edge a favor de CALL + contrato 7/10.",
+    "invalid_level": 486.27,
+    "invalid_note": "CALL invalida se AMD fechar ABAIXO de $486.27",
+    "edge": {
+      "verdict": "EDGE FAVORAVEL",
+      "note": "2/4 fatores claramente a favor de CALL, nenhum contra",
+      "aprovados": 2,
+      "incompletos": 1,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": -3.4,
+          "signal": "vol BARATA \u2014 favoravel para compra",
+          "score": 2
+        },
+        "skew": {
+          "skew_pct": 2.3,
+          "signal": "Skew +2.3% \u2014 leve pressao baixista",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.67,
+          "signal": "P/C 0.67 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "AMD",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 520.0,
+        "right": "C",
+        "bid": 37.8,
+        "ask": 40.45,
+        "last": 38.15,
+        "close": 42.02,
+        "mid": 39.12,
+        "volume": 294,
+        "open_interest": 0,
+        "iv_pct": 80.0,
+        "delta": 0.526,
+        "gamma": 0.00386,
+        "theta": -0.9269,
+        "price_ref": 40.45,
+        "spot": 514.76,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 6.8,
+        "score": 7,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 1,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.53 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 6.8% aceitavel",
+          "liquidity": "Vol 294 / OI 0 baixa liquidez",
+          "iv_event": "IV 80% razoavel"
+        },
+        "entry_price": 40.45,
+        "stop_price": 26.29,
+        "target_1": 56.63,
+        "target_2": 72.81,
+        "capital_fit": {
+          "contract_cost": 4045.0,
+          "risk_at_stop": 1415.75,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $4045 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      },
+      {
+        "ticker": "AMD",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 540.0,
+        "right": "C",
+        "bid": 30.4,
+        "ask": 32.75,
+        "last": 30.0,
+        "close": 33.76,
+        "mid": 31.57,
+        "volume": 46,
+        "open_interest": 0,
+        "iv_pct": 79.6,
+        "delta": 0.451,
+        "gamma": 0.00386,
+        "theta": -0.9028,
+        "price_ref": 32.75,
+        "spot": 514.76,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 7.4,
+        "score": 7,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 1,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.45 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 7.4% aceitavel",
+          "liquidity": "Vol 46 / OI 0 baixa liquidez",
+          "iv_event": "IV 80% razoavel"
+        },
+        "entry_price": 32.75,
+        "stop_price": 21.29,
+        "target_1": 45.85,
+        "target_2": 58.95,
+        "capital_fit": {
+          "contract_cost": 3275.0,
+          "risk_at_stop": 1146.25,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $3275 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      },
+      {
+        "ticker": "AMD",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 550.0,
+        "right": "C",
+        "bid": 26.8,
+        "ask": 29.0,
+        "last": 27.8,
+        "close": 29.95,
+        "mid": 27.9,
+        "volume": 194,
+        "open_interest": 0,
+        "iv_pct": 79.5,
+        "delta": 0.414,
+        "gamma": 0.0038,
+        "theta": -0.9093,
+        "price_ref": 29.0,
+        "spot": 514.76,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 7.9,
+        "score": 7,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 1,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.41 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 7.9% aceitavel",
+          "liquidity": "Vol 194 / OI 0 baixa liquidez",
+          "iv_event": "IV 80% razoavel"
+        },
+        "entry_price": 29.0,
+        "stop_price": 18.85,
+        "target_1": 40.6,
+        "target_2": 52.2,
+        "capital_fit": {
+          "contract_cost": 2900.0,
+          "risk_at_stop": 1015.0,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $2900 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      }
+    ],
+    "timestamp": "2026-07-08 15:15 ET",
+    "ticker_profile": {
+      "movement_profile": "FAST",
+      "premium_profile": "NORMAL"
+    }
+  },
+  {
+    "ticker": "AMD",
+    "direction": "PUT",
+    "spot": 514.63,
+    "scanned": 12,
+    "overall_verdict": "AGUARDAR",
+    "overall_note": "Contrato 7/10 mas SEM edge direcional \u2014 aguardar definicao.",
+    "invalid_level": 543.36,
+    "invalid_note": "PUT invalida se AMD fechar ACIMA de $543.36",
+    "edge": {
+      "verdict": "EDGE NEUTRO",
+      "note": "2/4 a favor (1 direcional), 1 contra PUT \u2014 sem edge claro, aguardar confirmacao",
+      "aprovados": 2,
+      "incompletos": 1,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": -2.7,
+          "signal": "vol BARATA \u2014 favoravel para compra",
+          "score": 2
+        },
+        "skew": {
+          "skew_pct": 2.3,
+          "signal": "Skew +2.3% \u2014 leve pressao baixista",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.67,
+          "signal": "P/C 0.67 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "AMD",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 530.0,
+        "right": "P",
+        "bid": 47.6,
+        "ask": 50.9,
+        "last": 48.75,
+        "close": 50.17,
+        "mid": 49.25,
+        "volume": 3,
+        "open_interest": 0,
+        "iv_pct": 79.8,
+        "delta": -0.513,
+        "gamma": 0.00389,
+        "theta": -0.8826,
+        "price_ref": 50.9,
+        "spot": 514.63,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 6.7,
+        "score": 7,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 1,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.51 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 6.7% aceitavel",
+          "liquidity": "Vol 3 / OI 0 baixa liquidez",
+          "iv_event": "IV 80% razoavel"
+        },
+        "entry_price": 50.9,
+        "stop_price": 33.09,
+        "target_1": 71.26,
+        "target_2": 91.62,
+        "capital_fit": {
+          "contract_cost": 5090.0,
+          "risk_at_stop": 1781.5,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $5090 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      },
+      {
+        "ticker": "AMD",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 525.0,
+        "right": "P",
+        "bid": 44.75,
+        "ask": 48.25,
+        "last": 46.83,
+        "close": 47.14,
+        "mid": 46.5,
+        "volume": 68,
+        "open_interest": 0,
+        "iv_pct": 79.9,
+        "delta": -0.494,
+        "gamma": 0.00389,
+        "theta": -0.8801,
+        "price_ref": 48.25,
+        "spot": 514.63,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 7.5,
+        "score": 7,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 1,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.49 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 7.5% aceitavel",
+          "liquidity": "Vol 68 / OI 0 baixa liquidez",
+          "iv_event": "IV 80% razoavel"
+        },
+        "entry_price": 48.25,
+        "stop_price": 31.36,
+        "target_1": 67.55,
+        "target_2": 86.85,
+        "capital_fit": {
+          "contract_cost": 4825.0,
+          "risk_at_stop": 1688.75,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $4825 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      },
+      {
+        "ticker": "AMD",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 520.0,
+        "right": "P",
+        "bid": 42.0,
+        "ask": 45.45,
+        "last": 48.5,
+        "close": 44.63,
+        "mid": 43.73,
+        "volume": 16,
+        "open_interest": 0,
+        "iv_pct": 80.0,
+        "delta": -0.475,
+        "gamma": 0.00388,
+        "theta": -0.8777,
+        "price_ref": 45.45,
+        "spot": 514.63,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 7.9,
+        "score": 7,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 1,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.47 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 7.9% aceitavel",
+          "liquidity": "Vol 16 / OI 0 baixa liquidez",
+          "iv_event": "IV 80% razoavel"
+        },
+        "entry_price": 45.45,
+        "stop_price": 29.54,
+        "target_1": 63.63,
+        "target_2": 81.81,
+        "capital_fit": {
+          "contract_cost": 4545.0,
+          "risk_at_stop": 1590.75,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $4545 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      }
+    ],
+    "timestamp": "2026-07-08 15:15 ET",
+    "ticker_profile": {
+      "movement_profile": "FAST",
+      "premium_profile": "NORMAL"
+    }
+  },
+  {
+    "ticker": "UBER",
+    "direction": "CALL",
+    "spot": 73.38,
+    "scanned": 8,
+    "overall_verdict": "REPROVO",
+    "overall_note": "Edge contra CALL \u2014 contrato bom nao salva direcao ruim.",
+    "invalid_level": 71.53,
+    "invalid_note": "CALL invalida se UBER fechar ABAIXO de $71.53",
+    "edge": {
+      "verdict": "EDGE DESFAVORAVEL",
+      "note": "0 fator(es) contra CALL \u2014 evitar entrada",
+      "aprovados": 0,
+      "incompletos": 1,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": -0.3,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": -0.2,
+          "signal": "Skew -0.2% \u2014 neutro, favoravel para ambas direcoes",
+          "score": 2
+        },
+        "pc_ratio": {
+          "pc_ratio": 1.17,
+          "signal": "P/C 1.17 \u2014 neutro",
+          "score": 2
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "UBER",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 75.0,
+        "right": "C",
+        "bid": 2.05,
+        "ask": 2.12,
+        "last": 2.05,
+        "close": 2.62,
+        "mid": 2.08,
+        "volume": 138,
+        "open_interest": 0,
+        "iv_pct": 36.5,
+        "delta": 0.432,
+        "gamma": 0.05863,
+        "theta": -0.0604,
+        "price_ref": 2.12,
+        "spot": 73.38,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 3.4,
+        "score": 8,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.43 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 3.4% excelente",
+          "liquidity": "Vol 138 / OI 0 baixa liquidez",
+          "iv_event": "IV 36% razoavel"
+        },
+        "entry_price": 2.12,
+        "stop_price": 1.38,
+        "target_1": 2.97,
+        "target_2": 3.82,
+        "capital_fit": {
+          "contract_cost": 212.0,
+          "risk_at_stop": 74.2,
+          "cost_bucket": "IDEAL_FOR_ONE_CONTRACT",
+          "capital_status": "APROVO_CAPITAL",
+          "reason": "custo $212, delta 0.43, DTE 23, spread 3.4%, liquidez ok",
+          "preferred_structure": "LONG_OPTION",
+          "rosi_note": "Contrato ideal para 1 contrato: custo controlado, delta \u00fatil e risco administr\u00e1vel."
+        }
+      },
+      {
+        "ticker": "UBER",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 76.0,
+        "right": "C",
+        "bid": 1.66,
+        "ask": 1.78,
+        "last": 1.68,
+        "close": 2.23,
+        "mid": 1.72,
+        "volume": 14,
+        "open_interest": 0,
+        "iv_pct": 36.6,
+        "delta": 0.378,
+        "gamma": 0.05659,
+        "theta": -0.0608,
+        "price_ref": 1.78,
+        "spot": 73.38,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 7.0,
+        "score": 7,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 1,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.38 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 7.0% aceitavel",
+          "liquidity": "Vol 14 / OI 0 baixa liquidez",
+          "iv_event": "IV 37% razoavel"
+        },
+        "entry_price": 1.78,
+        "stop_price": 1.16,
+        "target_1": 2.49,
+        "target_2": 3.2,
+        "capital_fit": {
+          "contract_cost": 178.0,
+          "risk_at_stop": 62.3,
+          "cost_bucket": "REPROVO",
+          "capital_status": "REPROVO_CAPITAL",
+          "reason": "spread 7.0% > 5%",
+          "preferred_structure": "SKIP",
+          "rosi_note": "Contrato n\u00e3o adequado para o capital/perfil atual."
+        }
+      },
+      {
+        "ticker": "UBER",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 77.0,
+        "right": "C",
+        "bid": 1.33,
+        "ask": 1.44,
+        "last": 1.37,
+        "close": 1.85,
+        "mid": 1.39,
+        "volume": 82,
+        "open_interest": 0,
+        "iv_pct": 36.6,
+        "delta": 0.325,
+        "gamma": 0.05336,
+        "theta": -0.0565,
+        "price_ref": 1.44,
+        "spot": 73.38,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 7.9,
+        "score": 7,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 1,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.33 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 7.9% aceitavel",
+          "liquidity": "Vol 82 / OI 0 baixa liquidez",
+          "iv_event": "IV 37% razoavel"
+        },
+        "entry_price": 1.44,
+        "stop_price": 0.94,
+        "target_1": 2.02,
+        "target_2": 2.59,
+        "capital_fit": {
+          "contract_cost": 144.0,
+          "risk_at_stop": 50.4,
+          "cost_bucket": "REPROVO",
+          "capital_status": "REPROVO_CAPITAL",
+          "reason": "spread 7.9% > 5%",
+          "preferred_structure": "SKIP",
+          "rosi_note": "Contrato n\u00e3o adequado para o capital/perfil atual."
+        }
+      }
+    ],
+    "timestamp": "2026-07-08 15:16 ET",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "NORMAL"
+    }
+  },
+  {
+    "ticker": "UBER",
+    "direction": "PUT",
+    "spot": 73.38,
+    "scanned": 8,
+    "overall_verdict": "REPROVO",
+    "overall_note": "Edge contra PUT \u2014 contrato bom nao salva direcao ruim.",
+    "invalid_level": 75.22,
+    "invalid_note": "PUT invalida se UBER fechar ACIMA de $75.22",
+    "edge": {
+      "verdict": "EDGE DESFAVORAVEL",
+      "note": "0 fator(es) contra PUT \u2014 evitar entrada",
+      "aprovados": 0,
+      "incompletos": 1,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": -0.4,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": -0.2,
+          "signal": "Skew -0.2% \u2014 neutro, favoravel para ambas direcoes",
+          "score": 2
+        },
+        "pc_ratio": {
+          "pc_ratio": 1.17,
+          "signal": "P/C 1.17 \u2014 neutro",
+          "score": 2
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "UBER",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 70.0,
+        "right": "P",
+        "bid": 1.16,
+        "ask": 1.25,
+        "last": 1.19,
+        "close": 1.13,
+        "mid": 1.21,
+        "volume": 34,
+        "open_interest": 0,
+        "iv_pct": 36.1,
+        "delta": -0.28,
+        "gamma": 0.05088,
+        "theta": -0.0476,
+        "price_ref": 1.25,
+        "spot": 73.38,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 7.4,
+        "score": 6,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 1,
+          "dte": 2,
+          "spread": 1,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.28 aceitavel",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 7.4% aceitavel",
+          "liquidity": "Vol 34 / OI 0 baixa liquidez",
+          "iv_event": "IV 36% razoavel"
+        },
+        "entry_price": 1.25,
+        "stop_price": 0.81,
+        "target_1": 1.75,
+        "target_2": 2.25,
+        "capital_fit": {
+          "contract_cost": 125.0,
+          "risk_at_stop": 43.75,
+          "cost_bucket": "CHEAP_SLOW",
+          "capital_status": "MONITORAR",
+          "reason": "delta baixo (0.28)",
+          "preferred_structure": "LONG_OPTION",
+          "rosi_note": "Contrato barato, mas pode ser lento. S\u00f3 usar se a tese for muito clara."
+        }
+      },
+      {
+        "ticker": "UBER",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 71.0,
+        "right": "P",
+        "bid": 1.5,
+        "ask": 1.67,
+        "last": 1.81,
+        "close": 1.51,
+        "mid": 1.58,
+        "volume": 4,
+        "open_interest": 0,
+        "iv_pct": 36.1,
+        "delta": -0.334,
+        "gamma": 0.05517,
+        "theta": -0.052,
+        "price_ref": 1.67,
+        "spot": 73.38,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 10.8,
+        "score": 6,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.33 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 10.8% largo",
+          "liquidity": "Vol 4 / OI 0 baixa liquidez",
+          "iv_event": "IV 36% razoavel"
+        },
+        "entry_price": 1.67,
+        "stop_price": 1.09,
+        "target_1": 2.34,
+        "target_2": 3.01,
+        "capital_fit": {
+          "contract_cost": 167.0,
+          "risk_at_stop": 58.45,
+          "cost_bucket": "REPROVO",
+          "capital_status": "REPROVO_CAPITAL",
+          "reason": "spread muito ruim (10.7%)",
+          "preferred_structure": "SKIP",
+          "rosi_note": "Contrato n\u00e3o adequado para o capital/perfil atual."
+        }
+      },
+      {
+        "ticker": "UBER",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 73.0,
+        "right": "P",
+        "bid": 2.33,
+        "ask": 2.6,
+        "last": 0,
+        "close": 2.33,
+        "mid": 2.46,
+        "volume": 7,
+        "open_interest": 0,
+        "iv_pct": 36.3,
+        "delta": -0.453,
+        "gamma": 0.05997,
+        "theta": -0.0549,
+        "price_ref": 2.6,
+        "spot": 73.38,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 11.0,
+        "score": 6,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.45 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 11.0% largo",
+          "liquidity": "Vol 7 / OI 0 baixa liquidez",
+          "iv_event": "IV 36% razoavel"
+        },
+        "entry_price": 2.6,
+        "stop_price": 1.69,
+        "target_1": 3.64,
+        "target_2": 4.68,
+        "capital_fit": {
+          "contract_cost": 260.0,
+          "risk_at_stop": 91.0,
+          "cost_bucket": "REPROVO",
+          "capital_status": "REPROVO_CAPITAL",
+          "reason": "spread muito ruim (11.0%)",
+          "preferred_structure": "SKIP",
+          "rosi_note": "Contrato n\u00e3o adequado para o capital/perfil atual."
+        }
+      }
+    ],
+    "timestamp": "2026-07-08 15:16 ET",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "NORMAL"
+    }
+  },
+  {
+    "ticker": "PLTR",
+    "direction": "CALL",
+    "spot": 130.28,
+    "scanned": 1,
+    "overall_verdict": "AGUARDAR",
+    "overall_note": "Contrato 9/10 mas SEM edge direcional \u2014 aguardar definicao.",
+    "invalid_level": 124.79,
+    "invalid_note": "CALL invalida se PLTR fechar ABAIXO de $124.79",
+    "edge": {
+      "verdict": "EDGE NEUTRO",
+      "note": "1/4 a favor (1 direcional), 0 contra CALL \u2014 sem edge claro, aguardar confirmacao",
+      "aprovados": 1,
+      "incompletos": 1,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 3.5,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": 0.0,
+          "signal": "Skew +0.0% \u2014 neutro, favoravel para ambas direcoes",
+          "score": 2
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.63,
+          "signal": "P/C 0.63 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "PLTR",
+        "direction": "CALL",
+        "expiration": "20260821",
+        "dte": 44,
+        "strike": 130.0,
+        "right": "C",
+        "bid": 11.3,
+        "ask": 11.6,
+        "last": 11.55,
+        "close": 14.06,
+        "mid": 11.45,
+        "volume": 1651,
+        "open_interest": 0,
+        "iv_pct": 60.9,
+        "delta": 0.554,
+        "gamma": 0.01443,
+        "theta": -0.1304,
+        "price_ref": 11.6,
+        "spot": 130.28,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 2.6,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.55 ideal",
+          "dte": "44d ideal (14-35d)",
+          "spread": "Spread 2.6% excelente",
+          "liquidity": "Vol 1,651 / OI 0 aceitavel",
+          "iv_event": "IV 61% razoavel"
+        },
+        "entry_price": 11.6,
+        "stop_price": 7.54,
+        "target_1": 16.24,
+        "target_2": 20.88,
+        "capital_fit": {
+          "contract_cost": 1160.0,
+          "risk_at_stop": 406.0,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $1160 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      }
+    ],
+    "timestamp": "2026-07-08 15:16 ET",
+    "ticker_profile": {
+      "movement_profile": "FAST",
+      "premium_profile": "NORMAL"
+    }
+  },
+  {
+    "ticker": "PLTR",
+    "direction": "PUT",
+    "spot": 130.28,
+    "scanned": 1,
+    "overall_verdict": "REPROVO",
+    "overall_note": "Edge contra PUT \u2014 contrato bom nao salva direcao ruim.",
+    "invalid_level": 135.76,
+    "invalid_note": "PUT invalida se PLTR fechar ACIMA de $135.76",
+    "edge": {
+      "verdict": "EDGE DESFAVORAVEL",
+      "note": "1 fator(es) contra PUT \u2014 evitar entrada",
+      "aprovados": 0,
+      "incompletos": 1,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 3.4,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": 0.0,
+          "signal": "Skew +0.0% \u2014 neutro, favoravel para ambas direcoes",
+          "score": 2
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.63,
+          "signal": "P/C 0.63 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "PLTR",
+        "direction": "PUT",
+        "expiration": "20260821",
+        "dte": 44,
+        "strike": 130.0,
+        "right": "P",
+        "bid": 10.4,
+        "ask": 10.55,
+        "last": 10.32,
+        "close": 8.98,
+        "mid": 10.48,
+        "volume": 813,
+        "open_interest": 0,
+        "iv_pct": 60.8,
+        "delta": -0.448,
+        "gamma": 0.01455,
+        "theta": -0.1181,
+        "price_ref": 10.55,
+        "spot": 130.28,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 1.4,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.45 ideal",
+          "dte": "44d ideal (14-35d)",
+          "spread": "Spread 1.4% excelente",
+          "liquidity": "Vol 813 / OI 0 aceitavel",
+          "iv_event": "IV 61% razoavel"
+        },
+        "entry_price": 10.55,
+        "stop_price": 6.86,
+        "target_1": 14.77,
+        "target_2": 18.99,
+        "capital_fit": {
+          "contract_cost": 1055.0,
+          "risk_at_stop": 369.25,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $1055 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      }
+    ],
+    "timestamp": "2026-07-08 15:16 ET",
+    "ticker_profile": {
+      "movement_profile": "FAST",
+      "premium_profile": "NORMAL"
+    }
+  },
+  {
+    "ticker": "SOFI",
+    "direction": "CALL",
+    "spot": 17.5,
+    "scanned": 2,
+    "overall_verdict": "AGUARDAR",
+    "overall_note": "Contrato 9/10 mas SEM edge direcional \u2014 aguardar definicao.",
+    "invalid_level": 16.63,
+    "invalid_note": "CALL invalida se SOFI fechar ABAIXO de $16.63",
+    "edge": {
+      "verdict": "EDGE NEUTRO",
+      "note": "1/4 a favor (1 direcional), 1 contra CALL \u2014 sem edge claro, aguardar confirmacao",
+      "aprovados": 1,
+      "incompletos": 1,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 5.3,
+          "signal": "vol CARA \u2014 desfavoravel para compra",
+          "score": 0
+        },
+        "skew": {
+          "skew_pct": 0.3,
+          "signal": "Skew +0.3% \u2014 neutro, favoravel para ambas direcoes",
+          "score": 2
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.39,
+          "signal": "P/C 0.39 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "SOFI",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 18.0,
+        "right": "C",
+        "bid": 1.06,
+        "ask": 1.09,
+        "last": 1.09,
+        "close": 1.23,
+        "mid": 1.08,
+        "volume": 544,
+        "open_interest": 0,
+        "iv_pct": 71.9,
+        "delta": 0.48,
+        "gamma": 0.12655,
+        "theta": -0.0287,
+        "price_ref": 1.09,
+        "spot": 17.5,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 2.8,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.48 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 2.8% excelente",
+          "liquidity": "Vol 544 / OI 0 aceitavel",
+          "iv_event": "IV 72% razoavel"
+        },
+        "entry_price": 1.09,
+        "stop_price": 0.71,
+        "target_1": 1.53,
+        "target_2": 1.96,
+        "capital_fit": {
+          "contract_cost": 109.0,
+          "risk_at_stop": 38.15,
+          "cost_bucket": "ACCEPTABLE",
+          "capital_status": "APROVO_CAPITAL",
+          "reason": "custo $109 abaixo da faixa ideal, mas filtros ok",
+          "preferred_structure": "LONG_OPTION",
+          "rosi_note": "Contrato acess\u00edvel e l\u00edquido, por\u00e9m abaixo da faixa ideal \u2014 confirmar se o movimento esperado paga o trade."
+        }
+      },
+      {
+        "ticker": "SOFI",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 17.0,
+        "right": "C",
+        "bid": 1.53,
+        "ask": 1.6,
+        "last": 1.6,
+        "close": 1.72,
+        "mid": 1.56,
+        "volume": 284,
+        "open_interest": 0,
+        "iv_pct": 72.2,
+        "delta": 0.605,
+        "gamma": 0.12182,
+        "theta": -0.0281,
+        "price_ref": 1.6,
+        "spot": 17.5,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 4.5,
+        "score": 8,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.60 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 4.5% excelente",
+          "liquidity": "Vol 284 / OI 0 baixa liquidez",
+          "iv_event": "IV 72% razoavel"
+        },
+        "entry_price": 1.6,
+        "stop_price": 1.04,
+        "target_1": 2.24,
+        "target_2": 2.88,
+        "capital_fit": {
+          "contract_cost": 160.0,
+          "risk_at_stop": 56.0,
+          "cost_bucket": "ACCEPTABLE",
+          "capital_status": "APROVO_CAPITAL",
+          "reason": "custo $160 acima da faixa ideal, filtros ok; delta 0.60 fora da faixa 0.35-0.55",
+          "preferred_structure": "LONG_OPTION",
+          "rosi_note": "Contrato aceit\u00e1vel, mas risco em d\u00f3lar j\u00e1 exige convic\u00e7\u00e3o maior."
+        }
+      }
+    ],
+    "timestamp": "2026-07-08 15:16 ET",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "CHEAP"
+    }
+  },
+  {
+    "ticker": "SOFI",
+    "direction": "PUT",
+    "spot": 17.5,
+    "scanned": 2,
+    "overall_verdict": "REPROVO",
+    "overall_note": "Edge contra PUT \u2014 contrato bom nao salva direcao ruim.",
+    "invalid_level": 18.37,
+    "invalid_note": "PUT invalida se SOFI fechar ACIMA de $18.37",
+    "edge": {
+      "verdict": "EDGE DESFAVORAVEL",
+      "note": "2 fator(es) contra PUT \u2014 evitar entrada",
+      "aprovados": 0,
+      "incompletos": 1,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 5.3,
+          "signal": "vol CARA \u2014 desfavoravel para compra",
+          "score": 0
+        },
+        "skew": {
+          "skew_pct": 0.3,
+          "signal": "Skew +0.3% \u2014 neutro, favoravel para ambas direcoes",
+          "score": 2
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.39,
+          "signal": "P/C 0.39 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "SOFI",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 17.0,
+        "right": "P",
+        "bid": 0.98,
+        "ask": 1.0,
+        "last": 0.98,
+        "close": 0.92,
+        "mid": 0.99,
+        "volume": 657,
+        "open_interest": 0,
+        "iv_pct": 72.2,
+        "delta": -0.396,
+        "gamma": 0.12227,
+        "theta": -0.0264,
+        "price_ref": 1.0,
+        "spot": 17.5,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 2.0,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.40 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 2.0% excelente",
+          "liquidity": "Vol 657 / OI 0 aceitavel",
+          "iv_event": "IV 72% razoavel"
+        },
+        "entry_price": 1.0,
+        "stop_price": 0.65,
+        "target_1": 1.4,
+        "target_2": 1.8,
+        "capital_fit": {
+          "contract_cost": 100.0,
+          "risk_at_stop": 35.0,
+          "cost_bucket": "ACCEPTABLE",
+          "capital_status": "APROVO_CAPITAL",
+          "reason": "custo $100 abaixo da faixa ideal, mas filtros ok",
+          "preferred_structure": "LONG_OPTION",
+          "rosi_note": "Contrato acess\u00edvel e l\u00edquido, por\u00e9m abaixo da faixa ideal \u2014 confirmar se o movimento esperado paga o trade."
+        }
+      },
+      {
+        "ticker": "SOFI",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 18.0,
+        "right": "P",
+        "bid": 1.5,
+        "ask": 1.54,
+        "last": 1.5,
+        "close": 1.42,
+        "mid": 1.52,
+        "volume": 82,
+        "open_interest": 0,
+        "iv_pct": 71.9,
+        "delta": -0.522,
+        "gamma": 0.1272,
+        "theta": -0.027,
+        "price_ref": 1.54,
+        "spot": 17.5,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 2.6,
+        "score": 8,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.52 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 2.6% excelente",
+          "liquidity": "Vol 82 / OI 0 baixa liquidez",
+          "iv_event": "IV 72% razoavel"
+        },
+        "entry_price": 1.54,
+        "stop_price": 1.0,
+        "target_1": 2.16,
+        "target_2": 2.77,
+        "capital_fit": {
+          "contract_cost": 154.0,
+          "risk_at_stop": 53.9,
+          "cost_bucket": "IDEAL_FOR_ONE_CONTRACT",
+          "capital_status": "MONITORAR",
+          "reason": "custo $154, delta 0.52, DTE 23, spread 2.6%, liquidez ok; liquidez nao confirmada (vol 82, OI ausente no feed)",
+          "preferred_structure": "LONG_OPTION",
+          "rosi_note": "Contrato ideal para 1 contrato: custo controlado, delta \u00fatil e risco administr\u00e1vel. Liquidez n\u00e3o confirmada \u2014 OI ausente no feed; checar volume na abertura antes de entrar."
+        }
+      }
+    ],
+    "timestamp": "2026-07-08 15:16 ET",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "CHEAP"
+    }
+  },
+  {
+    "ticker": "BAC",
+    "direction": "CALL",
+    "spot": 58.51,
+    "scanned": 7,
+    "overall_verdict": "AGUARDAR",
+    "overall_note": "Contrato 9/10 mas SEM edge direcional \u2014 aguardar definicao.",
+    "invalid_level": 57.45,
+    "invalid_note": "CALL invalida se BAC fechar ABAIXO de $57.45",
+    "edge": {
+      "verdict": "EDGE NEUTRO",
+      "note": "1/4 a favor (1 direcional), 0 contra CALL \u2014 sem edge claro, aguardar confirmacao",
+      "aprovados": 1,
+      "incompletos": 1,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 3.3,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": 1.3,
+          "signal": "Skew +1.3% \u2014 neutro, favoravel para ambas direcoes",
+          "score": 2
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.59,
+          "signal": "P/C 0.59 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "BAC",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 59.0,
+        "right": "C",
+        "bid": 1.36,
+        "ask": 1.42,
+        "last": 1.38,
+        "close": 2.2,
+        "mid": 1.39,
+        "volume": 1002,
+        "open_interest": 0,
+        "iv_pct": 26.1,
+        "delta": 0.475,
+        "gamma": 0.10386,
+        "theta": -0.0365,
+        "price_ref": 1.42,
+        "spot": 58.51,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 4.3,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.47 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 4.3% excelente",
+          "liquidity": "Vol 1,002 / OI 0 aceitavel",
+          "iv_event": "IV 26% razoavel"
+        },
+        "entry_price": 1.42,
+        "stop_price": 0.92,
+        "target_1": 1.99,
+        "target_2": 2.56,
+        "capital_fit": {
+          "contract_cost": 142.0,
+          "risk_at_stop": 49.7,
+          "cost_bucket": "CHEAP_SLOW",
+          "capital_status": "MONITORAR",
+          "reason": "ticker historicamente lento",
+          "preferred_structure": "LONG_OPTION",
+          "rosi_note": "Contrato barato, mas pode ser lento. S\u00f3 usar se a tese for muito clara."
+        }
+      },
+      {
+        "ticker": "BAC",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 60.0,
+        "right": "C",
+        "bid": 0.95,
+        "ask": 0.99,
+        "last": 0.97,
+        "close": 1.66,
+        "mid": 0.97,
+        "volume": 127,
+        "open_interest": 0,
+        "iv_pct": 26.0,
+        "delta": 0.374,
+        "gamma": 0.09956,
+        "theta": -0.0351,
+        "price_ref": 0.99,
+        "spot": 58.51,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 4.1,
+        "score": 8,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.37 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 4.1% excelente",
+          "liquidity": "Vol 127 / OI 0 baixa liquidez",
+          "iv_event": "IV 26% razoavel"
+        },
+        "entry_price": 0.99,
+        "stop_price": 0.64,
+        "target_1": 1.39,
+        "target_2": 1.78,
+        "capital_fit": {
+          "contract_cost": 99.0,
+          "risk_at_stop": 34.65,
+          "cost_bucket": "CHEAP_SLOW",
+          "capital_status": "MONITORAR",
+          "reason": "custo baixo ($99); ticker historicamente lento",
+          "preferred_structure": "LONG_OPTION",
+          "rosi_note": "Contrato barato, mas pode ser lento. S\u00f3 usar se a tese for muito clara."
+        }
+      },
+      {
+        "ticker": "BAC",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 58.0,
+        "right": "C",
+        "bid": 1.87,
+        "ask": 2.0,
+        "last": 1.92,
+        "close": 2.87,
+        "mid": 1.94,
+        "volume": 104,
+        "open_interest": 0,
+        "iv_pct": 26.3,
+        "delta": 0.578,
+        "gamma": 0.10116,
+        "theta": -0.0368,
+        "price_ref": 2.0,
+        "spot": 58.51,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 6.7,
+        "score": 7,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 1,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.58 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 6.7% aceitavel",
+          "liquidity": "Vol 104 / OI 0 baixa liquidez",
+          "iv_event": "IV 26% razoavel"
+        },
+        "entry_price": 2.0,
+        "stop_price": 1.3,
+        "target_1": 2.8,
+        "target_2": 3.6,
+        "capital_fit": {
+          "contract_cost": 200.0,
+          "risk_at_stop": 70.0,
+          "cost_bucket": "CHEAP_SLOW",
+          "capital_status": "MONITORAR",
+          "reason": "ticker historicamente lento",
+          "preferred_structure": "LONG_OPTION",
+          "rosi_note": "Contrato barato, mas pode ser lento. S\u00f3 usar se a tese for muito clara."
+        }
+      }
+    ],
+    "timestamp": "2026-07-08 15:17 ET",
+    "ticker_profile": {
+      "movement_profile": "SLOW",
+      "premium_profile": "CHEAP"
+    }
+  },
+  {
+    "ticker": "BAC",
+    "direction": "PUT",
+    "spot": 58.49,
+    "scanned": 7,
+    "overall_verdict": "REPROVO",
+    "overall_note": "Edge contra PUT \u2014 contrato bom nao salva direcao ruim.",
+    "invalid_level": 59.59,
+    "invalid_note": "PUT invalida se BAC fechar ACIMA de $59.59",
+    "edge": {
+      "verdict": "EDGE DESFAVORAVEL",
+      "note": "1 fator(es) contra PUT \u2014 evitar entrada",
+      "aprovados": 0,
+      "incompletos": 1,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 4.2,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": 1.3,
+          "signal": "Skew +1.3% \u2014 neutro, favoravel para ambas direcoes",
+          "score": 2
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.59,
+          "signal": "P/C 0.59 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "BAC",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 60.0,
+        "right": "P",
+        "bid": 2.28,
+        "ask": 2.37,
+        "last": 2.25,
+        "close": 1.65,
+        "mid": 2.33,
+        "volume": 123,
+        "open_interest": 0,
+        "iv_pct": 26.0,
+        "delta": -0.632,
+        "gamma": 0.10159,
+        "theta": -0.0293,
+        "price_ref": 2.37,
+        "spot": 58.49,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 3.9,
+        "score": 8,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.63 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 3.9% excelente",
+          "liquidity": "Vol 123 / OI 0 baixa liquidez",
+          "iv_event": "IV 26% razoavel"
+        },
+        "entry_price": 2.37,
+        "stop_price": 1.54,
+        "target_1": 3.32,
+        "target_2": 4.27,
+        "capital_fit": {
+          "contract_cost": 237.0,
+          "risk_at_stop": 82.95,
+          "cost_bucket": "CHEAP_SLOW",
+          "capital_status": "MONITORAR",
+          "reason": "ticker historicamente lento",
+          "preferred_structure": "LONG_OPTION",
+          "rosi_note": "Contrato barato, mas pode ser lento. S\u00f3 usar se a tese for muito clara."
+        }
+      },
+      {
+        "ticker": "BAC",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 58.0,
+        "right": "P",
+        "bid": 1.21,
+        "ask": 1.3,
+        "last": 1.25,
+        "close": 0.86,
+        "mid": 1.25,
+        "volume": 816,
+        "open_interest": 0,
+        "iv_pct": 26.3,
+        "delta": -0.425,
+        "gamma": 0.10235,
+        "theta": -0.0312,
+        "price_ref": 1.3,
+        "spot": 58.49,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 7.2,
+        "score": 8,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 1,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.42 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 7.2% aceitavel",
+          "liquidity": "Vol 816 / OI 0 aceitavel",
+          "iv_event": "IV 26% razoavel"
+        },
+        "entry_price": 1.3,
+        "stop_price": 0.85,
+        "target_1": 1.82,
+        "target_2": 2.34,
+        "capital_fit": {
+          "contract_cost": 130.0,
+          "risk_at_stop": 45.5,
+          "cost_bucket": "CHEAP_SLOW",
+          "capital_status": "MONITORAR",
+          "reason": "ticker historicamente lento",
+          "preferred_structure": "LONG_OPTION",
+          "rosi_note": "Contrato barato, mas pode ser lento. S\u00f3 usar se a tese for muito clara."
+        }
+      },
+      {
+        "ticker": "BAC",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 59.0,
+        "right": "P",
+        "bid": 1.69,
+        "ask": 1.78,
+        "last": 1.75,
+        "close": 1.18,
+        "mid": 1.73,
+        "volume": 66,
+        "open_interest": 0,
+        "iv_pct": 26.1,
+        "delta": -0.53,
+        "gamma": 0.10545,
+        "theta": -0.031,
+        "price_ref": 1.78,
+        "spot": 58.49,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 5.2,
+        "score": 7,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 1,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.53 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 5.2% aceitavel",
+          "liquidity": "Vol 66 / OI 0 baixa liquidez",
+          "iv_event": "IV 26% razoavel"
+        },
+        "entry_price": 1.78,
+        "stop_price": 1.16,
+        "target_1": 2.49,
+        "target_2": 3.2,
+        "capital_fit": {
+          "contract_cost": 178.0,
+          "risk_at_stop": 62.3,
+          "cost_bucket": "CHEAP_SLOW",
+          "capital_status": "MONITORAR",
+          "reason": "ticker historicamente lento",
+          "preferred_structure": "LONG_OPTION",
+          "rosi_note": "Contrato barato, mas pode ser lento. S\u00f3 usar se a tese for muito clara."
+        }
+      }
+    ],
+    "timestamp": "2026-07-08 15:17 ET",
+    "ticker_profile": {
+      "movement_profile": "SLOW",
+      "premium_profile": "CHEAP"
+    }
+  },
+  {
+    "ticker": "XLF",
+    "direction": "CALL",
+    "spot": 55.06,
+    "scanned": 6,
+    "overall_verdict": "REPROVO",
+    "overall_note": "Edge contra CALL \u2014 contrato bom nao salva direcao ruim.",
+    "invalid_level": 54.4,
+    "invalid_note": "CALL invalida se XLF fechar ABAIXO de $54.4",
+    "edge": {
+      "verdict": "EDGE DESFAVORAVEL",
+      "note": "1 fator(es) contra CALL \u2014 evitar entrada",
+      "aprovados": 0,
+      "incompletos": 1,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 2.4,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": 3.6,
+          "signal": "Skew +3.6% \u2014 leve pressao baixista",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 1.51,
+          "signal": "P/C 1.51 \u2014 bearish (puts dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "XLF",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 55.0,
+        "right": "C",
+        "bid": 1.06,
+        "ask": 1.14,
+        "last": 1.09,
+        "close": 1.71,
+        "mid": 1.1,
+        "volume": 525,
+        "open_interest": 0,
+        "iv_pct": 17.6,
+        "delta": 0.54,
+        "gamma": 0.16416,
+        "theta": -0.0242,
+        "price_ref": 1.14,
+        "spot": 55.06,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 7.3,
+        "score": 8,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 1,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.54 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 7.3% aceitavel",
+          "liquidity": "Vol 525 / OI 0 aceitavel",
+          "iv_event": "IV 18% razoavel"
+        },
+        "entry_price": 1.14,
+        "stop_price": 0.74,
+        "target_1": 1.6,
+        "target_2": 2.05,
+        "capital_fit": {
+          "contract_cost": 114.0,
+          "risk_at_stop": 39.9,
+          "cost_bucket": "CHEAP_SLOW",
+          "capital_status": "MONITORAR",
+          "reason": "ticker historicamente lento",
+          "preferred_structure": "LONG_OPTION",
+          "rosi_note": "Contrato barato, mas pode ser lento. S\u00f3 usar se a tese for muito clara."
+        }
+      },
+      {
+        "ticker": "XLF",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 54.0,
+        "right": "C",
+        "bid": 1.71,
+        "ask": 1.83,
+        "last": 1.8,
+        "close": 2.51,
+        "mid": 1.77,
+        "volume": 12,
+        "open_interest": 0,
+        "iv_pct": 18.7,
+        "delta": 0.69,
+        "gamma": 0.13733,
+        "theta": -0.0232,
+        "price_ref": 1.83,
+        "spot": 55.06,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 6.8,
+        "score": 6,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 1,
+          "dte": 2,
+          "spread": 1,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.69 aceitavel",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 6.8% aceitavel",
+          "liquidity": "Vol 12 / OI 0 baixa liquidez",
+          "iv_event": "IV 19% razoavel"
+        },
+        "entry_price": 1.83,
+        "stop_price": 1.19,
+        "target_1": 2.56,
+        "target_2": 3.29,
+        "capital_fit": {
+          "contract_cost": 183.0,
+          "risk_at_stop": 64.05,
+          "cost_bucket": "CHEAP_SLOW",
+          "capital_status": "MONITORAR",
+          "reason": "ticker historicamente lento",
+          "preferred_structure": "LONG_OPTION",
+          "rosi_note": "Contrato barato, mas pode ser lento. S\u00f3 usar se a tese for muito clara."
+        }
+      },
+      {
+        "ticker": "XLF",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 56.0,
+        "right": "C",
+        "bid": 0.58,
+        "ask": 0.65,
+        "last": 0.65,
+        "close": 1.04,
+        "mid": 0.61,
+        "volume": 68,
+        "open_interest": 0,
+        "iv_pct": 16.9,
+        "delta": 0.373,
+        "gamma": 0.16286,
+        "theta": -0.0208,
+        "price_ref": 0.65,
+        "spot": 55.06,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 11.5,
+        "score": 6,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.37 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 11.5% largo",
+          "liquidity": "Vol 68 / OI 0 baixa liquidez",
+          "iv_event": "IV 17% razoavel"
+        },
+        "entry_price": 0.65,
+        "stop_price": 0.42,
+        "target_1": 0.91,
+        "target_2": 1.17,
+        "capital_fit": {
+          "contract_cost": 65.0,
+          "risk_at_stop": 22.75,
+          "cost_bucket": "REPROVO",
+          "capital_status": "REPROVO_CAPITAL",
+          "reason": "spread muito ruim (11.4%)",
+          "preferred_structure": "SKIP",
+          "rosi_note": "Contrato n\u00e3o adequado para o capital/perfil atual."
+        }
+      }
+    ],
+    "timestamp": "2026-07-08 15:17 ET",
+    "ticker_profile": {
+      "movement_profile": "SLOW",
+      "premium_profile": "CHEAP"
+    }
+  },
+  {
+    "ticker": "XLF",
+    "direction": "PUT",
+    "spot": 55.08,
+    "scanned": 6,
+    "overall_verdict": "AGUARDAR",
+    "overall_note": "Edge a favor de PUT + contrato 7/10.",
+    "invalid_level": 55.84,
+    "invalid_note": "PUT invalida se XLF fechar ACIMA de $55.84",
+    "edge": {
+      "verdict": "EDGE FAVORAVEL",
+      "note": "2/4 fatores claramente a favor de PUT, nenhum contra",
+      "aprovados": 2,
+      "incompletos": 1,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 4.9,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": 3.6,
+          "signal": "Skew +3.6% \u2014 leve pressao baixista",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 1.51,
+          "signal": "P/C 1.51 \u2014 bearish (puts dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "XLF",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 56.0,
+        "right": "P",
+        "bid": 1.33,
+        "ask": 1.44,
+        "last": 0,
+        "close": 0.81,
+        "mid": 1.39,
+        "volume": 0,
+        "open_interest": 0,
+        "iv_pct": 16.9,
+        "delta": -0.635,
+        "gamma": 0.16917,
+        "theta": -0.0166,
+        "price_ref": 1.44,
+        "spot": 55.08,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 7.9,
+        "score": 7,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 1,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.64 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 7.9% aceitavel",
+          "liquidity": "Vol 0 / OI 0 baixa liquidez",
+          "iv_event": "IV 17% razoavel"
+        },
+        "entry_price": 1.44,
+        "stop_price": 0.94,
+        "target_1": 2.02,
+        "target_2": 2.59,
+        "capital_fit": {
+          "contract_cost": 144.0,
+          "risk_at_stop": 50.4,
+          "cost_bucket": "CHEAP_SLOW",
+          "capital_status": "MONITORAR",
+          "reason": "ticker historicamente lento",
+          "preferred_structure": "LONG_OPTION",
+          "rosi_note": "Contrato barato, mas pode ser lento. S\u00f3 usar se a tese for muito clara."
+        }
+      },
+      {
+        "ticker": "XLF",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 55.0,
+        "right": "P",
+        "bid": 0.8,
+        "ask": 0.9,
+        "last": 0.81,
+        "close": 0.47,
+        "mid": 0.85,
+        "volume": 373,
+        "open_interest": 0,
+        "iv_pct": 17.6,
+        "delta": -0.467,
+        "gamma": 0.16791,
+        "theta": -0.0188,
+        "price_ref": 0.9,
+        "spot": 55.08,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 11.8,
+        "score": 6,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.47 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 11.8% largo",
+          "liquidity": "Vol 373 / OI 0 baixa liquidez",
+          "iv_event": "IV 18% razoavel"
+        },
+        "entry_price": 0.9,
+        "stop_price": 0.59,
+        "target_1": 1.26,
+        "target_2": 1.62,
+        "capital_fit": {
+          "contract_cost": 90.0,
+          "risk_at_stop": 31.5,
+          "cost_bucket": "REPROVO",
+          "capital_status": "REPROVO_CAPITAL",
+          "reason": "spread muito ruim (11.8%)",
+          "preferred_structure": "SKIP",
+          "rosi_note": "Contrato n\u00e3o adequado para o capital/perfil atual."
+        }
+      },
+      {
+        "ticker": "XLF",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 54.0,
+        "right": "P",
+        "bid": 0.47,
+        "ask": 0.54,
+        "last": 0.52,
+        "close": 0.28,
+        "mid": 0.51,
+        "volume": 30,
+        "open_interest": 0,
+        "iv_pct": 18.7,
+        "delta": -0.313,
+        "gamma": 0.1394,
+        "theta": -0.0178,
+        "price_ref": 0.54,
+        "spot": 55.08,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 13.7,
+        "score": 6,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.31 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 13.7% largo",
+          "liquidity": "Vol 30 / OI 0 baixa liquidez",
+          "iv_event": "IV 19% razoavel"
+        },
+        "entry_price": 0.54,
+        "stop_price": 0.35,
+        "target_1": 0.76,
+        "target_2": 0.97,
+        "capital_fit": {
+          "contract_cost": 54.0,
+          "risk_at_stop": 18.9,
+          "cost_bucket": "REPROVO",
+          "capital_status": "REPROVO_CAPITAL",
+          "reason": "spread muito ruim (13.9%)",
+          "preferred_structure": "SKIP",
+          "rosi_note": "Contrato n\u00e3o adequado para o capital/perfil atual."
+        }
+      }
+    ],
+    "timestamp": "2026-07-08 15:17 ET",
+    "ticker_profile": {
+      "movement_profile": "SLOW",
+      "premium_profile": "CHEAP"
+    }
+  },
+  {
+    "ticker": "QQQ",
+    "direction": "CALL",
+    "spot": 709.48,
+    "scanned": 78,
+    "overall_verdict": "AGUARDAR",
+    "overall_note": "Contrato 9/10 mas SEM edge direcional \u2014 aguardar definicao.",
+    "invalid_level": 697.92,
+    "invalid_note": "CALL invalida se QQQ fechar ABAIXO de $697.92",
+    "edge": {
+      "verdict": "EDGE NEUTRO",
+      "note": "1/4 a favor (0 direcional), 1 contra CALL \u2014 sem edge claro, aguardar confirmacao",
+      "aprovados": 1,
+      "incompletos": 1,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": -4.3,
+          "signal": "vol BARATA \u2014 favoravel para compra",
+          "score": 2
+        },
+        "skew": {
+          "skew_pct": 7.3,
+          "signal": "Skew +7.3% \u2014 puts caras, bearish institucional. Cuidado com CALL.",
+          "score": 0
+        },
+        "pc_ratio": {
+          "pc_ratio": 1.19,
+          "signal": "P/C 1.19 \u2014 neutro",
+          "score": 2
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "QQQ",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 710.0,
+        "right": "C",
+        "bid": 18.55,
+        "ask": 18.65,
+        "last": 18.77,
+        "close": 18.98,
+        "mid": 18.6,
+        "volume": 1347,
+        "open_interest": 0,
+        "iv_pct": 25.3,
+        "delta": 0.524,
+        "gamma": 0.00889,
+        "theta": -0.4319,
+        "price_ref": 18.65,
+        "spot": 709.48,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 0.5,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.52 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 0.5% excelente",
+          "liquidity": "Vol 1,347 / OI 0 aceitavel",
+          "iv_event": "IV 25% razoavel"
+        },
+        "entry_price": 18.65,
+        "stop_price": 12.12,
+        "target_1": 26.11,
+        "target_2": 33.57,
+        "capital_fit": {
+          "contract_cost": 1865.0,
+          "risk_at_stop": 652.75,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $1865 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      },
+      {
+        "ticker": "QQQ",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 715.0,
+        "right": "C",
+        "bid": 15.76,
+        "ask": 15.86,
+        "last": 16.07,
+        "close": 16.22,
+        "mid": 15.81,
+        "volume": 1112,
+        "open_interest": 0,
+        "iv_pct": 24.6,
+        "delta": 0.479,
+        "gamma": 0.0091,
+        "theta": -0.4215,
+        "price_ref": 15.86,
+        "spot": 709.48,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 0.6,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.48 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 0.6% excelente",
+          "liquidity": "Vol 1,112 / OI 0 aceitavel",
+          "iv_event": "IV 25% razoavel"
+        },
+        "entry_price": 15.86,
+        "stop_price": 10.31,
+        "target_1": 22.2,
+        "target_2": 28.55,
+        "capital_fit": {
+          "contract_cost": 1586.0,
+          "risk_at_stop": 555.1,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $1586 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      },
+      {
+        "ticker": "QQQ",
+        "direction": "CALL",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 720.0,
+        "right": "C",
+        "bid": 13.21,
+        "ask": 13.3,
+        "last": 13.4,
+        "close": 13.68,
+        "mid": 13.26,
+        "volume": 898,
+        "open_interest": 0,
+        "iv_pct": 24.1,
+        "delta": 0.432,
+        "gamma": 0.0092,
+        "theta": -0.3977,
+        "price_ref": 13.3,
+        "spot": 709.48,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 0.7,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.43 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 0.7% excelente",
+          "liquidity": "Vol 898 / OI 0 aceitavel",
+          "iv_event": "IV 24% razoavel"
+        },
+        "entry_price": 13.3,
+        "stop_price": 8.65,
+        "target_1": 18.62,
+        "target_2": 23.94,
+        "capital_fit": {
+          "contract_cost": 1330.0,
+          "risk_at_stop": 465.5,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $1330 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      }
+    ],
+    "timestamp": "2026-07-08 15:17 ET",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "NORMAL"
+    }
+  },
+  {
+    "ticker": "QQQ",
+    "direction": "PUT",
+    "spot": 709.5,
+    "scanned": 62,
+    "overall_verdict": "AGUARDAR",
+    "overall_note": "Contrato 9/10 mas SEM edge direcional \u2014 aguardar definicao.",
+    "invalid_level": 723.5,
+    "invalid_note": "PUT invalida se QQQ fechar ACIMA de $723.5",
+    "edge": {
+      "verdict": "EDGE NEUTRO",
+      "note": "1/4 a favor (1 direcional), 0 contra PUT \u2014 sem edge claro, aguardar confirmacao",
+      "aprovados": 1,
+      "incompletos": 1,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 0.6,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": 7.0,
+          "signal": "Skew +7.0% \u2014 puts caras, bearish institucional. Cuidado com CALL.",
+          "score": 0
+        },
+        "pc_ratio": {
+          "pc_ratio": 1.19,
+          "signal": "P/C 1.19 \u2014 neutro",
+          "score": 2
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "QQQ",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 708.0,
+        "right": "P",
+        "bid": 16.49,
+        "ask": 16.58,
+        "last": 16.56,
+        "close": 16.94,
+        "mid": 16.53,
+        "volume": 789,
+        "open_interest": 0,
+        "iv_pct": 25.5,
+        "delta": -0.463,
+        "gamma": 0.0089,
+        "theta": -0.3635,
+        "price_ref": 16.58,
+        "spot": 709.5,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 0.5,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.46 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 0.5% excelente",
+          "liquidity": "Vol 789 / OI 0 aceitavel",
+          "iv_event": "IV 26% razoavel"
+        },
+        "entry_price": 16.58,
+        "stop_price": 10.78,
+        "target_1": 23.21,
+        "target_2": 29.84,
+        "capital_fit": {
+          "contract_cost": 1658.0,
+          "risk_at_stop": 580.3,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $1658 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      },
+      {
+        "ticker": "QQQ",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 710.0,
+        "right": "P",
+        "bid": 17.31,
+        "ask": 17.4,
+        "last": 17.27,
+        "close": 17.76,
+        "mid": 17.35,
+        "volume": 1129,
+        "open_interest": 0,
+        "iv_pct": 25.3,
+        "delta": -0.481,
+        "gamma": 0.00903,
+        "theta": -0.3604,
+        "price_ref": 17.4,
+        "spot": 709.5,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 0.5,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.48 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 0.5% excelente",
+          "liquidity": "Vol 1,129 / OI 0 aceitavel",
+          "iv_event": "IV 25% razoavel"
+        },
+        "entry_price": 17.4,
+        "stop_price": 11.31,
+        "target_1": 24.36,
+        "target_2": 31.32,
+        "capital_fit": {
+          "contract_cost": 1740.0,
+          "risk_at_stop": 609.0,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $1740 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      },
+      {
+        "ticker": "QQQ",
+        "direction": "PUT",
+        "expiration": "20260731",
+        "dte": 23,
+        "strike": 700.0,
+        "right": "P",
+        "bid": 13.56,
+        "ask": 13.65,
+        "last": 13.7,
+        "close": 13.98,
+        "mid": 13.61,
+        "volume": 1572,
+        "open_interest": 0,
+        "iv_pct": 26.5,
+        "delta": -0.397,
+        "gamma": 0.00829,
+        "theta": -0.3704,
+        "price_ref": 13.65,
+        "spot": 709.5,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 0.7,
+        "score": 9,
+        "verdict": "APROVO",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 2,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta -0.40 ideal",
+          "dte": "23d ideal (14-35d)",
+          "spread": "Spread 0.7% excelente",
+          "liquidity": "Vol 1,572 / OI 0 aceitavel",
+          "iv_event": "IV 26% razoavel"
+        },
+        "entry_price": 13.65,
+        "stop_price": 8.87,
+        "target_1": 19.11,
+        "target_2": 24.57,
+        "capital_fit": {
+          "contract_cost": 1365.0,
+          "risk_at_stop": 477.75,
+          "cost_bucket": "BETTER_AS_SPREAD",
+          "capital_status": "MONITORAR",
+          "reason": "custo $1365 acima de $700",
+          "preferred_structure": "DEBIT_SPREAD",
+          "rosi_note": "Contrato caro para compra direta. Se a tese for boa, preferir debit spread, call spread, put spread ou fly."
+        }
+      }
+    ],
+    "timestamp": "2026-07-08 15:18 ET",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "NORMAL"
+    }
+  },
+  {
+    "ticker": "SPY",
+    "direction": "CALL",
+    "spot": 744.93,
+    "error": "Sem contratos validos",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "NORMAL"
+    }
+  },
+  {
+    "ticker": "SPY",
+    "direction": "PUT",
+    "spot": 744.99,
+    "error": "Sem contratos validos",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "NORMAL"
+    }
+  }
+]

@@ -491,8 +491,6 @@
   <button class="tab-btn" onclick="switchTab('modo4', this); loadJournal(); loadPMNote();">Modo 4 · Journal</button>
   <button class="tab-btn" onclick="switchTab('modo5', this); loadModo5();">Modo 5 · Swing</button>
   <button class="tab-btn" onclick="switchTab('modo6', this); loadModo6();">Modo 6 · Gamma</button>
-  <button class="tab-btn" onclick="switchTab('modo7', this); loadModo7();">Modo 7 · Flow</button>
-  <button class="tab-btn" onclick="window.location.href='/research'">Modo 8 · Research</button>
 </div>
 
 <!-- ── MODO 1: PRÉ-MERCADO ── -->
@@ -1826,49 +1824,6 @@ ${(() => {
   </div>
 </div>
 
-<div id="panel-modo7" class="tab-panel">
-  <p class="section-label">MODO 7</p>
-  <h2 style="margin:4px 0 6px;">Flow Scanner</h2>
-  <p style="font-size:13px;color:#64748b;margin:0 0 12px;">Atividade incomum de opções (IBKR) · prêmio até $3.00 · confirmação técnica Camada 2.</p>
-  <button class="tab-btn" onclick="loadModo7()" style="margin-bottom:10px;">↻ Atualizar</button>
-  <span id="m7-timestamp" style="font-size:11px;color:#94a3b8;margin-left:8px;"></span>
-  <div id="m7-content"><p style="font-size:12px;color:#94a3b8;">Clique em Atualizar para carregar.</p></div>
-</div>
-
-<script>
-function loadModo7() {
-  const el = document.getElementById('m7-content');
-  const ts = document.getElementById('m7-timestamp');
-  el.innerHTML = '<p style="font-size:12px;color:#94a3b8;">Carregando...</p>';
-  fetch('/api/modo7/latest').then(r => r.json()).then(data => {
-    if (data.error) { el.innerHTML = '<p style="font-size:12px;color:#94a3b8;">' + data.error + '</p>'; return; }
-    ts.textContent = 'Scan: ' + (data.scan_date || '');
-    const icon = v => v === 'APROVO_ONDINHA' ? '🟢' : v === 'AGUARDAR' ? '🟡' : v === 'REPROVO_TECNICA' ? '🔴' : '⚪';
-    let html = '';
-    (data.results || []).forEach(r => {
-      const c2 = r.camada2 || {};
-      const v = c2.verdict || 'SEM_CAMADA2';
-      const alerts = (r.alerts || []).filter(a => !a.caution_flag);
-      const linhas = alerts.slice(0, 3).map(a =>
-        a.direction + ' ' + a.strike + ' exp ' + a.expiration + ' (' + a.dte + 'd) · Vol ' +
-        (a.volume || 0).toLocaleString() + ' · ' +
-        (a.volume_oi_ratio ? a.volume_oi_ratio + 'x OI' : 'OI n/d') +
-        ' · Ask $' + (a.ask || 0).toFixed(2)
-      ).join('<br>');
-      html += '<div style="border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-bottom:10px;">'
-        + '<div style="display:flex;justify-content:space-between;align-items:center;">'
-        + '<strong>' + icon(v) + ' ' + r.ticker + ' · ' + (r.dominant_direction || '?') + ' · $' + (r.spot != null ? r.spot : '—') + '</strong>'
-        + '<span style="font-size:11px;color:#64748b;">' + v + (c2.score != null ? ' · ' + c2.score + '/10' : '') + '</span>'
-        + '</div>'
-        + '<div style="font-size:12px;color:#334155;margin-top:6px;">' + (linhas || 'sem alertas limpos') + '</div>'
-        + (c2.note ? '<div style="font-size:11px;color:#94a3b8;margin-top:6px;">' + c2.note + '</div>' : '')
-        + '</div>';
-    });
-    el.innerHTML = html || '<p style="font-size:12px;color:#94a3b8;">Sem alertas hoje.</p>';
-  }).catch(e => { el.innerHTML = '<p style="font-size:12px;color:#ef4444;">Erro: ' + e + '</p>'; });
-}
-</script>
-
 <div id="panel-modo5" class="tab-panel">
   <p class="section-label">MODO 5</p>
   <h2 class="section-title">US Swing Options</h2>
@@ -2583,25 +2538,21 @@ function loadModo7() {
       <p class="metric-label">Call Wall</p>
       <p class="metric-val" id="m6-call-wall" style="color:#16a34a;">—</p>
       <p class="metric-sub">Resistência de calls</p>
-      <p style="font-size:10px;color:#94a3b8;margin-top:6px;padding-top:6px;border-top:1px solid #f1f5f9;">FLUXO HOJE <b id="flow-call-wall" style="color:#16a34a;font-size:12px;">—</b></p>
     </div>
     <div class="metric-card">
       <p class="metric-label">Vol Trigger</p>
       <p class="metric-val" id="m6-vol-trigger" style="color:#d97706;">—</p>
       <p class="metric-sub">Gatilho de volatilidade</p>
-      <p style="font-size:10px;color:#94a3b8;margin-top:6px;padding-top:6px;border-top:1px solid #f1f5f9;">FLUXO HOJE <b id="flow-vol-trigger" style="color:#d97706;font-size:12px;">—</b></p>
     </div>
     <div class="metric-card">
       <p class="metric-label">Zero Gamma</p>
       <p class="metric-val" id="m6-zero-gamma" style="color:#2563eb;">—</p>
       <p class="metric-sub">Nível de reversão</p>
-      <p style="font-size:10px;color:#94a3b8;margin-top:6px;padding-top:6px;border-top:1px solid #f1f5f9;">FLUXO HOJE <b id="flow-zero-gamma" style="color:#2563eb;font-size:12px;">—</b></p>
     </div>
     <div class="metric-card">
       <p class="metric-label">Put Wall</p>
       <p class="metric-val" id="m6-put-wall" style="color:#dc2626;">—</p>
       <p class="metric-sub">Suporte de puts</p>
-      <p style="font-size:10px;color:#94a3b8;margin-top:6px;padding-top:6px;border-top:1px solid #f1f5f9;">FLUXO HOJE <b id="flow-put-wall" style="color:#dc2626;font-size:12px;">—</b></p>
     </div>
   </div>
 
@@ -2609,68 +2560,7 @@ function loadModo7() {
 </div>
 
 <script>
-  async function loadGexProfile() {
-    try {
-      const r = await fetch('/api/gamma-profile');
-      const d = await r.json();
-      if (!d.ok || !d.profile || !d.profile.length) return;
-      let box = document.getElementById('gex-profile-box');
-      if (!box) {
-        box = document.createElement('div');
-        box.id = 'gex-profile-box';
-        box.style.cssText = 'margin-top:16px;background:#fff;border:0.5px solid #e2e8f0;border-radius:12px;padding:14px;';
-        document.getElementById('panel-modo6').appendChild(box);
-      }
-      const rows = [...d.profile].sort((a,b) => b.strike - a.strike);
-      const maxAbs = Math.max(...rows.map(x => Math.abs(x.gex_vol)), 1);
-      let flip = null;
-      const asc = [...rows].sort((a,b) => a.strike - b.strike);
-      // Piso de ruido (0.5% do maior |GEX|) + interpolacao — igual ao backend
-      const piso = Math.max(...asc.map(x => Math.abs(x.gex_vol)), 0) * 0.005;
-      const sig = asc.filter(x => Math.abs(x.gex_vol) > piso);
-      for (let i = 1; i < sig.length; i++)
-        if (sig[i-1].gex_vol < 0 && sig[i].gex_vol >= 0) {
-          const x0 = sig[i-1].strike, x1 = sig[i].strike;
-          const y0 = sig[i-1].gex_vol, y1 = sig[i].gex_vol;
-          flip = y1 !== y0 ? Math.round((x0 + (0 - y0) * (x1 - x0) / (y1 - y0)) * 10) / 10 : x1;
-          break;
-        }
-      const battle = rows.reduce((m,x) => Math.abs(x.gex_vol) > Math.abs(m.gex_vol) ? x : m, rows[0]);
-      const lado = flip ? (d.spot < flip ? 'PUT' : 'CALL') : '—';
-      let html = '<div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Perfil GEX — fluxo de hoje · ' + (d.ts || '') + ' ET</div>';
-      html += '<div style="font-size:12px;margin-bottom:10px;">Lado: <b style="color:' + (lado==='PUT'?'#dc2626':lado==='CALL'?'#16a34a':'#64748b') + '">' + lado + '</b>' + (flip ? ' · VT fluxo <b>' + flip + '</b>' : '') + ' · Batalha <b>' + battle.strike + '</b> (' + (battle.gex_vol > 0 ? '+' : '') + battle.gex_vol + 'M)</div>';
-      let spotDrawn = false;
-      for (const x of rows) {
-        if (!spotDrawn && d.spot > x.strike) {
-          html += '<div style="border-top:1.5px dashed #0f172a;margin:3px 0;font-size:10px;color:#0f172a;text-align:right;">SPY ' + d.spot + '</div>';
-          spotDrawn = true;
-        }
-        const w = Math.round(Math.abs(x.gex_vol) / maxAbs * 100);
-        const color = x.gex_vol >= 0 ? '#16a34a' : '#dc2626';
-        html += '<div style="display:flex;align-items:center;gap:8px;font-size:11px;margin:2px 0;">'
-          + '<span style="width:42px;color:#475569;font-weight:600;">' + x.strike + '</span>'
-          + '<div style="flex:1;background:#f1f5f9;border-radius:4px;height:14px;overflow:hidden;"><div style="width:' + w + '%;height:100%;background:' + color + ';"></div></div>'
-          + '<span style="width:60px;text-align:right;color:' + color + ';font-weight:600;">' + (x.gex_vol > 0 ? '+' : '') + x.gex_vol + 'M</span>'
-          + '</div>';
-      }
-      box.innerHTML = html;
-      // ZG/VT: quando sem numero, mostra o status (acima/abaixo do range)
-      setTimeout(() => {
-        const zgEl = document.getElementById('m6-zero-gamma');
-        if (zgEl && zgEl.textContent.trim() === '—' && d.zg_status) {
-          zgEl.innerHTML = '<span style="font-size:13px;">' +
-            (d.zg_status === 'ACIMA_DO_RANGE' ? '↑ acima do range' : '↓ abaixo do range') + '</span>';
-        }
-        const vtEl = document.getElementById('m6-vol-trigger');
-        if (vtEl && vtEl.textContent.trim() === '—' && d.vt_status) {
-          vtEl.innerHTML = '<span style="font-size:13px;">' + d.vt_status + '</span>';
-        }
-      }, 700);
-    } catch(e) { console.error('gexProfile:', e); }
-  }
-
   async function loadModo6() {
-    loadGexProfile();
     const metricsEl = document.getElementById('m6-metrics');
     const emptyEl   = document.getElementById('m6-empty');
     const fonteEl   = document.getElementById('m6-fonte');
@@ -2703,25 +2593,13 @@ function loadModo7() {
       document.getElementById('m6-zero-gamma').textContent  = fmt(lv.zero_gamma);
       document.getElementById('m6-put-wall').textContent    = fmt(lv.put_wall);
 
-      // ── Níveis de FLUXO (volume de hoje) — vêm de /api/gamma-profile ──
-      try {
-        const rf = await fetch('/api/gamma-profile');
-        const df = await rf.json();
-        const setF = (id, v) => {
-          const el = document.getElementById(id);
-          if (el) el.textContent = (v != null && v !== '') ? Number(v).toFixed(2) : '—';
-        };
-        setF('flow-call-wall',   df.flow_call_wall);
-        setF('flow-vol-trigger', df.flow_vol_trigger);
-        setF('flow-zero-gamma',  df.flow_zero_gamma);
-        setF('flow-put-wall',    df.flow_put_wall);
-      } catch (e) { /* fluxo indisponivel — cards seguem com estrutura */ }
-
       metricsEl.classList.add('visible');
 
       let labelTs = data.date || '';
       if (data.timestamp) {
-        labelTs = data.timestamp;  // ja vem formatado do backend em ET
+        const d   = new Date(data.timestamp);
+        const pad = n => String(n).padStart(2, '0');
+        labelTs   = `${pad(d.getDate())}/${pad(d.getMonth()+1)} ${pad(d.getHours())}:${pad(d.getMinutes())} ET`;
       }
       tsEl.textContent      = labelTs ? `Atualizado: ${labelTs}` : '';
       fonteEl.textContent   = `Fonte: Modo 6 — IBKR Intraday${labelTs ? ' · ' + labelTs : ''}`;

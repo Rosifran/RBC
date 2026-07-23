@@ -388,22 +388,19 @@ def save_flow_pg(result: dict) -> None:
                     confidence   VARCHAR(10),
                     note         TEXT,
                     alerts_json  TEXT,
-                    camada2_json TEXT,
                     created_at   TIMESTAMP DEFAULT NOW()
                 )""")
-            cur.execute("ALTER TABLE flow_alerts ADD COLUMN IF NOT EXISTS camada2_json TEXT")
             cur.execute("""
                 INSERT INTO flow_alerts
                   (ticker, spot, scan_date, scan_time,
-                   dominant_dir, confidence, note, alerts_json, camada2_json)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+                   dominant_dir, confidence, note, alerts_json)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s)""",
                 (result["ticker"], result.get("spot"),
                  result["scan_date"], result.get("scan_time"),
                  result["flow_summary"]["dominant_direction"],
                  result["flow_summary"]["confidence"],
                  result["flow_summary"]["note"],
-                 json.dumps(result["alerts"], default=str),
-                 json.dumps(result.get("camada2") or {}, default=str)))
+                 json.dumps(result["alerts"], default=str)))
             conn.commit()
     except Exception as e:
         print(f"  Aviso: não foi possível salvar no banco — {e}")

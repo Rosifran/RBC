@@ -319,8 +319,6 @@ def main():
             "vol_trigger_status": vt_v_status,
         },
         "regime": regime,
-        "abs_gamma_oi":  max(rows, key=lambda r: abs(r["gex_oi"]))["strike"] if rows else None,
-        "abs_gamma_vol": max(rows, key=lambda r: abs(r["gex_vol"]))["strike"] if rows else None,
     }
 
     # compara com o snapshot anterior DO MESMO DIA
@@ -372,10 +370,6 @@ def main():
                 "gamma_combos": sorted(
                     r["strike"] for r in
                     sorted(rows, key=lambda r: -abs(r["gex_oi"]))[:6]),
-                "flow_call_wall":   snapshot["vol"]["call_wall"],
-                "flow_put_wall":    snapshot["vol"]["put_wall"],
-                "flow_zero_gamma":  snapshot["vol"]["zero_gamma"],
-                "flow_vol_trigger": snapshot["vol"]["vol_trigger"],
                 "regime": snapshot["regime"],
                 "coverage_pct": round(coverage, 0),
                 "gex_profile": [
@@ -398,8 +392,11 @@ def main():
     # ── RITUAL: as 3 perguntas do intraday ──────────────────────────
     try:
         import json as _j, glob as _g, os as _os
-        # 1. LADO: spot vs VT oficial do fluxo (find_vol_trigger, com filtro de ruido)
-        _flip = vt_v
+        # 1. LADO: spot vs flip local do fluxo (VT do fluxo)
+        _flip = None
+        for _i in range(1, len(rows)):
+            if rows[_i-1]["gex_vol"] < 0 <= rows[_i]["gex_vol"]:
+                _flip = rows[_i]["strike"]; break
         # 2. BATALHA: maior |GEX| do fluxo
         _btl = max(rows, key=lambda r: abs(r["gex_vol"]))
         _btl_s, _btl_g = _btl["strike"], _btl["gex_vol"]

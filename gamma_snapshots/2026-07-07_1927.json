@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-07-07T19:27:59.497933",
+  "spot": 747.35,
+  "expiry": "20260708",
+  "oi": {
+    "call_wall": 724.0,
+    "put_wall": 723.0,
+    "zero_gamma": null,
+    "zero_gamma_status": "ACIMA_DO_RANGE",
+    "vol_trigger": 724.0,
+    "vol_trigger_status": "REAL"
+  },
+  "vol": {
+    "call_wall": 723.0,
+    "put_wall": 723.0,
+    "zero_gamma": null,
+    "zero_gamma_status": "ABAIXO_DO_RANGE",
+    "vol_trigger": null,
+    "vol_trigger_status": "SEM_FLIP_LOCAL"
+  },
+  "regime": "NEGATIVE GAMMA"
+}

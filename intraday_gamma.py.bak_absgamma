@@ -372,10 +372,6 @@ def main():
                 "gamma_combos": sorted(
                     r["strike"] for r in
                     sorted(rows, key=lambda r: -abs(r["gex_oi"]))[:6]),
-                "flow_call_wall":   snapshot["vol"]["call_wall"],
-                "flow_put_wall":    snapshot["vol"]["put_wall"],
-                "flow_zero_gamma":  snapshot["vol"]["zero_gamma"],
-                "flow_vol_trigger": snapshot["vol"]["vol_trigger"],
                 "regime": snapshot["regime"],
                 "coverage_pct": round(coverage, 0),
                 "gex_profile": [

@@ -1,0 +1,4062 @@
+[
+  {
+    "ticker": "NVDA",
+    "direction": "CALL",
+    "spot": 200.06,
+    "scanned": 5,
+    "overall_verdict": "AGUARDAR",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 2,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 1.7,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.78,
+          "signal": "P/C 0.78 \u2014 neutro",
+          "score": 2
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "NVDA",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 200.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 13.6,
+        "last": 8.9,
+        "close": 13.6,
+        "mid": 13.6,
+        "volume": 954,
+        "open_interest": 0,
+        "iv_pct": 42.6,
+        "delta": 0.675,
+        "gamma": 0.01679,
+        "theta": -0.1893,
+        "price_ref": 13.6,
+        "spot": 200.06,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 6,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 1,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.68 aceitavel",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 954 / OI 0 aceitavel",
+          "iv_event": "IV 43% razoavel"
+        },
+        "entry_price": 13.6,
+        "stop_price": 8.84,
+        "target_1": 19.04,
+        "target_2": 24.48,
+        "capital_fit": {
+          "contract_cost": 1360.0,
+          "risk_at_stop": 476.0,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "NVDA",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 205.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 10.48,
+        "last": 6.7,
+        "close": 10.48,
+        "mid": 10.48,
+        "volume": 1897,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 10.48,
+        "spot": 200.06,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 1,897 / OI 0 aceitavel",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 10.48,
+        "stop_price": 6.81,
+        "target_1": 14.67,
+        "target_2": 18.86,
+        "capital_fit": {
+          "contract_cost": 1048.0,
+          "risk_at_stop": 366.8,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "NVDA",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 210.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 7.85,
+        "last": 4.65,
+        "close": 7.85,
+        "mid": 7.85,
+        "volume": 4163,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 7.85,
+        "spot": 200.06,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 4,163 / OI 0 aceitavel",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 7.85,
+        "stop_price": 5.1,
+        "target_1": 10.99,
+        "target_2": 14.13,
+        "capital_fit": {
+          "contract_cost": 785.0,
+          "risk_at_stop": 274.75,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:45 ET",
+    "ticker_profile": {
+      "movement_profile": "FAST",
+      "premium_profile": "EXPENSIVE"
+    }
+  },
+  {
+    "ticker": "NVDA",
+    "direction": "PUT",
+    "spot": 200.1,
+    "scanned": 5,
+    "overall_verdict": "REPROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 3,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.78,
+          "signal": "P/C 0.78 \u2014 neutro",
+          "score": 2
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "NVDA",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 190.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 2.35,
+        "last": 4.0,
+        "close": 2.35,
+        "mid": 2.35,
+        "volume": 1632,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 2.35,
+        "spot": 200.1,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 1,632 / OI 0 aceitavel",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 2.35,
+        "stop_price": 1.53,
+        "target_1": 3.29,
+        "target_2": 4.23,
+        "capital_fit": {
+          "contract_cost": 235.0,
+          "risk_at_stop": 82.25,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "NVDA",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 195.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 3.38,
+        "last": 5.7,
+        "close": 3.38,
+        "mid": 3.38,
+        "volume": 1439,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 3.38,
+        "spot": 200.1,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 1,439 / OI 0 aceitavel",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 3.38,
+        "stop_price": 2.2,
+        "target_1": 4.73,
+        "target_2": 6.08,
+        "capital_fit": {
+          "contract_cost": 338.0,
+          "risk_at_stop": 118.3,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "NVDA",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 200.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 4.83,
+        "last": 7.62,
+        "close": 4.83,
+        "mid": 4.83,
+        "volume": 1293,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 4.83,
+        "spot": 200.1,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 1,293 / OI 0 aceitavel",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 4.83,
+        "stop_price": 3.14,
+        "target_1": 6.76,
+        "target_2": 8.69,
+        "capital_fit": {
+          "contract_cost": 483.0,
+          "risk_at_stop": 169.05,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:45 ET",
+    "ticker_profile": {
+      "movement_profile": "FAST",
+      "premium_profile": "EXPENSIVE"
+    }
+  },
+  {
+    "ticker": "AAPL",
+    "direction": "CALL",
+    "spot": 291.9,
+    "scanned": 7,
+    "overall_verdict": "REPROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 3,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.67,
+          "signal": "P/C 0.67 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "AAPL",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 290.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 8.11,
+        "last": 8.7,
+        "close": 8.11,
+        "mid": 8.11,
+        "volume": 501,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 8.11,
+        "spot": 291.9,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 501 / OI 0 aceitavel",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 8.11,
+        "stop_price": 5.27,
+        "target_1": 11.35,
+        "target_2": 14.6,
+        "capital_fit": {
+          "contract_cost": 811.0,
+          "risk_at_stop": 283.85,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "AAPL",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 295.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 5.65,
+        "last": 6.3,
+        "close": 5.65,
+        "mid": 5.65,
+        "volume": 552,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 5.65,
+        "spot": 291.9,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 552 / OI 0 aceitavel",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 5.65,
+        "stop_price": 3.67,
+        "target_1": 7.91,
+        "target_2": 10.17,
+        "capital_fit": {
+          "contract_cost": 565.0,
+          "risk_at_stop": 197.75,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "AAPL",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 300.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 3.75,
+        "last": 4.05,
+        "close": 3.75,
+        "mid": 3.75,
+        "volume": 851,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 3.75,
+        "spot": 291.9,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 851 / OI 0 aceitavel",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 3.75,
+        "stop_price": 2.44,
+        "target_1": 5.25,
+        "target_2": 6.75,
+        "capital_fit": {
+          "contract_cost": 375.0,
+          "risk_at_stop": 131.25,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:45 ET",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "EXPENSIVE"
+    }
+  },
+  {
+    "ticker": "AAPL",
+    "direction": "PUT",
+    "spot": 291.9,
+    "scanned": 7,
+    "overall_verdict": "REPROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 3,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.67,
+          "signal": "P/C 0.67 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "AAPL",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 270.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 1.6,
+        "last": 1.33,
+        "close": 1.6,
+        "mid": 1.6,
+        "volume": 135,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 1.6,
+        "spot": 291.9,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 135 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 1.6,
+        "stop_price": 1.04,
+        "target_1": 2.24,
+        "target_2": 2.88,
+        "capital_fit": {
+          "contract_cost": 160.0,
+          "risk_at_stop": 56.0,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "AAPL",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 275.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 2.31,
+        "last": 1.95,
+        "close": 2.31,
+        "mid": 2.31,
+        "volume": 308,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 2.31,
+        "spot": 291.9,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 308 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 2.31,
+        "stop_price": 1.5,
+        "target_1": 3.23,
+        "target_2": 4.16,
+        "capital_fit": {
+          "contract_cost": 231.0,
+          "risk_at_stop": 80.85,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "AAPL",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 280.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 3.3,
+        "last": 2.87,
+        "close": 3.3,
+        "mid": 3.3,
+        "volume": 279,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 3.3,
+        "spot": 291.9,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 279 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 3.3,
+        "stop_price": 2.15,
+        "target_1": 4.62,
+        "target_2": 5.94,
+        "capital_fit": {
+          "contract_cost": 330.0,
+          "risk_at_stop": 115.5,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:45 ET",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "EXPENSIVE"
+    }
+  },
+  {
+    "ticker": "META",
+    "direction": "CALL",
+    "spot": 570.4,
+    "scanned": 13,
+    "overall_verdict": "AGUARDAR",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 2,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": -1.2,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.78,
+          "signal": "P/C 0.78 \u2014 neutro",
+          "score": 2
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "META",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 570.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 29.15,
+        "last": 21.35,
+        "close": 29.15,
+        "mid": 29.15,
+        "volume": 32,
+        "open_interest": 0,
+        "iv_pct": 35.1,
+        "delta": 0.638,
+        "gamma": 0.00738,
+        "theta": -0.4491,
+        "price_ref": 29.15,
+        "spot": 570.4,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 6,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.64 ideal",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 32 / OI 0 baixa liquidez",
+          "iv_event": "IV 35% razoavel"
+        },
+        "entry_price": 29.15,
+        "stop_price": 18.95,
+        "target_1": 40.81,
+        "target_2": 52.47,
+        "capital_fit": {
+          "contract_cost": 2915.0,
+          "risk_at_stop": 1020.25,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "META",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 555.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 39.5,
+        "last": 0,
+        "close": 39.5,
+        "mid": 39.5,
+        "volume": 0,
+        "open_interest": 0,
+        "iv_pct": 35.5,
+        "delta": 0.742,
+        "gamma": 0.00625,
+        "theta": -0.4214,
+        "price_ref": 39.5,
+        "spot": 570.4,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 1,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.74 aceitavel",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 0 / OI 0 baixa liquidez",
+          "iv_event": "IV 36% razoavel"
+        },
+        "entry_price": 39.5,
+        "stop_price": 25.68,
+        "target_1": 55.3,
+        "target_2": 71.1,
+        "capital_fit": {
+          "contract_cost": 3950.0,
+          "risk_at_stop": 1382.5,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "META",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 560.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 35.85,
+        "last": 0,
+        "close": 35.85,
+        "mid": 35.85,
+        "volume": 2,
+        "open_interest": 0,
+        "iv_pct": 35.3,
+        "delta": 0.709,
+        "gamma": 0.00667,
+        "theta": -0.4195,
+        "price_ref": 35.85,
+        "spot": 570.4,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 1,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.71 aceitavel",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 2 / OI 0 baixa liquidez",
+          "iv_event": "IV 35% razoavel"
+        },
+        "entry_price": 35.85,
+        "stop_price": 23.3,
+        "target_1": 50.19,
+        "target_2": 64.53,
+        "capital_fit": {
+          "contract_cost": 3585.0,
+          "risk_at_stop": 1254.75,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:46 ET",
+    "ticker_profile": {
+      "movement_profile": "FAST",
+      "premium_profile": "EXPENSIVE"
+    }
+  },
+  {
+    "ticker": "META",
+    "direction": "PUT",
+    "spot": 570.4,
+    "scanned": 13,
+    "overall_verdict": "REPROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 3,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.78,
+          "signal": "P/C 0.78 \u2014 neutro",
+          "score": 2
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "META",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 525.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 3.22,
+        "last": 4.75,
+        "close": 3.22,
+        "mid": 3.22,
+        "volume": 56,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 3.22,
+        "spot": 570.4,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 56 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 3.22,
+        "stop_price": 2.09,
+        "target_1": 4.51,
+        "target_2": 5.8,
+        "capital_fit": {
+          "contract_cost": 322.0,
+          "risk_at_stop": 112.7,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "META",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 530.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 3.75,
+        "last": 5.5,
+        "close": 3.75,
+        "mid": 3.75,
+        "volume": 50,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 3.75,
+        "spot": 570.4,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 50 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 3.75,
+        "stop_price": 2.44,
+        "target_1": 5.25,
+        "target_2": 6.75,
+        "capital_fit": {
+          "contract_cost": 375.0,
+          "risk_at_stop": 131.25,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "META",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 535.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 4.43,
+        "last": 6.5,
+        "close": 4.43,
+        "mid": 4.43,
+        "volume": 99,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 4.43,
+        "spot": 570.4,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 99 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 4.43,
+        "stop_price": 2.88,
+        "target_1": 6.2,
+        "target_2": 7.97,
+        "capital_fit": {
+          "contract_cost": 443.0,
+          "risk_at_stop": 155.05,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:46 ET",
+    "ticker_profile": {
+      "movement_profile": "FAST",
+      "premium_profile": "EXPENSIVE"
+    }
+  },
+  {
+    "ticker": "AMZN",
+    "direction": "CALL",
+    "spot": 237.41,
+    "scanned": 1,
+    "overall_verdict": "REPROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 3,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.73,
+          "signal": "P/C 0.73 \u2014 neutro",
+          "score": 2
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "AMZN",
+        "direction": "CALL",
+        "expiration": "20260717",
+        "dte": 37,
+        "strike": 250.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 8.0,
+        "last": 5.5,
+        "close": 8.0,
+        "mid": 8.0,
+        "volume": 1319,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 8.0,
+        "spot": 237.41,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "37d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 1,319 / OI 0 aceitavel",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 8.0,
+        "stop_price": 5.2,
+        "target_1": 11.2,
+        "target_2": 14.4,
+        "capital_fit": {
+          "contract_cost": 800.0,
+          "risk_at_stop": 280.0,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:46 ET",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "EXPENSIVE"
+    }
+  },
+  {
+    "ticker": "AMZN",
+    "direction": "PUT",
+    "spot": NaN,
+    "error": "Sem contratos validos",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "EXPENSIVE"
+    }
+  },
+  {
+    "ticker": "AMD",
+    "direction": "CALL",
+    "spot": 447.43,
+    "scanned": 10,
+    "overall_verdict": "AGUARDAR",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 2,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": -10.9,
+          "signal": "vol BARATA \u2014 favoravel para compra",
+          "score": 2
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.97,
+          "signal": "P/C 0.97 \u2014 neutro",
+          "score": 2
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "AMD",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 455.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 46.39,
+        "last": 33.2,
+        "close": 46.39,
+        "mid": 46.39,
+        "volume": 271,
+        "open_interest": 0,
+        "iv_pct": 75.2,
+        "delta": 0.63,
+        "gamma": 0.00425,
+        "theta": -0.7494,
+        "price_ref": 46.39,
+        "spot": 447.43,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 6,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.63 ideal",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 271 / OI 0 baixa liquidez",
+          "iv_event": "IV 75% razoavel"
+        },
+        "entry_price": 46.39,
+        "stop_price": 30.15,
+        "target_1": 64.95,
+        "target_2": 83.5,
+        "capital_fit": {
+          "contract_cost": 4639.0,
+          "risk_at_stop": 1623.65,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "AMD",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 460.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 43.54,
+        "last": 30.1,
+        "close": 43.54,
+        "mid": 43.54,
+        "volume": 71,
+        "open_interest": 0,
+        "iv_pct": 75.1,
+        "delta": 0.608,
+        "gamma": 0.00434,
+        "theta": -0.7805,
+        "price_ref": 43.54,
+        "spot": 447.43,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 6,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.61 ideal",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 71 / OI 0 baixa liquidez",
+          "iv_event": "IV 75% razoavel"
+        },
+        "entry_price": 43.54,
+        "stop_price": 28.3,
+        "target_1": 60.96,
+        "target_2": 78.37,
+        "capital_fit": {
+          "contract_cost": 4354.0,
+          "risk_at_stop": 1523.9,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "AMD",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 435.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 58.98,
+        "last": 42.5,
+        "close": 58.98,
+        "mid": 58.98,
+        "volume": 24,
+        "open_interest": 0,
+        "iv_pct": 76.1,
+        "delta": 0.715,
+        "gamma": 0.00376,
+        "theta": -0.6888,
+        "price_ref": 58.98,
+        "spot": 447.43,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 1,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.71 aceitavel",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 24 / OI 0 baixa liquidez",
+          "iv_event": "IV 76% razoavel"
+        },
+        "entry_price": 58.98,
+        "stop_price": 38.34,
+        "target_1": 82.57,
+        "target_2": 106.16,
+        "capital_fit": {
+          "contract_cost": 5898.0,
+          "risk_at_stop": 2064.3,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:46 ET",
+    "ticker_profile": {
+      "movement_profile": "FAST",
+      "premium_profile": "NORMAL"
+    }
+  },
+  {
+    "ticker": "AMD",
+    "direction": "PUT",
+    "spot": 447.43,
+    "scanned": 10,
+    "overall_verdict": "REPROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 3,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.97,
+          "signal": "P/C 0.97 \u2014 neutro",
+          "score": 2
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "AMD",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 415.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 12.1,
+        "last": 17.5,
+        "close": 12.1,
+        "mid": 12.1,
+        "volume": 4,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 12.1,
+        "spot": 447.43,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 4 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 12.1,
+        "stop_price": 7.87,
+        "target_1": 16.94,
+        "target_2": 21.78,
+        "capital_fit": {
+          "contract_cost": 1210.0,
+          "risk_at_stop": 423.5,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "AMD",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 420.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 13.3,
+        "last": 18.58,
+        "close": 13.3,
+        "mid": 13.3,
+        "volume": 16,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 13.3,
+        "spot": 447.43,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 16 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 13.3,
+        "stop_price": 8.65,
+        "target_1": 18.62,
+        "target_2": 23.94,
+        "capital_fit": {
+          "contract_cost": 1330.0,
+          "risk_at_stop": 465.5,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "AMD",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 425.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 14.52,
+        "last": 18.25,
+        "close": 14.52,
+        "mid": 14.52,
+        "volume": 10,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 14.52,
+        "spot": 447.43,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 10 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 14.52,
+        "stop_price": 9.44,
+        "target_1": 20.33,
+        "target_2": 26.14,
+        "capital_fit": {
+          "contract_cost": 1452.0,
+          "risk_at_stop": 508.2,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:46 ET",
+    "ticker_profile": {
+      "movement_profile": "FAST",
+      "premium_profile": "NORMAL"
+    }
+  },
+  {
+    "ticker": "UBER",
+    "direction": "CALL",
+    "spot": 68.79,
+    "scanned": 8,
+    "overall_verdict": "AGUARDAR",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 2,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 0.6,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.63,
+          "signal": "P/C 0.63 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "UBER",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 69.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 3.39,
+        "last": 2.4,
+        "close": 3.39,
+        "mid": 3.39,
+        "volume": 55,
+        "open_interest": 0,
+        "iv_pct": 37.0,
+        "delta": 0.614,
+        "gamma": 0.06125,
+        "theta": -0.0553,
+        "price_ref": 3.39,
+        "spot": 68.79,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 6,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.61 ideal",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 55 / OI 0 baixa liquidez",
+          "iv_event": "IV 37% razoavel"
+        },
+        "entry_price": 3.39,
+        "stop_price": 2.2,
+        "target_1": 4.75,
+        "target_2": 6.1,
+        "capital_fit": {
+          "contract_cost": 339.0,
+          "risk_at_stop": 118.65,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "UBER",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 70.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 2.78,
+        "last": 2.15,
+        "close": 2.78,
+        "mid": 2.78,
+        "volume": 22,
+        "open_interest": 0,
+        "iv_pct": 37.0,
+        "delta": 0.553,
+        "gamma": 0.0632,
+        "theta": -0.0576,
+        "price_ref": 2.78,
+        "spot": 68.79,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 6,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.55 ideal",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 22 / OI 0 baixa liquidez",
+          "iv_event": "IV 37% razoavel"
+        },
+        "entry_price": 2.78,
+        "stop_price": 1.81,
+        "target_1": 3.89,
+        "target_2": 5.0,
+        "capital_fit": {
+          "contract_cost": 278.0,
+          "risk_at_stop": 97.3,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "UBER",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 67.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 4.61,
+        "last": 0,
+        "close": 4.61,
+        "mid": 4.61,
+        "volume": 0,
+        "open_interest": 0,
+        "iv_pct": 36.4,
+        "delta": 0.733,
+        "gamma": 0.05217,
+        "theta": -0.0512,
+        "price_ref": 4.61,
+        "spot": 68.79,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 1,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.73 aceitavel",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 0 / OI 0 baixa liquidez",
+          "iv_event": "IV 36% razoavel"
+        },
+        "entry_price": 4.61,
+        "stop_price": 3.0,
+        "target_1": 6.45,
+        "target_2": 8.3,
+        "capital_fit": {
+          "contract_cost": 461.0,
+          "risk_at_stop": 161.35,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:47 ET",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "NORMAL"
+    }
+  },
+  {
+    "ticker": "UBER",
+    "direction": "PUT",
+    "spot": 68.79,
+    "scanned": 7,
+    "overall_verdict": "REPROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 3,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.63,
+          "signal": "P/C 0.63 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "UBER",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 64.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 0.43,
+        "last": 0.55,
+        "close": 0.43,
+        "mid": 0.43,
+        "volume": 20,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 0.43,
+        "spot": 68.79,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 20 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 0.43,
+        "stop_price": 0.28,
+        "target_1": 0.6,
+        "target_2": 0.77,
+        "capital_fit": {
+          "contract_cost": 43.0,
+          "risk_at_stop": 15.05,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "UBER",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 65.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 0.56,
+        "last": 0.88,
+        "close": 0.56,
+        "mid": 0.56,
+        "volume": 48,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 0.56,
+        "spot": 68.79,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 48 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 0.56,
+        "stop_price": 0.36,
+        "target_1": 0.78,
+        "target_2": 1.01,
+        "capital_fit": {
+          "contract_cost": 56.0,
+          "risk_at_stop": 19.6,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "UBER",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 66.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 0.69,
+        "last": 1.1,
+        "close": 0.69,
+        "mid": 0.69,
+        "volume": 38,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 0.69,
+        "spot": 68.79,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 38 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 0.69,
+        "stop_price": 0.45,
+        "target_1": 0.97,
+        "target_2": 1.24,
+        "capital_fit": {
+          "contract_cost": 69.0,
+          "risk_at_stop": 24.15,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:47 ET",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "NORMAL"
+    }
+  },
+  {
+    "ticker": "PLTR",
+    "direction": "CALL",
+    "spot": 129.37,
+    "scanned": 14,
+    "overall_verdict": "AGUARDAR",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 2,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": -0.2,
+          "signal": "vol neutra \u2014 aceitavel",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.45,
+          "signal": "P/C 0.45 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "PLTR",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 127.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 9.91,
+        "last": 0,
+        "close": 9.91,
+        "mid": 9.91,
+        "volume": 0,
+        "open_interest": 0,
+        "iv_pct": 52.3,
+        "delta": 0.648,
+        "gamma": 0.02139,
+        "theta": -0.1486,
+        "price_ref": 9.91,
+        "spot": 129.37,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 6,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.65 ideal",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 0 / OI 0 baixa liquidez",
+          "iv_event": "IV 52% razoavel"
+        },
+        "entry_price": 9.91,
+        "stop_price": 6.44,
+        "target_1": 13.87,
+        "target_2": 17.84,
+        "capital_fit": {
+          "contract_cost": 991.0,
+          "risk_at_stop": 346.85,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "PLTR",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 128.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 9.31,
+        "last": 8.65,
+        "close": 9.31,
+        "mid": 9.31,
+        "volume": 1,
+        "open_interest": 0,
+        "iv_pct": 52.2,
+        "delta": 0.626,
+        "gamma": 0.02195,
+        "theta": -0.1487,
+        "price_ref": 9.31,
+        "spot": 129.37,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 6,
+        "verdict": "AGUARDAR",
+        "score_detail": {
+          "delta": 2,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.63 ideal",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 1 / OI 0 baixa liquidez",
+          "iv_event": "IV 52% razoavel"
+        },
+        "entry_price": 9.31,
+        "stop_price": 6.05,
+        "target_1": 13.03,
+        "target_2": 16.76,
+        "capital_fit": {
+          "contract_cost": 931.0,
+          "risk_at_stop": 325.85,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "PLTR",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 126.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 10.54,
+        "last": 0,
+        "close": 10.54,
+        "mid": 10.54,
+        "volume": 39,
+        "open_interest": 0,
+        "iv_pct": 52.5,
+        "delta": 0.67,
+        "gamma": 0.02084,
+        "theta": -0.1487,
+        "price_ref": 10.54,
+        "spot": 129.37,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 1,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.67 aceitavel",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 39 / OI 0 baixa liquidez",
+          "iv_event": "IV 52% razoavel"
+        },
+        "entry_price": 10.54,
+        "stop_price": 6.85,
+        "target_1": 14.76,
+        "target_2": 18.97,
+        "capital_fit": {
+          "contract_cost": 1054.0,
+          "risk_at_stop": 368.9,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:47 ET",
+    "ticker_profile": {
+      "movement_profile": "FAST",
+      "premium_profile": "NORMAL"
+    }
+  },
+  {
+    "ticker": "PLTR",
+    "direction": "PUT",
+    "spot": 129.37,
+    "scanned": 14,
+    "overall_verdict": "REPROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 3,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.45,
+          "signal": "P/C 0.45 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "PLTR",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 120.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 2.3,
+        "last": 2.36,
+        "close": 2.3,
+        "mid": 2.3,
+        "volume": 155,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 2.3,
+        "spot": 129.37,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 155 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 2.3,
+        "stop_price": 1.49,
+        "target_1": 3.22,
+        "target_2": 4.14,
+        "capital_fit": {
+          "contract_cost": 230.0,
+          "risk_at_stop": 80.5,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "PLTR",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 121.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 2.52,
+        "last": 2.86,
+        "close": 2.52,
+        "mid": 2.52,
+        "volume": 8,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 2.52,
+        "spot": 129.37,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 8 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 2.52,
+        "stop_price": 1.64,
+        "target_1": 3.53,
+        "target_2": 4.54,
+        "capital_fit": {
+          "contract_cost": 252.0,
+          "risk_at_stop": 88.2,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "PLTR",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 122.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 2.79,
+        "last": 2.83,
+        "close": 2.79,
+        "mid": 2.79,
+        "volume": 8,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 2.79,
+        "spot": 129.37,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 8 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 2.79,
+        "stop_price": 1.81,
+        "target_1": 3.91,
+        "target_2": 5.02,
+        "capital_fit": {
+          "contract_cost": 279.0,
+          "risk_at_stop": 97.65,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:47 ET",
+    "ticker_profile": {
+      "movement_profile": "FAST",
+      "premium_profile": "NORMAL"
+    }
+  },
+  {
+    "ticker": "SOFI",
+    "direction": "CALL",
+    "spot": 15.83,
+    "scanned": 2,
+    "overall_verdict": "REPROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 3,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.34,
+          "signal": "P/C 0.34 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "SOFI",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 16.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 1.27,
+        "last": 0.96,
+        "close": 1.27,
+        "mid": 1.27,
+        "volume": 165,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 1.27,
+        "spot": 15.83,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 165 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 1.27,
+        "stop_price": 0.83,
+        "target_1": 1.78,
+        "target_2": 2.29,
+        "capital_fit": {
+          "contract_cost": 127.0,
+          "risk_at_stop": 44.45,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "SOFI",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 17.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 0.77,
+        "last": 0.57,
+        "close": 0.77,
+        "mid": 0.77,
+        "volume": 111,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 0.77,
+        "spot": 15.83,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 111 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 0.77,
+        "stop_price": 0.5,
+        "target_1": 1.08,
+        "target_2": 1.39,
+        "capital_fit": {
+          "contract_cost": 77.0,
+          "risk_at_stop": 26.95,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:47 ET",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "CHEAP"
+    }
+  },
+  {
+    "ticker": "SOFI",
+    "direction": "PUT",
+    "spot": 15.83,
+    "scanned": 2,
+    "overall_verdict": "REPROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 3,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.34,
+          "signal": "P/C 0.34 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "SOFI",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 15.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 0.39,
+        "last": 0.54,
+        "close": 0.39,
+        "mid": 0.39,
+        "volume": 278,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 0.39,
+        "spot": 15.83,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 278 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 0.39,
+        "stop_price": 0.25,
+        "target_1": 0.55,
+        "target_2": 0.7,
+        "capital_fit": {
+          "contract_cost": 39.0,
+          "risk_at_stop": 13.65,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "SOFI",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 16.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 0.73,
+        "last": 1.0,
+        "close": 0.73,
+        "mid": 0.73,
+        "volume": 166,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 0.73,
+        "spot": 15.83,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 166 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 0.73,
+        "stop_price": 0.47,
+        "target_1": 1.02,
+        "target_2": 1.31,
+        "capital_fit": {
+          "contract_cost": 73.0,
+          "risk_at_stop": 25.55,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:47 ET",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "CHEAP"
+    }
+  },
+  {
+    "ticker": "BAC",
+    "direction": "CALL",
+    "spot": 54.53,
+    "scanned": 6,
+    "overall_verdict": "REPROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 3,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.52,
+          "signal": "P/C 0.52 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "BAC",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 53.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 2.38,
+        "last": 2.66,
+        "close": 2.38,
+        "mid": 2.38,
+        "volume": 11,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 2.38,
+        "spot": 54.53,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 11 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 2.38,
+        "stop_price": 1.55,
+        "target_1": 3.33,
+        "target_2": 4.28,
+        "capital_fit": {
+          "contract_cost": 238.0,
+          "risk_at_stop": 83.3,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "BAC",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 54.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 1.75,
+        "last": 1.98,
+        "close": 1.75,
+        "mid": 1.75,
+        "volume": 270,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 1.75,
+        "spot": 54.53,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 270 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 1.75,
+        "stop_price": 1.14,
+        "target_1": 2.45,
+        "target_2": 3.15,
+        "capital_fit": {
+          "contract_cost": 175.0,
+          "risk_at_stop": 61.25,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "BAC",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 55.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 1.22,
+        "last": 1.4,
+        "close": 1.22,
+        "mid": 1.22,
+        "volume": 116,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 1.22,
+        "spot": 54.53,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 116 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 1.22,
+        "stop_price": 0.79,
+        "target_1": 1.71,
+        "target_2": 2.2,
+        "capital_fit": {
+          "contract_cost": 122.0,
+          "risk_at_stop": 42.7,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:48 ET",
+    "ticker_profile": {
+      "movement_profile": "SLOW",
+      "premium_profile": "CHEAP"
+    }
+  },
+  {
+    "ticker": "BAC",
+    "direction": "PUT",
+    "spot": 54.53,
+    "scanned": 6,
+    "overall_verdict": "REPROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 3,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.52,
+          "signal": "P/C 0.52 \u2014 bullish (calls dominam)",
+          "score": 1
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "BAC",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 51.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 0.4,
+        "last": 0,
+        "close": 0.4,
+        "mid": 0.4,
+        "volume": 4,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 0.4,
+        "spot": 54.53,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 4 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 0.4,
+        "stop_price": 0.26,
+        "target_1": 0.56,
+        "target_2": 0.72,
+        "capital_fit": {
+          "contract_cost": 40.0,
+          "risk_at_stop": 14.0,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "BAC",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 52.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 0.6,
+        "last": 0.49,
+        "close": 0.6,
+        "mid": 0.6,
+        "volume": 62,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 0.6,
+        "spot": 54.53,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 62 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 0.6,
+        "stop_price": 0.39,
+        "target_1": 0.84,
+        "target_2": 1.08,
+        "capital_fit": {
+          "contract_cost": 60.0,
+          "risk_at_stop": 21.0,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "BAC",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 53.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 0.87,
+        "last": 0.75,
+        "close": 0.87,
+        "mid": 0.87,
+        "volume": 65,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 0.87,
+        "spot": 54.53,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 65 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 0.87,
+        "stop_price": 0.57,
+        "target_1": 1.22,
+        "target_2": 1.57,
+        "capital_fit": {
+          "contract_cost": 87.0,
+          "risk_at_stop": 30.45,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:48 ET",
+    "ticker_profile": {
+      "movement_profile": "SLOW",
+      "premium_profile": "CHEAP"
+    }
+  },
+  {
+    "ticker": "XLF",
+    "direction": "CALL",
+    "spot": 52.23,
+    "scanned": 6,
+    "overall_verdict": "REPROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 3,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.9,
+          "signal": "P/C 0.9 \u2014 neutro",
+          "score": 2
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "XLF",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 51.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 1.87,
+        "last": 0,
+        "close": 1.87,
+        "mid": 1.87,
+        "volume": 0,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 1.87,
+        "spot": 52.23,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 0 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 1.87,
+        "stop_price": 1.22,
+        "target_1": 2.62,
+        "target_2": 3.37,
+        "capital_fit": {
+          "contract_cost": 187.0,
+          "risk_at_stop": 65.45,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "XLF",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 52.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 1.14,
+        "last": 0,
+        "close": 1.14,
+        "mid": 1.14,
+        "volume": 0,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 1.14,
+        "spot": 52.23,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 0 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 1.14,
+        "stop_price": 0.74,
+        "target_1": 1.6,
+        "target_2": 2.05,
+        "capital_fit": {
+          "contract_cost": 114.0,
+          "risk_at_stop": 39.9,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "XLF",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 53.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 0.64,
+        "last": 0.73,
+        "close": 0.64,
+        "mid": 0.64,
+        "volume": 138,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 0.64,
+        "spot": 52.23,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 138 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 0.64,
+        "stop_price": 0.42,
+        "target_1": 0.9,
+        "target_2": 1.15,
+        "capital_fit": {
+          "contract_cost": 64.0,
+          "risk_at_stop": 22.4,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:48 ET",
+    "ticker_profile": {
+      "movement_profile": "SLOW",
+      "premium_profile": "CHEAP"
+    }
+  },
+  {
+    "ticker": "XLF",
+    "direction": "PUT",
+    "spot": 52.23,
+    "scanned": 5,
+    "overall_verdict": "REPROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 3,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 0.9,
+          "signal": "P/C 0.9 \u2014 neutro",
+          "score": 2
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "XLF",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 51.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 0.43,
+        "last": 0.42,
+        "close": 0.43,
+        "mid": 0.43,
+        "volume": 561,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 0.43,
+        "spot": 52.23,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 561 / OI 0 aceitavel",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 0.43,
+        "stop_price": 0.28,
+        "target_1": 0.6,
+        "target_2": 0.77,
+        "capital_fit": {
+          "contract_cost": 43.0,
+          "risk_at_stop": 15.05,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "XLF",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 49.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 0.15,
+        "last": 0,
+        "close": 0.15,
+        "mid": 0.15,
+        "volume": 1,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 0.15,
+        "spot": 52.23,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 1 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 0.15,
+        "stop_price": 0.1,
+        "target_1": 0.21,
+        "target_2": 0.27,
+        "capital_fit": {
+          "contract_cost": 15.0,
+          "risk_at_stop": 5.25,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "XLF",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 50.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 0.25,
+        "last": 0.33,
+        "close": 0.25,
+        "mid": 0.25,
+        "volume": 1,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 0.25,
+        "spot": 52.23,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 4,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 0,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 1 / OI 0 baixa liquidez",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 0.25,
+        "stop_price": 0.16,
+        "target_1": 0.35,
+        "target_2": 0.45,
+        "capital_fit": {
+          "contract_cost": 25.0,
+          "risk_at_stop": 8.75,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:48 ET",
+    "ticker_profile": {
+      "movement_profile": "SLOW",
+      "premium_profile": "CHEAP"
+    }
+  },
+  {
+    "ticker": "QQQ",
+    "direction": "CALL",
+    "spot": 691.8,
+    "scanned": 76,
+    "overall_verdict": "REPROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 2,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": 12.2,
+          "signal": "vol CARA \u2014 desfavoravel para compra",
+          "score": 0
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 1.12,
+          "signal": "P/C 1.12 \u2014 neutro",
+          "score": 2
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "QQQ",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 699.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 25.56,
+        "last": 19.56,
+        "close": 25.56,
+        "mid": 25.56,
+        "volume": 2280,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 25.56,
+        "spot": 691.8,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 2,280 / OI 0 aceitavel",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 25.56,
+        "stop_price": 16.61,
+        "target_1": 35.78,
+        "target_2": 46.01,
+        "capital_fit": {
+          "contract_cost": 2556.0,
+          "risk_at_stop": 894.6,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "QQQ",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 705.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 21.87,
+        "last": 16.01,
+        "close": 21.87,
+        "mid": 21.87,
+        "volume": 559,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 21.87,
+        "spot": 691.8,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 559 / OI 0 aceitavel",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 21.87,
+        "stop_price": 14.22,
+        "target_1": 30.62,
+        "target_2": 39.37,
+        "capital_fit": {
+          "contract_cost": 2187.0,
+          "risk_at_stop": 765.45,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "QQQ",
+        "direction": "CALL",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 710.0,
+        "right": "C",
+        "bid": 0,
+        "ask": 18.91,
+        "last": 13.67,
+        "close": 18.91,
+        "mid": 18.91,
+        "volume": 803,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 18.91,
+        "spot": 691.8,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 803 / OI 0 aceitavel",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 18.91,
+        "stop_price": 12.29,
+        "target_1": 26.47,
+        "target_2": 34.04,
+        "capital_fit": {
+          "contract_cost": 1891.0,
+          "risk_at_stop": 661.85,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:48 ET",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "NORMAL"
+    }
+  },
+  {
+    "ticker": "QQQ",
+    "direction": "PUT",
+    "spot": 691.8,
+    "scanned": 49,
+    "overall_verdict": "REPROVO",
+    "edge": {
+      "verdict": "EDGE INCOMPLETO",
+      "note": "dados incompletos \u2014 rodar apos 9:45 ET com mercado aberto",
+      "aprovados": 0,
+      "incompletos": 3,
+      "fatores": {
+        "gex": {
+          "net_gex": 0.0,
+          "net_gex_M": "$0K",
+          "regime": "NEGATIVE GAMMA \u2014 tendencia, dealers amplificam o movimento",
+          "score": 1
+        },
+        "vrp": {
+          "vrp": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "skew": {
+          "skew_pct": null,
+          "signal": "sem dados",
+          "score": 1
+        },
+        "pc_ratio": {
+          "pc_ratio": 1.12,
+          "signal": "P/C 1.12 \u2014 neutro",
+          "score": 2
+        }
+      }
+    },
+    "top_contracts": [
+      {
+        "ticker": "QQQ",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 655.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 5.42,
+        "last": 8.82,
+        "close": 5.42,
+        "mid": 5.42,
+        "volume": 607,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 5.42,
+        "spot": 691.8,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 607 / OI 0 aceitavel",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 5.42,
+        "stop_price": 3.52,
+        "target_1": 7.59,
+        "target_2": 9.76,
+        "capital_fit": {
+          "contract_cost": 542.0,
+          "risk_at_stop": 189.7,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "QQQ",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 680.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 9.87,
+        "last": 15.83,
+        "close": 9.87,
+        "mid": 9.87,
+        "volume": 526,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 9.87,
+        "spot": 691.8,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 526 / OI 0 aceitavel",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 9.87,
+        "stop_price": 6.42,
+        "target_1": 13.82,
+        "target_2": 17.77,
+        "capital_fit": {
+          "contract_cost": 987.0,
+          "risk_at_stop": 345.45,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      },
+      {
+        "ticker": "QQQ",
+        "direction": "PUT",
+        "expiration": "20260702",
+        "dte": 22,
+        "strike": 690.0,
+        "right": "P",
+        "bid": 0,
+        "ask": 12.48,
+        "last": 19.57,
+        "close": 12.48,
+        "mid": 12.48,
+        "volume": 702,
+        "open_interest": 0,
+        "iv_pct": 0,
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "price_ref": 12.48,
+        "spot": 691.8,
+        "earnings_days": -1,
+        "gex": 0.0,
+        "spread_pct": 100.0,
+        "score": 5,
+        "verdict": "REPROVO",
+        "score_detail": {
+          "delta": 0,
+          "dte": 2,
+          "spread": 0,
+          "liquidity": 1,
+          "iv_event": 2
+        },
+        "score_notes": {
+          "delta": "Delta 0.00 fora do range",
+          "dte": "22d ideal (14-35d)",
+          "spread": "Spread 100.0% largo",
+          "liquidity": "Vol 702 / OI 0 aceitavel",
+          "iv_event": "IV 0% razoavel"
+        },
+        "entry_price": 12.48,
+        "stop_price": 8.11,
+        "target_1": 17.47,
+        "target_2": 22.46,
+        "capital_fit": {
+          "contract_cost": 1248.0,
+          "risk_at_stop": 436.8,
+          "cost_bucket": "DADOS_INSUFICIENTES",
+          "capital_status": "DADOS_INSUFICIENTES",
+          "reason": "feed IBKR incompleto: faltando bid",
+          "preferred_structure": "WAIT",
+          "rosi_note": "Dados incompletos do feed IBKR. Aus\u00eancia de dado n\u00e3o significa contrato ruim \u2014 revalidar antes de decidir."
+        }
+      }
+    ],
+    "timestamp": "2026-06-10 17:49 ET",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "NORMAL"
+    }
+  },
+  {
+    "ticker": "SPY",
+    "direction": "CALL",
+    "spot": 724.35,
+    "error": "Sem contratos validos",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "NORMAL"
+    }
+  },
+  {
+    "ticker": "SPY",
+    "direction": "PUT",
+    "spot": 724.35,
+    "error": "Sem contratos validos",
+    "ticker_profile": {
+      "movement_profile": "BALANCED",
+      "premium_profile": "NORMAL"
+    }
+  }
+]

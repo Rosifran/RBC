@@ -1,0 +1,1485 @@
+[
+  {
+    "ticker": "QQQ",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 4 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "AAPL",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 4 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "NVDA",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 4 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "GOOGL",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "TSLA",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "AMD",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "CRM",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "SNOW",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "CRWD",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "NET",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "DDOG",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "PANW",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "PLTR",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "UBER",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "HOOD",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "SHOP",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "PYPL",
+    "spot": 44.46,
+    "scan_date": "2026-07-08",
+    "scan_time": "15:32 ET",
+    "scan_type": "PRE_MARKET",
+    "alerts": [
+      {
+        "direction": "CALL",
+        "strike": 45.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 667,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.495,
+        "iv_pct": 52.2,
+        "bid": 2.0,
+        "ask": 2.14,
+        "spread_pct": 6.8,
+        "activity_label": "volume 667 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": "estrutura_detectada",
+        "needs_confirmation": true
+      },
+      {
+        "direction": "CALL",
+        "strike": 46.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 2128,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.428,
+        "iv_pct": 52.1,
+        "bid": 1.62,
+        "ask": 1.73,
+        "spread_pct": 6.6,
+        "activity_label": "volume 2,128 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": "estrutura_detectada",
+        "needs_confirmation": true
+      },
+      {
+        "direction": "CALL",
+        "strike": 47.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 640,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.364,
+        "iv_pct": 51.9,
+        "bid": 1.25,
+        "ask": 1.39,
+        "spread_pct": 10.6,
+        "activity_label": "volume 640 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": "estrutura_detectada",
+        "needs_confirmation": true
+      },
+      {
+        "direction": "PUT",
+        "strike": 42.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 743,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.304,
+        "iv_pct": 52.0,
+        "bid": 1.11,
+        "ask": 1.25,
+        "spread_pct": 11.9,
+        "activity_label": "volume 743 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": "estrutura_detectada",
+        "needs_confirmation": true
+      }
+    ],
+    "flow_summary": {
+      "dominant_direction": "MISTO",
+      "confidence": "BAIXA",
+      "note": "Atividade incomum em ambas dire\u00e7\u00f5es \u2014 poss\u00edvel estrutura ou hedge. N\u00e3o direcional. N\u00e3o seguir sem confirma\u00e7\u00e3o t\u00e9cnica clara.",
+      "clean_alerts": 0,
+      "total_alerts": 4,
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "JPM",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "BAC",
+    "spot": 58.41,
+    "scan_date": "2026-07-08",
+    "scan_time": "15:32 ET",
+    "scan_type": "PRE_MARKET",
+    "alerts": [
+      {
+        "direction": "CALL",
+        "strike": 59.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 1002,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.467,
+        "iv_pct": 26.5,
+        "bid": 1.34,
+        "ask": 1.41,
+        "spread_pct": 5.1,
+        "activity_label": "volume 1,002 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": "estrutura_detectada",
+        "needs_confirmation": true
+      },
+      {
+        "direction": "PUT",
+        "strike": 58.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 815,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.434,
+        "iv_pct": 26.8,
+        "bid": 1.23,
+        "ask": 1.33,
+        "spread_pct": 7.8,
+        "activity_label": "volume 815 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": "estrutura_detectada",
+        "needs_confirmation": true
+      }
+    ],
+    "flow_summary": {
+      "dominant_direction": "MISTO",
+      "confidence": "BAIXA",
+      "note": "Atividade incomum em ambas dire\u00e7\u00f5es \u2014 poss\u00edvel estrutura ou hedge. N\u00e3o direcional. N\u00e3o seguir sem confirma\u00e7\u00e3o t\u00e9cnica clara.",
+      "clean_alerts": 0,
+      "total_alerts": 2,
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "C",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "COIN",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "SOFI",
+    "spot": 17.6,
+    "scan_date": "2026-07-08",
+    "scan_time": "15:33 ET",
+    "scan_type": "PRE_MARKET",
+    "alerts": [
+      {
+        "direction": "CALL",
+        "strike": 18.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 546,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.492,
+        "iv_pct": 71.8,
+        "bid": 1.1,
+        "ask": 1.14,
+        "spread_pct": 3.6,
+        "activity_label": "volume 546 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": "estrutura_detectada",
+        "needs_confirmation": true
+      },
+      {
+        "direction": "CALL",
+        "strike": 19.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 774,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.374,
+        "iv_pct": 71.6,
+        "bid": 0.74,
+        "ask": 0.76,
+        "spread_pct": 2.7,
+        "activity_label": "volume 774 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": "estrutura_detectada",
+        "needs_confirmation": true
+      },
+      {
+        "direction": "PUT",
+        "strike": 17.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 657,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.384,
+        "iv_pct": 72.5,
+        "bid": 0.95,
+        "ask": 0.99,
+        "spread_pct": 4.1,
+        "activity_label": "volume 657 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": "estrutura_detectada",
+        "needs_confirmation": true
+      }
+    ],
+    "flow_summary": {
+      "dominant_direction": "MISTO",
+      "confidence": "BAIXA",
+      "note": "Atividade incomum em ambas dire\u00e7\u00f5es \u2014 poss\u00edvel estrutura ou hedge. N\u00e3o direcional. N\u00e3o seguir sem confirma\u00e7\u00e3o t\u00e9cnica clara.",
+      "clean_alerts": 0,
+      "total_alerts": 3,
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "AFRM",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "WFC",
+    "spot": 85.58,
+    "scan_date": "2026-07-08",
+    "scan_time": "15:33 ET",
+    "scan_type": "PRE_MARKET",
+    "alerts": [
+      {
+        "direction": "CALL",
+        "strike": 92.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 1194,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.204,
+        "iv_pct": 32.1,
+        "bid": 0.74,
+        "ask": 0.81,
+        "spread_pct": 9.0,
+        "activity_label": "volume 1,194 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": null,
+        "needs_confirmation": true
+      }
+    ],
+    "flow_summary": {
+      "dominant_direction": "CALL",
+      "confidence": "MEDIA",
+      "note": "Atividade incomum em CALL com confian\u00e7a MEDIA. Precisa confirma\u00e7\u00e3o t\u00e9cnica.",
+      "clean_alerts": 1,
+      "total_alerts": 1,
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    },
+    "camada2": {
+      "verdict": "APROVO_ONDINHA",
+      "score": 8,
+      "direction": "CALL",
+      "close": 85.57,
+      "sma20": 84.15,
+      "sma50": 80.36,
+      "rsi14": 58.3,
+      "trend_pts": 3,
+      "mom_pts": 3,
+      "est_pts": 2,
+      "est_note": "3.5% ate resistencia 88.57",
+      "vol_pts": 0,
+      "note": "Tendencia 3/3 \u00b7 Momentum 3/3 (RSI 58.3) \u00b7 Estrutura 2/3 (3.5% ate resistencia 88.57) \u00b7 Volume 0/1"
+    }
+  },
+  {
+    "ticker": "OXY",
+    "spot": 53.42,
+    "scan_date": "2026-07-08",
+    "scan_time": "15:33 ET",
+    "scan_type": "PRE_MARKET",
+    "alerts": [
+      {
+        "direction": "CALL",
+        "strike": 55.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 6390,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.404,
+        "iv_pct": 37.7,
+        "bid": 1.32,
+        "ask": 1.4,
+        "spread_pct": 5.9,
+        "activity_label": "volume 6,390 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": null,
+        "needs_confirmation": true
+      }
+    ],
+    "flow_summary": {
+      "dominant_direction": "CALL",
+      "confidence": "MEDIA",
+      "note": "Atividade incomum em CALL com confian\u00e7a MEDIA. Precisa confirma\u00e7\u00e3o t\u00e9cnica.",
+      "clean_alerts": 1,
+      "total_alerts": 1,
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    },
+    "camada2": {
+      "verdict": "APROVO_ONDINHA",
+      "score": 8,
+      "direction": "CALL",
+      "close": 53.43,
+      "sma20": 52.18,
+      "sma50": 55.62,
+      "rsi14": 52.1,
+      "trend_pts": 1,
+      "mom_pts": 3,
+      "est_pts": 3,
+      "est_note": "9.4% ate resistencia 58.46",
+      "vol_pts": 1,
+      "note": "Tendencia 1/3 \u00b7 Momentum 3/3 (RSI 52.1) \u00b7 Estrutura 3/3 (9.4% ate resistencia 58.46) \u00b7 Volume 1/1"
+    }
+  },
+  {
+    "ticker": "DVN",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "HAL",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "XOM",
+    "spot": 141.06,
+    "scan_date": "2026-07-08",
+    "scan_time": "15:34 ET",
+    "scan_type": "PRE_MARKET",
+    "alerts": [
+      {
+        "direction": "CALL",
+        "strike": 145.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 1328,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.38,
+        "iv_pct": 29.8,
+        "bid": 2.65,
+        "ask": 2.9,
+        "spread_pct": 9.0,
+        "activity_label": "volume 1,328 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": null,
+        "needs_confirmation": true
+      }
+    ],
+    "flow_summary": {
+      "dominant_direction": "CALL",
+      "confidence": "MEDIA",
+      "note": "Atividade incomum em CALL com confian\u00e7a MEDIA. Precisa confirma\u00e7\u00e3o t\u00e9cnica.",
+      "clean_alerts": 1,
+      "total_alerts": 1,
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    },
+    "camada2": {
+      "verdict": "AGUARDAR",
+      "score": 6,
+      "direction": "CALL",
+      "close": 141.05,
+      "sma20": 140.45,
+      "sma50": 147.3,
+      "rsi14": 47.5,
+      "trend_pts": 1,
+      "mom_pts": 2,
+      "est_pts": 3,
+      "est_note": "9.0% ate resistencia 153.81",
+      "vol_pts": 0,
+      "note": "Tendencia 1/3 \u00b7 Momentum 2/3 (RSI 47.5) \u00b7 Estrutura 3/3 (9.0% ate resistencia 153.81) \u00b7 Volume 0/1"
+    }
+  },
+  {
+    "ticker": "SLB",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "CCJ",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "MRNA",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "BNTX",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "VRTX",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "ABBV",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "BMY",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "XLF",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "XLE",
+    "spot": 55.44,
+    "scan_date": "2026-07-08",
+    "scan_time": "15:36 ET",
+    "scan_type": "PRE_MARKET",
+    "alerts": [
+      {
+        "direction": "CALL",
+        "strike": 56.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 1564,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.465,
+        "iv_pct": 25.4,
+        "bid": 1.13,
+        "ask": 1.26,
+        "spread_pct": 10.9,
+        "activity_label": "volume 1,564 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": null,
+        "needs_confirmation": true
+      },
+      {
+        "direction": "CALL",
+        "strike": 58.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 900,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.27,
+        "iv_pct": 26.4,
+        "bid": 0.55,
+        "ask": 0.6,
+        "spread_pct": 8.7,
+        "activity_label": "volume 900 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": null,
+        "needs_confirmation": true
+      }
+    ],
+    "flow_summary": {
+      "dominant_direction": "CALL",
+      "confidence": "MEDIA",
+      "note": "Atividade incomum em CALL com confian\u00e7a MEDIA. Precisa confirma\u00e7\u00e3o t\u00e9cnica.",
+      "clean_alerts": 2,
+      "total_alerts": 2,
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    },
+    "camada2": {
+      "verdict": "AGUARDAR",
+      "score": 7,
+      "direction": "CALL",
+      "close": 55.45,
+      "sma20": 54.78,
+      "sma50": 56.84,
+      "rsi14": 51.4,
+      "trend_pts": 1,
+      "mom_pts": 3,
+      "est_pts": 3,
+      "est_note": "6.5% ate resistencia 59.04",
+      "vol_pts": 0,
+      "note": "Tendencia 1/3 \u00b7 Momentum 3/3 (RSI 51.4) \u00b7 Estrutura 3/3 (6.5% ate resistencia 59.04) \u00b7 Volume 0/1"
+    }
+  },
+  {
+    "ticker": "XBI",
+    "spot": 161.66,
+    "scan_date": "2026-07-08",
+    "scan_time": "15:36 ET",
+    "scan_type": "PRE_MARKET",
+    "alerts": [
+      {
+        "direction": "PUT",
+        "strike": 153.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 1000,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.231,
+        "iv_pct": 32.8,
+        "bid": 1.77,
+        "ask": 2.16,
+        "spread_pct": 19.8,
+        "activity_label": "volume 1,000 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": null,
+        "needs_confirmation": true
+      }
+    ],
+    "flow_summary": {
+      "dominant_direction": "PUT",
+      "confidence": "MEDIA",
+      "note": "Atividade incomum em PUT com confian\u00e7a MEDIA. Precisa confirma\u00e7\u00e3o t\u00e9cnica.",
+      "clean_alerts": 1,
+      "total_alerts": 1,
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    },
+    "camada2": {
+      "verdict": "REPROVO_TECNICA",
+      "score": 3,
+      "direction": "PUT",
+      "close": 161.65,
+      "sma20": 147.4,
+      "sma50": 138.4,
+      "rsi14": 73.6,
+      "trend_pts": 0,
+      "mom_pts": 0,
+      "est_pts": 3,
+      "est_note": "21.1% ate suporte 127.56",
+      "vol_pts": 0,
+      "note": "Tendencia 0/3 \u00b7 Momentum 0/3 (RSI 73.6) \u00b7 Estrutura 3/3 (21.1% ate suporte 127.56) \u00b7 Volume 0/1"
+    }
+  },
+  {
+    "ticker": "XOP",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "ARKK",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "SMH",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "GLD",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "TLT",
+    "spot": 84.38,
+    "scan_date": "2026-07-08",
+    "scan_time": "15:37 ET",
+    "scan_type": "PRE_MARKET",
+    "alerts": [
+      {
+        "direction": "CALL",
+        "strike": 85.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 1786,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.422,
+        "iv_pct": 9.0,
+        "bid": 0.58,
+        "ask": 0.59,
+        "spread_pct": 1.7,
+        "activity_label": "volume 1,786 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": "estrutura_detectada",
+        "needs_confirmation": true
+      },
+      {
+        "direction": "CALL",
+        "strike": 86.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 2966,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.233,
+        "iv_pct": 8.9,
+        "bid": 0.25,
+        "ask": 0.26,
+        "spread_pct": 3.9,
+        "activity_label": "volume 2,966 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": "estrutura_detectada",
+        "needs_confirmation": true
+      },
+      {
+        "direction": "PUT",
+        "strike": 83.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 701,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.219,
+        "iv_pct": 9.7,
+        "bid": 0.25,
+        "ask": 0.26,
+        "spread_pct": 3.9,
+        "activity_label": "volume 701 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": "estrutura_detectada",
+        "needs_confirmation": true
+      },
+      {
+        "direction": "PUT",
+        "strike": 84.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 7950,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.389,
+        "iv_pct": 9.4,
+        "bid": 0.52,
+        "ask": 0.54,
+        "spread_pct": 3.8,
+        "activity_label": "volume 7,950 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": "estrutura_detectada",
+        "needs_confirmation": true
+      }
+    ],
+    "flow_summary": {
+      "dominant_direction": "MISTO",
+      "confidence": "BAIXA",
+      "note": "Atividade incomum em ambas dire\u00e7\u00f5es \u2014 poss\u00edvel estrutura ou hedge. N\u00e3o direcional. N\u00e3o seguir sem confirma\u00e7\u00e3o t\u00e9cnica clara.",
+      "clean_alerts": 0,
+      "total_alerts": 4,
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "F",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "T",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "SNAP",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "RIVN",
+    "spot": 16.73,
+    "scan_date": "2026-07-08",
+    "scan_time": "15:38 ET",
+    "scan_type": "PRE_MARKET",
+    "alerts": [
+      {
+        "direction": "CALL",
+        "strike": 17.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 868,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.513,
+        "iv_pct": 79.3,
+        "bid": 1.19,
+        "ask": 1.26,
+        "spread_pct": 5.7,
+        "activity_label": "volume 868 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": "estrutura_detectada",
+        "needs_confirmation": true
+      },
+      {
+        "direction": "CALL",
+        "strike": 18.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 537,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.401,
+        "iv_pct": 79.7,
+        "bid": 0.81,
+        "ask": 0.86,
+        "spread_pct": 6.0,
+        "activity_label": "volume 537 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": "estrutura_detectada",
+        "needs_confirmation": true
+      },
+      {
+        "direction": "PUT",
+        "strike": 16.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 596,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.368,
+        "iv_pct": 79.3,
+        "bid": 0.93,
+        "ask": 0.96,
+        "spread_pct": 3.2,
+        "activity_label": "volume 596 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": "estrutura_detectada",
+        "needs_confirmation": true
+      }
+    ],
+    "flow_summary": {
+      "dominant_direction": "MISTO",
+      "confidence": "BAIXA",
+      "note": "Atividade incomum em ambas dire\u00e7\u00f5es \u2014 poss\u00edvel estrutura ou hedge. N\u00e3o direcional. N\u00e3o seguir sem confirma\u00e7\u00e3o t\u00e9cnica clara.",
+      "clean_alerts": 0,
+      "total_alerts": 3,
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "WBD",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "INTC",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 2 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "NIO",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "LCID",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "AAL",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "UAL",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "CCL",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "NCLH",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "DKNG",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "PLUG",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "CHPT",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "MARA",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "RIOT",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "CLF",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "FCX",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "VALE",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "GOLD",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "KGC",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "NU",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "GRAB",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "PINS",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "RBLX",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "LYFT",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "PATH",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "AI",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "IONQ",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "RKLB",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "JOBY",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "ACHR",
+    "scan_date": "2026-07-08",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "BABA",
+    "spot": 109.37,
+    "scan_date": "2026-07-08",
+    "scan_time": "15:43 ET",
+    "scan_type": "PRE_MARKET",
+    "alerts": [
+      {
+        "direction": "CALL",
+        "strike": 118.0,
+        "expiration": "20260731",
+        "dte": 23,
+        "volume": 2511,
+        "open_interest": 0,
+        "volume_oi_ratio": null,
+        "delta": 0.294,
+        "iv_pct": 48.6,
+        "bid": 2.28,
+        "ask": 2.4,
+        "spread_pct": 5.1,
+        "activity_label": "volume 2,511 \u2014 OI indisponivel",
+        "theta_flag": false,
+        "caution_flag": null,
+        "needs_confirmation": true
+      }
+    ],
+    "flow_summary": {
+      "dominant_direction": "CALL",
+      "confidence": "MEDIA",
+      "note": "Atividade incomum em CALL com confian\u00e7a MEDIA. Precisa confirma\u00e7\u00e3o t\u00e9cnica.",
+      "clean_alerts": 1,
+      "total_alerts": 1,
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    },
+    "camada2": {
+      "verdict": "APROVO_ONDINHA",
+      "score": 8,
+      "direction": "CALL",
+      "close": 109.39,
+      "sma20": 104.35,
+      "sma50": 120.93,
+      "rsi14": 51.4,
+      "trend_pts": 1,
+      "mom_pts": 3,
+      "est_pts": 3,
+      "est_note": "11.9% ate resistencia 122.42",
+      "vol_pts": 1,
+      "note": "Tendencia 1/3 \u00b7 Momentum 3/3 (RSI 51.4) \u00b7 Estrutura 3/3 (11.9% ate resistencia 122.42) \u00b7 Volume 1/1"
+    }
+  }
+]

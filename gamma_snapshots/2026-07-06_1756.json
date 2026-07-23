@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-07-06T17:56:44.788991",
+  "spot": 751.78,
+  "expiry": "20260707",
+  "oi": {
+    "call_wall": 738.0,
+    "put_wall": 737.0,
+    "zero_gamma": null
+  },
+  "vol": {
+    "call_wall": 738.0,
+    "put_wall": 737.0,
+    "zero_gamma": null
+  },
+  "regime": "NEGATIVE GAMMA"
+}

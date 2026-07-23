@@ -1,0 +1,554 @@
+[
+  {
+    "ticker": "QQQ",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "AAPL",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "NVDA",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "TSLA",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "AMD",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "CRM",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "SNOW",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "CRWD",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "NET",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "DDOG",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "PANW",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "UBER",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "HOOD",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "SHOP",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "PYPL",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "JPM",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "BAC",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "C",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "COIN",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "SOFI",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "AFRM",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "WFC",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "OXY",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "DVN",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "HAL",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "XOM",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "SLB",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "CCJ",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "MRNA",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "VRTX",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "ABBV",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "BMY",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "XLF",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "XLE",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "XBI",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "XOP",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "ARKK",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "SMH",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "GLD",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "TLT",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "F",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "T",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "SNAP",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "RIVN",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "WBD",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  },
+  {
+    "ticker": "INTC",
+    "scan_date": "2026-07-06",
+    "scan_type": "PRE_MARKET",
+    "alerts": [],
+    "flow_summary": {
+      "dominant_direction": null,
+      "confidence": null,
+      "note": "Nenhuma atividade incomum detectada nos filtros aplicados.",
+      "historical_context": "Hist\u00f3rico pr\u00f3prio: 1 dias acumulados (m\u00ednimo 10 para baseline relativo)"
+    }
+  }
+]

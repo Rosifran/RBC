@@ -1,0 +1,1 @@
+trade_id,signal_id,modulo,ticker,tipo,strike,vencimento,data_entrada,hora_et_entrada,qty,fill_entrada,bid_entrada,ask_entrada,data_saida,hora_et_saida,fill_saida,bid_saida,ask_saida,resultado_usd,resultado_pct,motivo_saida,nota

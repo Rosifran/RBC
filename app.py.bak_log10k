@@ -2222,7 +2222,7 @@ def modo3():
         iv           = round(vix / 100, 4)
         rf           = float(data.get("rf", 0.0527))
         hours_to_exp = float(data.get("hours_to_exp", 4.0))
-        capital      = float(data.get("capital", 10000))
+        capital      = float(data.get("capital", 50000))
         premium_paid = float(data["premium_paid"]) if data.get("premium_paid") else None
         contracts    = int(data.get("contracts", 1))
     except (ValueError, TypeError) as e:
@@ -2243,30 +2243,6 @@ def modo3():
 
     if "error" in result:
         return jsonify(result), 422
-
-    # ── RBC LOG: grava sinal do Modo 3 ────────────────────────────
-    try:
-        from rbc_log import log_signal
-        _g    = result.get("gate") or {}
-        _cand = (result.get("candidates") or [{}])[0]
-        _sz   = result.get("sizing") or {}
-        log_signal(
-            modulo       = "0DTE",
-            ticker       = "SPY",
-            gate_status  = "ABERTO" if _g.get("gate_open") else "FECHADO",
-            estrategia   = f"COMPRA {str(_cand.get('type','')).upper()}".strip(),
-            strike       = _cand.get("strike", ""),
-            vencimento   = "",
-            bid          = "",
-            ask          = "",
-            iv_rank      = "",
-            delta        = _cand.get("delta", ""),
-            contratos_sugeridos = contracts,
-            custo_estimado      = _sz.get("recommended", ""),
-            motivo_gate  = f"web teorico={_cand.get('price','')} best_side={result.get('best_side','')}",
-        )
-    except Exception as _le:
-        print(f"[log] aviso modo3: {_le}", flush=True)
 
     return jsonify(result)
 
@@ -2389,6 +2365,7 @@ def tradingview_webhook():
         row = save_snapshot(update)
         return jsonify({"ok": True, "event": event, "date": str(row["date"]), "update": {k:v for k,v in update.items() if k != "date"}})
     except Exception as e:
+        import traceback; traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
 
@@ -2442,10 +2419,6 @@ def post_gamma_levels():
                 _GAMMA_CACHE["ts"] = datetime.now(ZoneInfo("America/New_York")).strftime("%H:%M")
             except Exception:
                 _GAMMA_CACHE["ts"] = datetime.now().strftime("%H:%M")
-            _GAMMA_CACHE["flow_call_wall"]   = data.get("flow_call_wall")
-            _GAMMA_CACHE["flow_put_wall"]    = data.get("flow_put_wall")
-            _GAMMA_CACHE["flow_zero_gamma"]  = data.get("flow_zero_gamma")
-            _GAMMA_CACHE["flow_vol_trigger"] = data.get("flow_vol_trigger")
             _GAMMA_CACHE["zg_status"] = data.get("zero_gamma_status")
             _GAMMA_CACHE["vt_status"] = data.get("vol_trigger_status")
             # Persiste no PG: sobrevive a deploys (cache em memoria zera)
@@ -2453,8 +2426,7 @@ def post_gamma_levels():
                 from journal import get_conn
                 import json as _json
                 _payload = _json.dumps({k: _GAMMA_CACHE.get(k) for k in
-                    ("profile", "spot", "date", "ts", "zg_status", "vt_status",
-                     "flow_call_wall", "flow_put_wall", "flow_zero_gamma", "flow_vol_trigger")},
+                    ("profile", "spot", "date", "ts", "zg_status", "vt_status")},
                     default=str)
                 with get_conn() as _c:
                     with _c.cursor() as _cur:
