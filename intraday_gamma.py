@@ -359,6 +359,63 @@ def main():
         json.dump(snapshot, f, indent=2)
     print(f"  Snapshot salvo: gamma_snapshots/{now_str}.json")
 
+    # ── RITUAL: as 3 perguntas (computa ANTES do push, vai no payload) ──
+    _ritual = None
+    try:
+        import json as _j, glob as _g, os as _os
+        _flip = vt_v
+        _btl = max(rows, key=lambda r: abs(r["gex_vol"]))
+        _btl_s, _btl_g = _btl["strike"], _btl["gex_vol"]
+        _files = sorted(_g.glob(_os.path.join("gamma_snapshots", "*.json")))
+        _mig = "SEM BASE"
+        if len(_files) >= 2:
+            try:
+                _prev_r = _j.load(open(_files[-2]))
+                _pw_prev = (_prev_r.get("vol") or {}).get("put_wall")
+                if _pw_prev and pw_v:
+                    _mig = ("DESCENDO" if pw_v < _pw_prev else
+                            "SUBINDO" if pw_v > _pw_prev else "ESTAVEL")
+            except Exception:
+                pass
+        _lado = ("PUT" if _flip and spot < _flip else
+                 "CALL" if _flip and spot > _flip else "INDEFINIDO")
+        _vp = sum([_lado == "PUT",  _btl_g < 0, _mig == "DESCENDO"])
+        _vc = sum([_lado == "CALL", _btl_g > 0, _mig == "SUBINDO"])
+        if _vp >= 2 and _vp > _vc:
+            _verd = f"{_vp}/3 alinhados -> PUT"
+        elif _vc >= 2 and _vc > _vp:
+            _verd = f"{_vc}/3 alinhados -> CALL"
+        else:
+            _verd = "dividido -> SEM EDGE, aguardar"
+        _os.makedirs("gamma_snapshots", exist_ok=True)
+        _vf = _os.path.join("gamma_snapshots", "last_verdict.txt")
+        _last = open(_vf).read().strip() if _os.path.exists(_vf) else None
+        _mudou = bool(_last and _last != _verd)
+        open(_vf, "w").write(_verd)
+        _ritual = {
+            "lado": _lado,
+            "vt_fluxo": _flip,
+            "batalha_strike": _btl_s,
+            "batalha_gex_m": round(_btl_g / 1e6, 1),
+            "batalha_dist": round(abs(spot - _btl_s), 2),
+            "migracao": _mig,
+            "votos_put": _vp,
+            "votos_call": _vc,
+            "veredito": _verd,
+            "veredito_anterior": _last,
+            "veredito_mudou": _mudou,
+        }
+        print("\n  " + "-"*12 + f" RITUAL {datetime.now():%H:%M} ET " + "-"*12)
+        _ld = 'ABAIXO' if _lado=='PUT' else ('ACIMA' if _lado=='CALL' else 'sem flip')
+        print(f"  1. LADO:     SPY {spot:.2f} {_ld} do VT fluxo {_flip if _flip else '-'} -> {_lado}")
+        print(f"  2. BATALHA:  maior |GEX| = {_btl_s:.0f} ({_btl_g/1e6:+.0f}M) a {abs(spot-_btl_s):.1f} pts")
+        print(f"  3. MIGRACAO: Put Wall fluxo {_mig}")
+        print(f"  VEREDITO: {_verd}")
+        if _mudou:
+            print(f"  !! VEREDITO MUDOU: '{_last}' -> '{_verd}' — reavaliar posicao!")
+    except Exception as _re:
+        print(f"  Ritual indisponivel: {_re}")
+
     # ── PUSH PARA O RAILWAY (grava niveis no journal de hoje) ──────────
     if "--no-push" in sys.argv:
         pass
@@ -386,6 +443,7 @@ def main():
                 "flow_zero_gamma":  snapshot["vol"]["zero_gamma"],
                 "flow_vol_trigger": snapshot["vol"]["vol_trigger"],
                 **_prev_info,
+                "ritual": _ritual,
                 "regime": snapshot["regime"],
                 "coverage_pct": round(coverage, 0),
                 "gex_profile": [
@@ -405,50 +463,6 @@ def main():
         except Exception as e:
             print(f"  Push falhou: {e}")
 
-    # ── RITUAL: as 3 perguntas do intraday ──────────────────────────
-    try:
-        import json as _j, glob as _g, os as _os
-        # 1. LADO: spot vs VT oficial do fluxo (find_vol_trigger, com filtro de ruido)
-        _flip = vt_v
-        # 2. BATALHA: maior |GEX| do fluxo
-        _btl = max(rows, key=lambda r: abs(r["gex_vol"]))
-        _btl_s, _btl_g = _btl["strike"], _btl["gex_vol"]
-        # 3. MIGRACAO: Put Wall do fluxo vs snapshot anterior
-        _files = sorted(_g.glob(_os.path.join("gamma_snapshots", "*.json")))
-        _mig = "sem base"
-        if len(_files) >= 2:
-            try:
-                _prev = _j.load(open(_files[-2]))
-                _pw_prev = (_prev.get("vol") or {}).get("put_wall")
-                if _pw_prev and pw_v:
-                    _mig = ("DESCENDO" if pw_v < _pw_prev else
-                            "SUBINDO" if pw_v > _pw_prev else "ESTAVEL")
-            except Exception:
-                pass
-        _lado = ("PUT" if _flip and spot < _flip else
-                 "CALL" if _flip and spot > _flip else "INDEFINIDO")
-        _vp = sum([_lado == "PUT",  _btl_g < 0, _mig == "DESCENDO"])
-        _vc = sum([_lado == "CALL", _btl_g > 0, _mig == "SUBINDO"])
-        if _vp >= 2 and _vp > _vc:
-            _verd = f"{_vp}/3 alinhados -> PUT"
-        elif _vc >= 2 and _vc > _vp:
-            _verd = f"{_vc}/3 alinhados -> CALL"
-        else:
-            _verd = "dividido -> SEM EDGE, aguardar"
-        print("\n  " + "-"*12 + f" RITUAL {datetime.now():%H:%M} ET " + "-"*12)
-        _ld = 'ABAIXO' if _lado=='PUT' else ('ACIMA' if _lado=='CALL' else 'sem flip')
-        print(f"  1. LADO:     SPY {spot:.2f} {_ld} do VT fluxo {_flip if _flip else '-'} -> {_lado}")
-        print(f"  2. BATALHA:  maior |GEX| = {_btl_s:.0f} ({_btl_g/1e6:+.0f}M) a {abs(spot-_btl_s):.1f} pts")
-        print(f"  3. MIGRACAO: Put Wall fluxo {_mig}")
-        print(f"  VEREDITO: {_verd}")
-        _os.makedirs("gamma_snapshots", exist_ok=True)
-        _vf = _os.path.join("gamma_snapshots", "last_verdict.txt")
-        _last = open(_vf).read().strip() if _os.path.exists(_vf) else None
-        if _last and _last != _verd:
-            print(f"  !! VEREDITO MUDOU: '{_last}' -> '{_verd}' — reavaliar posicao!")
-        open(_vf, "w").write(_verd)
-    except Exception as _re:
-        print(f"  Ritual indisponivel: {_re}")
 
     print("\n  Interpretacao rapida:")
     print("  - Acima do Zero Gamma: dealers estabilizam (range).")

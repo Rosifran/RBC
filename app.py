@@ -2497,12 +2497,13 @@ def post_gamma_levels():
             _GAMMA_CACHE["flow_vol_trigger"] = data.get("flow_vol_trigger")
             _GAMMA_CACHE["zg_status"] = data.get("zero_gamma_status")
             _GAMMA_CACHE["vt_status"] = data.get("vol_trigger_status")
+            _GAMMA_CACHE["ritual"] = data.get("ritual")
             # Persiste no PG: sobrevive a deploys (cache em memoria zera)
             try:
                 from journal import get_conn
                 import json as _json
                 _payload = _json.dumps({k: _GAMMA_CACHE.get(k) for k in
-                    ("profile", "spot", "date", "ts", "zg_status", "vt_status",
+                    ("profile", "spot", "date", "ts", "zg_status", "vt_status", "ritual",
                      "flow_call_wall", "flow_put_wall", "flow_zero_gamma", "flow_vol_trigger",
                      "prev_ts", "prev_spot", "prev_put_wall", "prev_call_wall",
                      "prev_zero_gamma", "prev_vol_trigger")},
