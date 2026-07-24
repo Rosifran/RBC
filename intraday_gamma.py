@@ -366,8 +366,9 @@ def main():
         _flip = vt_v
         _btl = max(rows, key=lambda r: abs(r["gex_vol"]))
         _btl_s, _btl_g = _btl["strike"], _btl["gex_vol"]
-        _files = sorted(_g.glob(_os.path.join("gamma_snapshots", "*.json")))
+        _files = sorted(_g.glob(_os.path.join(snap_dir, f"{today_str}_*.json")))
         _mig = "SEM BASE"
+        _mig_cw = "SEM BASE"
         if len(_files) >= 2:
             try:
                 _prev_r = _j.load(open(_files[-2]))
@@ -375,12 +376,28 @@ def main():
                 if _pw_prev and pw_v:
                     _mig = ("DESCENDO" if pw_v < _pw_prev else
                             "SUBINDO" if pw_v > _pw_prev else "ESTAVEL")
+                _cw_prev = (_prev_r.get("vol") or {}).get("call_wall")
+                if _cw_prev and cw_v:
+                    _mig_cw = ("DESCENDO" if cw_v < _cw_prev else
+                               "SUBINDO" if cw_v > _cw_prev else "ESTAVEL")
             except Exception:
                 pass
         ZONA_VT = 0.30  # pts — dentro da faixa, toque nao e aceitacao: LADO nao vota
         _lado = ("PUT" if _flip and spot < _flip - ZONA_VT else
                  "CALL" if _flip and spot > _flip + ZONA_VT else
                  "NA LINHA" if _flip else "INDEFINIDO")
+        # ── PESO: qual lado esta pesando mais (0=PUT total, 100=CALL total) ──
+        _up = sum(r["gex_vol"] for r in rows if r["strike"] > spot and r["gex_vol"] > 0)
+        _dn = sum(-r["gex_vol"] for r in rows if r["strike"] < spot and r["gex_vol"] < 0)
+        _s_asym = (_up - _dn) / (_up + _dn) if (_up + _dn) > 0 else 0.0
+        _s_ima = (1 if (_btl_s > spot and _btl_g > 0) else
+                  -1 if (_btl_s < spot and _btl_g < 0) else 0)
+        _dirmap = {"SUBINDO": 1, "DESCENDO": -1}
+        _s_mig = (_dirmap.get(_mig, 0) + _dirmap.get(_mig_cw, 0)) / 2.0
+        _s_lado = 1 if _lado == "CALL" else -1 if _lado == "PUT" else 0
+        _peso = round(50 + 50 * (0.40 * _s_asym + 0.25 * _s_ima + 0.20 * _s_mig + 0.15 * _s_lado))
+        _peso = max(0, min(100, _peso))
+        _conf = "ALTA" if abs(_peso - 50) >= 25 else "MEDIA" if abs(_peso - 50) >= 10 else "BAIXA"
         _vp = sum([_lado == "PUT",  _btl_g < 0, _mig == "DESCENDO"])
         _vc = sum([_lado == "CALL", _btl_g > 0, _mig == "SUBINDO"])
         if _vp >= 2 and _vp > _vc:
@@ -390,7 +407,7 @@ def main():
         else:
             _verd = "dividido -> SEM EDGE, aguardar"
         _os.makedirs("gamma_snapshots", exist_ok=True)
-        _vf = _os.path.join("gamma_snapshots", "last_verdict.txt")
+        _vf = _os.path.join(snap_dir, f"last_verdict_{today_str}.txt")
         _last = open(_vf).read().strip() if _os.path.exists(_vf) else None
         _mudou = bool(_last and _last != _verd)
         open(_vf, "w").write(_verd)
@@ -401,6 +418,11 @@ def main():
             "batalha_gex_m": round(_btl_g / 1e6, 1),
             "batalha_dist": round(abs(spot - _btl_s), 2),
             "migracao": _mig,
+            "migracao_cw": _mig_cw,
+            "peso": _peso,
+            "peso_conf": _conf,
+            "peso_up_m": round(_up / 1e6),
+            "peso_dn_m": round(_dn / 1e6),
             "votos_put": _vp,
             "votos_call": _vc,
             "veredito": _verd,
@@ -413,6 +435,8 @@ def main():
         print(f"  1. LADO:     SPY {spot:.2f} {_ld} do VT fluxo {_flip if _flip else '-'} -> {_lado}")
         print(f"  2. BATALHA:  maior |GEX| = {_btl_s:.0f} ({_btl_g/1e6:+.0f}M) a {abs(spot-_btl_s):.1f} pts")
         print(f"  3. MIGRACAO: Put Wall fluxo {_mig}")
+        _pl = "CALL" if _peso > 55 else "PUT" if _peso < 45 else "NEUTRO"
+        print(f"  PESO:        {_peso}% {_pl} (conf {_conf}) — verde acima {_up/1e6:.0f}M vs vermelho abaixo {_dn/1e6:.0f}M")
         print(f"  VEREDITO: {_verd}")
         if _mudou:
             print(f"  !! VEREDITO MUDOU: '{_last}' -> '{_verd}' — reavaliar posicao!")
